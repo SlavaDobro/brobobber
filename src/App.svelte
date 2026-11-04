@@ -2,6 +2,7 @@
   import { onMount } from 'svelte'
   import { ArrowUpRight, ArrowRight, Check, Asterisk, X, Copy, Download, RotateCcw, SlidersHorizontal, Bookmark, Info } from '@lucide/svelte'
   import BikeViewer from './lib/BikeViewer.svelte'
+  import BikePreview from './lib/BikePreview.svelte'
   import { paints, seats, exhausts, defaults, storageKey, readConfiguration, configurationUrl, money, downloadFile } from './lib/configurator'
 
   let configuration = $state(readConfiguration())
@@ -108,7 +109,7 @@
 
   <div class="workspace">
     <section class="showroom" aria-label="Визуализация мотоцикла">
-      <BikeViewer paint={paint.hex} seat={seat.hex} source={exhaust.image} axialRow={exhaust.axialRow} bind:view />
+      <BikeViewer paint={paint.hex} seat={seat.hex} exhaust={exhaust.id} bind:view />
       <div class="bike-specs">
         <div><strong>1 130 <span>см³</span></strong><span>V-twin Revolution</span></div>
         <div><strong>115 <span>л. с.</span></strong><span>Характер в основе</span></div>
@@ -156,8 +157,8 @@
           <p class="option-help">Длинный силуэт или короткий акцент. Выбирай и смотри справа.</p>
           <div class="detail-options">
             {#each exhausts as option}
-              <button class="detail-option exhaust-option" class:selected={configuration.exhaust === option.id} aria-pressed={configuration.exhaust === option.id} onclick={() => { configuration.exhaust = option.id; view = 0 }}>
-                <span class="exhaust-preview" style={'background-image:url(' + option.image + ')'}></span>
+              <button class="detail-option exhaust-option" class:selected={configuration.exhaust === option.id} aria-pressed={configuration.exhaust === option.id} onclick={() => configuration.exhaust = option.id}>
+                <BikePreview exhaust={option.id} />
                 <span class="detail-text"><strong>{option.name}</strong><span>{option.description}</span><small>{option.price ? '+ ' + money(option.price) : 'В основе'}</small></span>
                 <span class="selection-check">{#if configuration.exhaust === option.id}<Check size={15} />{/if}</span>
               </button>

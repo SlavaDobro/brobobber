@@ -55,7 +55,6 @@ h1 span { color: #7b8679; }
 .viewer-caption { padding: 25px 27px 0; display: flex; justify-content: space-between; font-size: 12px; color: #697669; z-index: 2; gap: 12px; }
 .viewer-caption span:first-child { font-weight: 650; color: #3f5547; }
 .ghost-title { position: absolute; top: 51px; width: 100%; text-align: center; font-family: 'Oswald Variable', sans-serif; font-size: clamp(100px, 16vw, 255px); line-height: 1.05; letter-spacing: -8px; font-weight: 650; color: #d9e0d3; z-index: -1; user-select: none; }
-.bike-floor { position: absolute; width: 73%; height: 13%; background: #adb9a8; filter: blur(30px); opacity: .18; border-radius: 50%; left: 13.5%; bottom: 25%; z-index: -1; }
 .canvas-wrap { width: 100%; flex: 1; display: grid; place-items: center; padding: 55px 0 0; transition: transform .35s ease; }
 .canvas-wrap canvas { width: 100%; height: auto; max-height: 440px; object-fit: contain; display: block; touch-action: pan-y; cursor: grab; }
 .canvas-wrap canvas:active { cursor: grabbing; }
@@ -130,7 +129,7 @@ h1 span { color: #7b8679; }
 .detail-text small { font-size: 12px; font-weight: 650; }
 .selection-check { width: 18px; height: 18px; flex-shrink: 0; margin-left: auto; border: 1px solid #d5dccd; border-radius: 50%; display: grid; place-items: center; }
 .selected .selection-check { color: white; background: var(--green); border-color: var(--green); }
-.exhaust-preview { width: 60px; height: 52px; background-size: 260% auto; background-position: 4% 14%; background-repeat: no-repeat; flex-shrink: 0; }
+.exhaust-preview { width: 60px; height: 43px; object-fit: contain; flex-shrink: 0; }
 .panel-bottom { margin-top: auto; padding-top: 8px; }
 .selection-summary { display: flex; align-items: center; justify-content: space-between; padding-top: 10px; border-top: 1px solid var(--line); gap: 5px; }
 .selection-summary > span { font-size: 12px; color: var(--muted); }

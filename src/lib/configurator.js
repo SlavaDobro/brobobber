@@ -11,17 +11,17 @@ export const seats = [
 ]
 
 export const exhausts = [
-  { id: 'twin', name: 'Twin Black', description: 'Две длинные трубы. Лаконичная линия.', price: 0, image: '/images/vrod-twin.png', axialRow: 0 },
-  { id: 'short', name: 'Short Cut', description: 'Короткий выхлоп. Открытый задний диск.', price: 48000, image: '/images/vrod-short.png', axialRow: 1 },
+  { id: 'twin', name: 'Twin Black', description: 'Две длинные трубы. Лаконичная линия.', price: 0 },
+  { id: 'short', name: 'Short Cut', description: 'Короткий выхлоп. Открытый задний диск.', price: 48000 },
 ]
 
 export const views = [
-  { name: 'Правый профиль', short: 'Справа', frame: 0, axial: false, bearing: 90, seatBounds: [120, 155, 335, 245] },
-  { name: 'Спереди, три четверти', short: 'Перед ¾', frame: 1, axial: false, bearing: 45, seatBounds: [125, 155, 320, 245] },
-  { name: 'Вид прямо спереди', short: 'Анфас', frame: 0, axial: true, bearing: 0, seatBounds: [310, 130, 525, 180] },
-  { name: 'Левый профиль', short: 'Слева', frame: 3, axial: false, bearing: -90, seatBounds: [410, 150, 650, 235] },
-  { name: 'Вид прямо сзади', short: 'Сзади', frame: 1, axial: true, bearing: -180, seatBounds: [225, 95, 425, 195] },
-  { name: 'Сзади, три четверти', short: 'Корма ¾', frame: 2, axial: false, bearing: -225, seatBounds: [155, 125, 390, 225] },
+  { name: 'Правый профиль', short: 'Справа', bearing: 90 },
+  { name: 'Спереди, три четверти', short: 'Перед ¾', bearing: 45 },
+  { name: 'Вид прямо спереди', short: 'Анфас', bearing: 0 },
+  { name: 'Левый профиль', short: 'Слева', bearing: -90 },
+  { name: 'Вид прямо сзади', short: 'Сзади', bearing: -180 },
+  { name: 'Сзади, три четверти', short: 'Корма ¾', bearing: -225 },
 ]
 
 export const defaults = { paint: 'graphite', seat: 'black', exhaust: 'twin' }
