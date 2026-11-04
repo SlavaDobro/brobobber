@@ -1,0 +1,236 @@
+{
+  "size": [
+    1536,
+    1024
+  ],
+  "views": {
+    "right": {
+      "materials": "right-materials.png",
+      "stats": {
+        "paint": {
+          "luminance": 85.7,
+          "pixels": 54376
+        },
+        "leather": {
+          "luminance": 105,
+          "pixels": 28029
+        },
+        "wheels": {
+          "luminance": 35.6,
+          "pixels": 56438
+        }
+      },
+      "layers": {
+        "exhaust-drag": {
+          "box": [
+            140,
+            522,
+            858,
+            283
+          ]
+        },
+        "cowl": {
+          "box": [
+            1039,
+            194,
+            160,
+            208
+          ]
+        },
+        "exhaust-shotgun": {
+          "box": [
+            136,
+            517,
+            869,
+            288
+          ]
+        }
+      }
+    },
+    "front-quarter": {
+      "materials": "front-quarter-materials.png",
+      "stats": {
+        "paint": {
+          "luminance": 82,
+          "pixels": 66822
+        },
+        "leather": {
+          "luminance": 108.1,
+          "pixels": 34367
+        },
+        "wheels": {
+          "luminance": 40.2,
+          "pixels": 72275
+        }
+      },
+      "layers": {
+        "exhaust-drag": {
+          "box": [
+            101,
+            496,
+            914,
+            364
+          ]
+        },
+        "cowl": {
+          "box": [
+            1076,
+            117,
+            198,
+            249
+          ]
+        },
+        "exhaust-shotgun": {
+          "box": [
+            96,
+            498,
+            886,
+            367
+          ]
+        }
+      }
+    },
+    "front": {
+      "materials": "front-materials.png",
+      "stats": {
+        "paint": {
+          "luminance": 85.9,
+          "pixels": 24835
+        },
+        "leather": {
+          "luminance": 103.9,
+          "pixels": 3429
+        },
+        "wheels": null
+      },
+      "layers": {
+        "exhaust-drag": {
+          "box": [
+            434,
+            476,
+            220,
+            367
+          ]
+        },
+        "cowl": {
+          "box": [
+            662,
+            45,
+            277,
+            227
+          ]
+        },
+        "exhaust-shotgun": {
+          "box": [
+            475,
+            476,
+            169,
+            372
+          ]
+        }
+      }
+    },
+    "left": {
+      "materials": "left-materials.png",
+      "stats": {
+        "paint": {
+          "luminance": 84.5,
+          "pixels": 53483
+        },
+        "leather": {
+          "luminance": 102.7,
+          "pixels": 27719
+        },
+        "wheels": {
+          "luminance": 38.9,
+          "pixels": 57110
+        }
+      },
+      "layers": {
+        "cowl": {
+          "box": [
+            346,
+            179,
+            179,
+            231
+          ]
+        }
+      }
+    },
+    "rear": {
+      "materials": "rear-materials.png",
+      "stats": {
+        "paint": {
+          "luminance": 77.2,
+          "pixels": 45143
+        },
+        "leather": {
+          "luminance": 104.6,
+          "pixels": 29385
+        },
+        "wheels": null
+      },
+      "layers": {
+        "exhaust-drag": {
+          "box": [
+            902,
+            536,
+            211,
+            337
+          ]
+        },
+        "exhaust-shotgun": {
+          "box": [
+            900,
+            536,
+            215,
+            336
+          ]
+        }
+      }
+    },
+    "rear-quarter": {
+      "materials": "rear-quarter-materials.png",
+      "stats": {
+        "paint": {
+          "luminance": 79.2,
+          "pixels": 81488
+        },
+        "leather": {
+          "luminance": 95.3,
+          "pixels": 41676
+        },
+        "wheels": {
+          "luminance": 40.3,
+          "pixels": 65269
+        }
+      },
+      "layers": {
+        "exhaust-drag": {
+          "box": [
+            376,
+            476,
+            769,
+            389
+          ]
+        },
+        "cowl": {
+          "box": [
+            1076,
+            86,
+            192,
+            217
+          ]
+        },
+        "exhaust-shotgun": {
+          "box": [
+            376,
+            476,
+            769,
+            389
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,38 +1,35 @@
 <script>
-  import { onMount } from 'svelte'
-  import { bikeAssets, assetPath, frameSize } from './bike-assets.js'
+  import { frameSize, cameras } from './bike-assets.js'
   import { renderBike } from './bike-renderer.js'
+  import { loadView } from './asset-cache.js'
 
-  /** @type {{ exhaust: string }} */
-  let { exhaust } = $props()
+  /** @typedef {{ hex: string | null, finish?: string }} Material */
+  /** Close-up of a part, rendered from the same photograph and layers as the main view.
+   * @type {{ view?: string, parts: string[], crop: number[], paint: Material, leather: Material, wheels: Material }} */
+  let { view = 'right', parts, crop, paint, leather, wheels } = $props()
   /** @type {HTMLCanvasElement} */
   let canvas
 
-  /** @param {string} id @returns {Promise<HTMLImageElement>} */
-  function load(id) {
-    return new Promise((resolve, reject) => {
-      const image = new Image()
-      image.onload = () => resolve(image)
-      image.onerror = reject
-      image.src = assetPath(id)
-    })
-  }
-
-  onMount(() => {
+  $effect(() => {
+    const layerParts = [...parts], [left, top, width, height] = crop
+    const materials = { paint: { ...paint }, leather: { ...leather }, wheels: { ...wheels } }
     let cancelled = false
-    const camera = bikeAssets[0]
-    Promise.all([load(camera.id), exhaust === 'twin' ? load(camera.overlay) : undefined])
-      .then(([base, overlay]) => {
-        if (cancelled || !canvas) return
-        const buffer = document.createElement('canvas')
-        buffer.width = frameSize.width; buffer.height = frameSize.height
-        const ctx = buffer.getContext('2d', { willReadFrequently: true })
-        if (!ctx) return
-        renderBike(ctx, { base, overlay, camera, paint: '#3c4247', seat: '#29292a', exhaust, floor: false })
-        canvas.getContext('2d')?.drawImage(buffer, 0, 0, canvas.width, canvas.height)
-      }).catch(() => { /* Decorative preview: the option label remains available. */ })
+    loadView(view, layerParts).then(assets => {
+      if (cancelled || !canvas) return
+      const buffer = document.createElement('canvas')
+      buffer.width = frameSize.width
+      buffer.height = frameSize.height
+      const ctx = buffer.getContext('2d', { willReadFrequently: true })
+      if (!ctx) return
+      const camera = cameras.find(item => item.id === view) || cameras[0]
+      renderBike(ctx, { ...assets, ...materials, contacts: camera.contacts, floor: false })
+      const target = canvas.getContext('2d')
+      if (!target) return
+      target.clearRect(0, 0, canvas.width, canvas.height)
+      target.drawImage(buffer, left, top, width, height, 0, 0, canvas.width, canvas.height)
+    }).catch(() => { /* Decorative: the option text stays available. */ })
     return () => { cancelled = true }
   })
 </script>
 
-<canvas class="exhaust-preview" width="240" height="172" bind:this={canvas} aria-hidden="true"></canvas>
+<canvas class="part-preview" width={Math.round(crop[2] / crop[3] * 120)} height="120" bind:this={canvas} aria-hidden="true"></canvas>

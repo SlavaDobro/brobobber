@@ -1,24 +1,38 @@
-# V-Rod: immutable camera bases and component layers
+# V-Rod: frozen camera photos, edit-derived layers and material masks
 
-## Current production assets (2026-11-04)
+## How the configurator images work (2026-11-04)
 
-Built-in ImageGen mode. Assets are in `public/images/vrod/`. Every camera has one 1536×1024 RGBA master, replacing the old 768×512 atlas crops. These are generated concept photographs, not a calibrated 3D model or a verified catalogue of real parts.
+Every camera has one frozen 1536×1024 RGBA photograph in `public/images/vrod/` (`right`, `front-quarter`, `front`, `left`, `rear`, `rear-quarter`). These are generated concept photographs, not a calibrated 3D model or a verified catalogue of real parts. An option never swaps the photograph and never pastes a part drawn on an empty canvas: models cannot hit pixel coordinates that way, which was the cause of the earlier misaligned exhausts.
 
-`right`, `front-quarter`, `front`, `left`, `rear`, `rear-quarter` are frozen base images. `right-twin`, `front-quarter-twin`, `rear-quarter-twin` contain only the two long black silencers on transparent canvases. No whole-bike variant is selected when changing exhaust.
+Instead, every option is an **edit of the frozen photograph itself**:
 
-Runtime composition: material tint of the same base → registered silencer overlay → independent floor behind the image. The short silver silencers remain part of the base and are covered by the longer black ones. Header geometry stays in the base. Axial views retain the same visible outlet/header alignment and change only the visible can finish; the left view is identical because the silencers are hidden. This is a 2D approximation, not a simulation of the difference in axial perspective caused by pipe length.
+1. GPT-6 Astra (through `scripts/codex-mcp`, see `scripts/layers/jobs.mjs` for every prompt) receives the base photo and changes only the part, e.g. "replace the exhaust with drag pipes". For cameras other than the right profile the right-profile edit is attached as a second reference, so the part looks the same from every side.
+2. `scripts/layers/build.mjs` registers the edit to the base (scale + shift search; Astra occasionally shifts the frame by ~30 px), finds the changed pixels inside the part's allowed region, closes them into one solid part and writes a cropped layer: `layers/<view>-<part>.png` (new pixels, edge band pre-blended with the base) and `layers/<view>-<part>-meta.png` (alpha = hard cut, RGB = material weights inside the cut).
+3. At runtime (`src/lib/bike-renderer.js`) the base is drawn, every selected layer replaces the pixels inside its cut, then materials are recoloured.
 
-`src/lib/bike-assets.js` owns placement, saddle masks, component footprints and tyre contacts. `src/lib/bike-renderer.js` is shared by the viewer, option thumbnails and tests. Canvas renders at 1536×1100, with extra transparent floor space; the floor is never part of the photograph.
+Because the cut is hard and the soft edge is baked into the layer, a layer reproduces the base exactly at its border: no halos, no seams, no partial transparency.
 
-## Adding wheels, handlebars or body parts
+**Materials** (paint, leather, wheel rims) are recoloured, not regenerated. Astra repaints the base with flat key colours (#FF00FF paint, #00FF00 leather, #0000FF rims); the build keeps a key pixel only where the base agrees (teal, warm, dark neutral), giving `<view>-materials.png`. Each exhaust edit gets its own mask too, so new pipes passing over a wheel never take the wheel colour. The recolour keeps the photo's light: target colour × relative shading + the original highlights, with finish presets (gloss, metallic, matte, satin, polished) and softer shadows for light colours.
 
-Freeze the camera, lighting, scale and master. A new component needs a registered transparent layer for every visible camera, a restricted footprint and any foreground occluders. Unlike the longer silencers, a narrower replacement cannot simply cover an existing part: first create a clean base behind that part, then keep that clean base common to every option. Layer ordering must preserve forks, brake discs, cables, seat edges and other occluding parts. Do not generate a complete motorcycle for each configuration. For many interacting geometric options and free rotation, use one authored 3D model with interchangeable meshes instead of extending this fixed-camera approximation indefinitely.
+`src/lib/vrod-layers.json` (generated) holds crop boxes and the mean luminance of each material per camera. `src/lib/cameras.js` holds tyre contacts for the floor shadow, which the canvas draws below the photo (1536×1100).
+
+## Regenerating or adding an option
+
+1. Add a job in `scripts/layers/jobs.mjs` (prompt + base reference, plus the right-view edit as second reference for other cameras) and an allowed region per camera in `scripts/layers/build.mjs`.
+2. `node scripts/layers/generate.mjs <name-filter>` — raw edits go to `.local/astra/` (git-ignored). Delete a raw file to regenerate it; rejected attempts are kept in `.local/astra/rejected/`.
+3. `node scripts/layers/build.mjs` — writes masks, layers, backdrops and the manifest; QA pairs go to `.local/qa/`.
+4. Review every QA image: part identical across cameras, no stray marks, correct side (exhaust on the motorcycle's right only), wheel openings transparent on a light background. `node scripts/layers/render.mjs` renders any combination with the site's renderer.
+5. Add the option to `src/lib/configurator.js`.
+
+A part that is narrower than the one it replaces works too: the edit restores what was behind the old part, and that restoration is part of the layer.
 
 ## Verification
 
-`npm test` renders the actual assets and compares both exhaust variants for all six views. Every changed pixel must stay in the exhaust footprint; the left view must be identical. Tests also check 1536×1024 sources, isolated saddle colouring, neutral black leather and tyre contact shadows. Set `BIKE_QA_OUTPUT` to a directory to save four-panel comparisons for visual inspection. Review wheel openings on a light background and exhaust/header junctions after every asset update.
+`npm test` renders the real assets: every layer may change pixels only inside its own cut, every recolour only pixels its mask assigns, all sources are 1536×1024, each option exists for at least four cameras, the exhaust never appears on the left profile, and tyres get contact shadows. Set `BIKE_QA_OUTPUT` to a directory to save stock-vs-build sheets for review.
 
-## Final prompt set
+## Base photograph prompts
+
+The six frozen bases were generated earlier with the prompts below (kept for reference; regenerating a base invalidates every mask and layer of that camera).
 
 ### right.png
 
@@ -43,15 +57,3 @@ Single immutable MASTER motorcycle image for a visual configurator. Image 1 is a
 ### rear.png
 
 Single immutable MASTER motorcycle image for a visual configurator. Image 1 is authoritative bike identity: same teal custom V-Rod, black curved blade-spoke wheels, cognac quilt saddle, angular tank, SHORT stainless twin exhausts on motorcycle RIGHT only, no plate bracket. Image 2 is CAMERA AND FRAMING reference: use ONLY its BOTTOM RIGHT cell, exact straight REAR-ON view, broad rear wheel centered, pipes on viewer RIGHT only. Render that same bike at this camera angle as one single very detailed 1536x1024 transparent image, not a sheet. Match the reference cell framing scaled exactly 2x, full vehicle inside canvas with contact points near y900 (side/quarter views) or y950 (axial views). Keep reference1 wheel spoke style, tank, radiator, handlebars, tire proportions and mechanical identity. Front tire visibly narrower than 300mm rear; do not redesign components. High-resolution crisp studio photography, accurate clean contours and visible stitching/metal/tread, no painterly smearing or artifacts. Genuine alpha transparency in background AND all open wheel-spoke gaps. No shadow or floor baked in; renderer adds shadow separately. No extra pipes, no plate, no text, no added accessories.
-
-### right-twin.png
-
-Use case: precise-object-edit / compositing. Make a transparent PNG OVERLAY for this exact motorcycle photograph, 1536x1024 canvas same camera registration. Render ONLY TWO LONG SATIN BLACK EXHAUST SILENCERS in their installed positions, with photorealistic brushed black metal, thin stainless outlet lips, dark open outlets, directional softbox highlights. These are the Twin Black exhaust option. Upper silencer spans from its oval outlet centered at (325,635) to its inlet at (705,676); lower silencer spans from its outlet centered at (335,708) to its inlet at (700,737). They extend left over the rear wheel and cover the original short silver silencers. Match reference perspective, tube thickness roughly 65 pixels and lighting. The original stainless curved headers remain in the underlying photograph: do not include any curved headers. CRITICAL: remove ALL motorcycle pixels including wheels, seat, engine, frame, footrests and background from this output. Only the TWO black straight muffler cans are visible, with transparent space around them, sitting low in the 1536x1024 canvas at the described coordinates. Do NOT center or enlarge the pipes to fill the canvas. No backdrop, no shadow, no text. The output must be an installable overlay that covers the existing short silver cans when composited over the reference at identical pixel coordinates. Keep exact photographic scale and camera.
-
-### front-quarter-twin.png
-
-Use case: precise-object-edit / compositing. Make a transparent PNG OVERLAY for this exact motorcycle photograph, 1536x1024 canvas same camera registration. Render ONLY TWO LONG SATIN BLACK EXHAUST SILENCERS in their installed positions, with photorealistic brushed black metal, thin stainless outlet lips, dark open outlets, directional softbox highlights. These are the Twin Black exhaust option. Upper silencer spans from its oval outlet centered at (250,648) to its inlet at (610,702); lower silencer spans from outlet centered at (255,720) to its inlet at (610,778). They extend left over the rear wheel and cover original short silver silencers. Match reference perspective, tube thickness roughly 65 pixels and lighting. The original stainless curved headers remain in the underlying photograph: do not include any curved headers. CRITICAL: remove ALL motorcycle pixels including wheels, seat, engine, frame, footrests and background from this output. Only the TWO black straight muffler cans are visible, with transparent space around them, sitting low in the 1536x1024 canvas at the described coordinates. Do NOT center or enlarge the pipes to fill the canvas. No backdrop, no shadow, no text. The output must be an installable overlay that covers the existing short silver cans when composited over the reference at identical pixel coordinates. Keep exact photographic scale and camera.
-
-### rear-quarter-twin.png
-
-Use case: precise-object-edit / compositing. Make a transparent PNG OVERLAY for this exact motorcycle photograph, 1536x1024 canvas same camera registration. Render ONLY TWO LONG SATIN BLACK EXHAUST SILENCERS in their installed positions, with photorealistic brushed black metal, thin stainless outlet lips, dark open outlets, directional softbox highlights. These are the Twin Black exhaust option. Upper silencer spans from its large round outlet centered at (550,635) to its inlet at (905,677); lower silencer spans from its large round outlet centered at (550,720) to its inlet at (910,750). They extend left across the rear wheel in this rear three-quarter perspective and cover original short silver silencers. Match reference perspective, tube thickness roughly 65 pixels and lighting. The original stainless curved headers remain in the underlying photograph: do not include any curved headers. CRITICAL: remove ALL motorcycle pixels including wheels, seat, engine, frame, footrests and background from this output. Only the TWO black straight muffler cans are visible, with transparent space around them, sitting low in the 1536x1024 canvas at the described coordinates. Do NOT center or enlarge the pipes to fill the canvas. No backdrop, no shadow, no text. The output must be an installable overlay that covers the existing short silver cans when composited over the reference at identical pixel coordinates. Keep exact photographic scale and camera.
