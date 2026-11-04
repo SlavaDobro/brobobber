@@ -22,6 +22,18 @@ const regions = {
   },
 }
 regions['exhaust-shotgun'] = regions['exhaust-drag']
+// Both wheels; generous boxes because rims sit inside the tyres.
+// Each box holds a whole wheel with its tyre (rim extents + ~110 px), so no cut crosses a tyre.
+const wheelBoxes = {
+  right: [[0, 360, 540, 920], [1030, 370, 1536, 930]],
+  'front-quarter': [[0, 360, 560, 1000], [990, 390, 1536, 1020]],
+  left: [[0, 360, 530, 930], [1010, 360, 1536, 930]],
+  'rear-quarter': [[0, 290, 740, 1024], [1110, 300, 1536, 960]],
+}
+for (const kind of ['disc', 'twist', 'split']) regions[`wheels-${kind}`] = wheelBoxes
+// Layers that other layers sit on top of must only replace what really changed,
+// so a part drawn later (exhaust over the rear wheel) shows the new wheel behind it.
+const tight = new Set(['exhaust-drag', 'exhaust-shotgun'])
 
 const raw = name => `.local/astra/${name}.png`
 const manifest = { size: [W, H], views: {} }
@@ -54,25 +66,29 @@ for (const view of views) {
   for (const [part, perView] of Object.entries(regions)) {
     const boxes = perView[view]
     if (!boxes || !existsSync(raw(`${view}-${part}`))) continue
-    const own = existsSync(raw(`${view}-${part}-mask`)) ? (await extractMask(basePath, raw(`${view}-${part}-mask`))).canvas : null
-    const layer = await extractLayer(basePath, raw(`${view}-${part}`), boxes, materials, own)
+    const own = existsSync(raw(`${view}-${part}-mask`))
+      ? (await extractMask(basePath, raw(`${view}-${part}-mask`), raw(`${view}-${part}`), boxes, { perBox: part.startsWith('wheels-') })).canvas : null
+    const layer = await extractLayer(basePath, raw(`${view}-${part}`), boxes, materials, own, { tight: tight.has(part), perBox: part.startsWith('wheels-') })
+    if (layer.transform.local) console.log(`${view}-${part}: per-wheel`, layer.transform.local.map(t => `${t.scale.toFixed(3)} ${t.dx},${t.dy}`).join(' | '))
     if (!layer.area) { console.warn(`${view}-${part}: no change found`); continue }
     save(layer.content, `public/images/vrod/layers/${view}-${part}.png`)
     save(layer.meta, `public/images/vrod/layers/${view}-${part}-meta.png`)
     save(layer.qa, `.local/qa/${view}-${part}.png`)
-    entry.layers[part] = { box: layer.box }
+    entry.layers[part] = layer.over ? { box: layer.box, over: true } : { box: layer.box }
     const { scale, dx, dy } = layer.transform
     console.log(`${view}-${part}: box ${layer.box.join(',')} area ${layer.area} registration ${scale.toFixed(3)} ${dx},${dy}`)
   }
 }
 
-// Stage backdrops: compact WebP copies of the Astra originals.
-mkdirSync('public/images/env', { recursive: true })
-for (const id of ['workshop', 'night']) {
-  if (!existsSync(raw(`env-${id}`))) continue
-  const { canvas } = await load(raw(`env-${id}`))
-  writeFileSync(`public/images/env/${id}.webp`, canvas.toBuffer('image/webp', 82))
-  console.log(`env ${id}: webp written`)
+// Stage backdrops and page illustrations: compact WebP copies of the Astra originals.
+for (const [folder, prefix, ids] of [['env', 'env', ['workshop', 'night']], ['story', 'story', ['sketch', 'paint', 'delivery']]]) {
+  mkdirSync(`public/images/${folder}`, { recursive: true })
+  for (const id of ids) {
+    if (!existsSync(raw(`${prefix}-${id}`))) continue
+    const { canvas } = await load(raw(`${prefix}-${id}`))
+    writeFileSync(`public/images/${folder}/${id}.webp`, canvas.toBuffer('image/webp', 80))
+    console.log(`${folder} ${id}: webp written`)
+  }
 }
 
 writeFileSync('src/lib/vrod-layers.json', JSON.stringify(manifest, null, 2) + '\n')

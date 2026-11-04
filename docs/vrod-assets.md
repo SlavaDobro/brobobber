@@ -14,6 +14,8 @@ Because the cut is hard and the soft edge is baked into the layer, a layer repro
 
 **Materials** (paint, leather, wheel rims) are recoloured, not regenerated. Astra repaints the base with flat key colours (#FF00FF paint, #00FF00 leather, #0000FF rims); the build keeps a key pixel only where the base agrees (teal, warm, dark neutral), giving `<view>-materials.png`. Each exhaust edit gets its own mask too, so new pipes passing over a wheel never take the wheel colour. The recolour keeps the photo's light: target colour × relative shading + the original highlights, with finish presets (gloss, metallic, matte, satin, polished) and softer shadows for light colours.
 
+**Stacking parts** (wheels + exhaust). Layers are drawn in a fixed order: wheels, exhaust, accessories. Wheel layers are solid and are aligned per wheel (Astra moves each wheel slightly differently from the rest of the frame; the tyre outline is the reference), with boxes that hold a whole wheel so no cut crosses a tyre. Exhaust layers are "tight" and drawn over what is already there (`over: true` in the manifest): they keep only the pipes, never a rim or empty space seen through them, so the chosen wheel design shows behind the pipes. To find the pipes where a black pipe crosses a black rim, the build uses the exhaust edit's own mask, aligned locally to the edit (the mask pass may redraw the part ~10 px off), plus a closing step for black-on-black areas.
+
 `src/lib/vrod-layers.json` (generated) holds crop boxes and the mean luminance of each material per camera. `src/lib/cameras.js` holds tyre contacts for the floor shadow, which the canvas draws below the photo (1536×1100).
 
 ## Regenerating or adding an option

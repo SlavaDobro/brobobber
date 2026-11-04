@@ -29,6 +29,7 @@ export async function loadViewNode(view, parts = []) {
       content: await pixelsOf(`layers/${view}-${part}.png`),
       meta: await pixelsOf(`layers/${view}-${part}-meta.png`),
       box: assets.layers[part].box,
+      over: !!assets.layers[part].over,
     }))),
     stats: assets.stats,
   }

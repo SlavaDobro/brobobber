@@ -43,7 +43,8 @@ for (const camera of cameras) {
         if (stock[i] === changed[i] && stock[i + 1] === changed[i + 1] && stock[i + 2] === changed[i + 2] && stock[i + 3] === changed[i + 3]) continue
         const x = (i / 4) % width, y = Math.floor(i / 4 / width)
         const inBox = x >= left && x < left + w && y >= top && y < top + h
-        assert.ok(inBox && layer.meta.data[((y - top) * w + (x - left)) * 4 + 3] >= 128, `${part} changed ${x},${y} outside its cut`)
+        const cut = inBox ? layer.meta.data[((y - top) * w + (x - left)) * 4 + 3] : 0
+        assert.ok(layer.over ? cut > 0 : cut >= 128, `${part} changed ${x},${y} outside its cut`)
         inside++
       }
       assert.ok(inside > 1000, `${part} makes no visible change`)

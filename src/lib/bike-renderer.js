@@ -2,7 +2,7 @@
 export const frameSize = { width: 1536, height: 1100 }
 
 /** @typedef {{ data: Uint8ClampedArray, width: number, height: number }} Pixels */
-/** @typedef {{ content: Pixels, meta: Pixels, box: number[] }} Layer */
+/** @typedef {{ content: Pixels, meta: Pixels, box: number[], over?: boolean }} Layer */
 /** @typedef {{ hex: string | null, finish?: string }} Material */
 
 /** @param {string} hex */
@@ -14,11 +14,24 @@ export function rgb(hex) {
  * Layers were extracted from Astra edits of this exact base, so no transform is needed.
  * @param {Uint8ClampedArray} frame @param {Uint8ClampedArray} materials @param {Layer[]} layers */
 export function applyLayers(frame, materials, layers, width = frameSize.width) {
-  for (const { content, meta, box } of layers) {
+  for (const { content, meta, box, over } of layers) {
     const [left, top, w, h] = box
     for (let y = 0; y < h; y++) {
       for (let x = 0; x < w; x++) {
         const o = (y * w + x) * 4
+        if (over) {
+          // Drawn on top of earlier layers; its soft edge blends with what is already there.
+          const a = content.data[o + 3] / 255, m = meta.data[o + 3] / 255
+          if (!m) continue
+          const i = ((top + y) * width + left + x) * 4
+          const fa = frame[i + 3] / 255, oa = a + fa * (1 - a)
+          for (let c = 0; c < 3; c++) {
+            frame[i + c] = oa ? (content.data[o + c] * a + frame[i + c] * fa * (1 - a)) / oa : 0
+            materials[i + c] = meta.data[o + c] * m + materials[i + c] * (1 - m)
+          }
+          frame[i + 3] = oa * 255
+          continue
+        }
         if (meta.data[o + 3] < 128) continue
         const i = ((top + y) * width + left + x) * 4
         frame[i] = content.data[o]; frame[i + 1] = content.data[o + 1]

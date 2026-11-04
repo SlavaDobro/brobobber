@@ -53,7 +53,7 @@ export async function loadView(view, parts) {
     ...available.map(async part => {
       const files = layerFiles(view, part)
       const [content, meta] = await Promise.all([loadPixels(files.content), loadPixels(files.meta)])
-      return { content, meta, box: assets.layers[part].box }
+      return { content, meta, box: assets.layers[part].box, over: !!assets.layers[part].over }
     }),
   ])
   return { base, materials, layers, stats: assets?.stats || {} }
