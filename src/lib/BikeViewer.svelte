@@ -1,7 +1,7 @@
 <script>
   import { onMount } from 'svelte'
   import { gsap } from 'gsap'
-  import { ArrowLeft, ArrowRight, ZoomIn, ZoomOut, ImageOff, Camera } from '@lucide/svelte'
+  import { ChevronLeft, ChevronRight, ImageOff, Camera, Maximize2, Minimize2 } from '@lucide/svelte'
   import { views, environments } from './configurator'
   import { cameras, frameSize } from './bike-assets.js'
   import { renderBike } from './bike-renderer.js'
@@ -13,23 +13,48 @@
 
   /** @type {HTMLCanvasElement} */
   let canvas
+  /** @type {HTMLDivElement} */
+  let frameBox
   let ready = $state(false)
   let failed = $state(false)
-  let zoom = $state(false)
+  let close = $state(false)
   let retry = $state(0)
+  let fit = $state({ width: 0, height: 0 })
   let pointerStart = 0
   let reducedMotion = false
   /** @type {Map<string, HTMLCanvasElement>} */
   const frames = new Map()
+  const ratio = frameSize.width / frameSize.height
 
   let scene = $derived(environments.find(item => item.id === environment) || environments[0])
+
+  // Turntable geometry: an ellipse seen slightly from above. 0° is nearest the viewer.
+  const ring = { cx: 300, cy: 46, rx: 270, ry: 38 }
+  /** @param {number} bearing */
+  const onRing = bearing => {
+    const a = bearing * Math.PI / 180
+    return { x: ring.cx + ring.rx * Math.sin(a), y: ring.cy + ring.ry * Math.cos(a) }
+  }
+  const ticks = Array.from({ length: 24 }, (_, i) => {
+    const outer = onRing(i * 15), a = i * 15 * Math.PI / 180
+    const inner = { x: ring.cx + (ring.rx - (i % 3 ? 7 : 13)) * Math.sin(a), y: ring.cy + (ring.ry - (i % 3 ? 1.5 : 3)) * Math.cos(a) }
+    return { outer, inner, major: i % 3 === 0 }
+  })
 
   onMount(() => {
     const preference = matchMedia('(prefers-reduced-motion: reduce)')
     reducedMotion = preference.matches
     const update = () => { reducedMotion = preference.matches }
     preference.addEventListener('change', update)
+    // The motorcycle always fits the space it has: contain, never crop.
+    const observer = new ResizeObserver(([entry]) => {
+      const { width, height } = entry.contentRect
+      const w = Math.max(0, Math.min(width, height * ratio))
+      fit = { width: Math.floor(w), height: Math.floor(w / ratio) }
+    })
+    observer.observe(frameBox)
     return () => {
+      observer.disconnect()
       preference.removeEventListener('change', update)
       if (canvas) gsap.killTweensOf(canvas)
       frames.clear()
@@ -49,7 +74,6 @@
     if (!context) throw new Error('Canvas unavailable')
     const camera = cameras.find(item => item.id === id) || cameras[0]
     renderBike(context, { ...assets, paint, leather, wheels, contacts: camera.contacts })
-    // Bound decoded memory; source images stay cached separately.
     if (frames.size >= 8) frames.delete(/** @type {string} */ (frames.keys().next().value))
     frames.set(key, frame)
     return frame
@@ -71,8 +95,7 @@
       context.clearRect(0, 0, canvas.width, canvas.height)
       context.drawImage(frame, 0, 0)
       ready = true
-      gsap.fromTo(canvas, { opacity: .8 }, { opacity: 1, duration: reducedMotion ? 0 : .22, overwrite: true })
-      // Neighbouring cameras load in the background so turning feels instant.
+      gsap.fromTo(canvas, { opacity: .82 }, { opacity: 1, duration: reducedMotion ? 0 : .25, overwrite: true })
       prefetch([views[(view + 1) % views.length].id, views[(view + views.length - 1) % views.length].id], layerParts)
     }).catch(() => {
       if (!cancelled) failed = true
@@ -80,9 +103,11 @@
     return () => { cancelled = true }
   })
 
-  /** @param {number} direction */
+  /** Steps around the turntable in bearing order, so arrows feel like rotating the stand. @param {number} direction */
   function turn(direction) {
-    view = (view + direction + views.length) % views.length
+    const order = [...views.keys()].sort((a, b) => views[a].bearing - views[b].bearing)
+    const at = order.indexOf(view)
+    view = order[(at + direction + order.length) % order.length]
   }
 
   /** @param {KeyboardEvent} event */
@@ -109,60 +134,74 @@
       const w = backdrop.naturalWidth * scale, h = backdrop.naturalHeight * scale
       ctx.drawImage(backdrop, (1920 - w) / 2, (1080 - h) * scene.focusY, w, h)
     } else {
-      const gradient = ctx.createRadialGradient(860, 380, 60, 960, 540, 1100)
-      gradient.addColorStop(0, '#fafbf7'); gradient.addColorStop(.45, '#eff1e9'); gradient.addColorStop(1, '#dde3d7')
-      ctx.fillStyle = gradient
+      ctx.fillStyle = '#d5d8d2'
+      ctx.fillRect(0, 0, 1920, 1080)
+      const glow = ctx.createRadialGradient(960, 520, 80, 960, 540, 980)
+      glow.addColorStop(0, '#f2f3f0'); glow.addColorStop(1, '#f2f3f000')
+      ctx.fillStyle = glow
       ctx.fillRect(0, 0, 1920, 1080)
     }
-    const scale = 1560 / frameSize.width
-    ctx.drawImage(canvas, (1920 - 1560) / 2, 1080 - frameSize.height * scale - 40, 1560, frameSize.height * scale)
-    ctx.font = '600 22px "Oswald Variable", sans-serif'
-    ctx.fillStyle = scene.dark ? '#f3f1ea' : '#202a26'
-    ctx.fillText('BROBOBBER · V-ROD · ' + buildName.toUpperCase(), 56, 72)
+    const width = 1560, height = width / ratio
+    ctx.drawImage(canvas, (1920 - width) / 2, 1080 - height - 30, width, height)
+    ctx.font = '600 30px "Tektur Variable", sans-serif'
+    ctx.fillStyle = scene.dark ? '#f2f3f0' : '#1d2023'
+    ctx.fillText('Brobobber V-Rod', 60, 84)
+    ctx.font = '400 24px "Golos Text Variable", sans-serif'
+    ctx.fillText(buildName, 60, 122)
     out.toBlob(blob => { if (blob) onsnapshot?.(blob) }, 'image/png')
   }
 </script>
 
-<div class="stage" class:dark={scene.dark} role="region" aria-label="Просмотр мотоцикла. Стрелки влево и вправо меняют ракурс">
-  {#if scene.image}
-    <img class="stage-backdrop" src={scene.image} alt="" style={'object-position: 50% ' + scene.focusY * 100 + '%'} />
-  {:else}
-    <div class="ghost-title" aria-hidden="true">V-ROD</div>
-  {/if}
+<div class="bay" class:dark={scene.dark}>
+  {#if scene.image}<img class="bay-backdrop" src={scene.image} alt="" style={'object-position: 50% ' + scene.focusY * 100 + '%'} />{/if}
 
-  <div class="stage-top">
-    <div class="stage-title"><span>Студия Brobobber</span><strong>V-Rod · {buildName}</strong></div>
-    <div class="stage-tools">
-      <div class="scene-switch" role="group" aria-label="Окружение">
-        {#each environments as item}
-          <button class:active={environment === item.id} aria-pressed={environment === item.id} onclick={() => environment = item.id}>{item.name}</button>
-        {/each}
-      </div>
-      <button class="icon-button zoom-button" aria-label={zoom ? 'Уменьшить мотоцикл' : 'Приблизить мотоцикл'} aria-pressed={zoom} onclick={() => zoom = !zoom}>{#if zoom}<ZoomOut size={18} />{:else}<ZoomIn size={18} />{/if}</button>
-      <button class="icon-button" aria-label="Сохранить изображение сборки" disabled={!ready} onclick={snapshot}><Camera size={18} /></button>
-    </div>
-  </div>
-
-  <div class:zoomed={zoom} class="canvas-wrap">
-    <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-    <canvas bind:this={canvas} tabindex="0" {onkeydown} aria-label={'Harley-Davidson V-Rod, ' + views[view].name} aria-busy={!ready && !failed}
-      onpointerdown={event => { pointerStart = event.clientX }}
-      onpointerup={event => { const distance = event.clientX - pointerStart; if (Math.abs(distance) > 45) turn(distance < 0 ? 1 : -1) }}
-    ></canvas>
-  </div>
-  {#if !ready && !failed}<div class="viewer-loading" role="status">Готовим мотоцикл<span></span></div>{/if}
-  {#if failed}
-    <div class="viewer-error" role="alert"><ImageOff size={24} /><p>Не удалось загрузить ракурс</p><button onclick={() => retry++}>Повторить</button></div>
-  {/if}
-
-  <div class="stage-nav">
-    <button class="icon-button" aria-label="Предыдущий ракурс" onclick={() => turn(-1)}><ArrowLeft size={18} /></button>
-    <div class="view-dots" role="group" aria-label="Ракурсы">
-      {#each views as angle, index}
-        <button class:active={view === index} aria-label={angle.name} aria-pressed={view === index} onclick={() => view = index}><span></span></button>
+  <div class="bay-tools">
+    <div class="scene-switch" role="group" aria-label="Где стоит мотоцикл">
+      {#each environments as item}
+        <button class:active={environment === item.id} aria-pressed={environment === item.id} onclick={() => environment = item.id}>{item.name}</button>
       {/each}
     </div>
-    <button class="icon-button" aria-label="Следующий ракурс" onclick={() => turn(1)}><ArrowRight size={18} /></button>
-    <span class="view-name" aria-live="polite">{views[view].name}</span>
+    <button class="tool-button close-up" aria-pressed={close} aria-label={close ? 'Показать мотоцикл целиком' : 'Подойти ближе'} title={close ? 'Целиком' : 'Ближе'} onclick={() => close = !close}>
+      {#if close}<Minimize2 size={17} />{:else}<Maximize2 size={17} />{/if}
+    </button>
+    <button class="tool-button" aria-label="Сохранить картинку сборки" title="Сохранить картинку" disabled={!ready} onclick={snapshot}><Camera size={17} /></button>
+  </div>
+
+  <div class="bay-frame" bind:this={frameBox}>
+    <div class="bay-fit" class:close style={fit.width ? `width:${fit.width}px;height:${fit.height}px` : 'width:100%;aspect-ratio:1536/1100'}>
+      <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+      <canvas bind:this={canvas} tabindex="0" {onkeydown}
+        aria-label={'Harley-Davidson V-Rod, ' + views[view].name.toLowerCase() + '. Стрелки влево и вправо поворачивают стенд'} aria-busy={!ready && !failed}
+        onpointerdown={event => { pointerStart = event.clientX }}
+        onpointerup={event => { const distance = event.clientX - pointerStart; if (Math.abs(distance) > 45) turn(distance < 0 ? 1 : -1) }}
+      ></canvas>
+    </div>
+    {#if !ready && !failed}<div class="bay-status" role="status">Выкатываем мотоцикл</div>{/if}
+    {#if failed}
+      <div class="bay-status error" role="alert"><ImageOff size={22} /><p>Ракурс не загрузился. Проверьте соединение.</p><button onclick={() => retry++}>Загрузить снова</button></div>
+    {/if}
+  </div>
+
+  <div class="turntable">
+    <button class="turn-button" aria-label="Повернуть стенд влево" onclick={() => turn(-1)}><ChevronLeft size={20} /></button>
+    <div class="dial" role="group" aria-label="Поворотный стенд: где стоит камера">
+      <svg viewBox="0 0 600 92" aria-hidden="true">
+        <ellipse cx={ring.cx} cy={ring.cy} rx={ring.rx} ry={ring.ry} class="ring-line" />
+        <ellipse cx={ring.cx} cy={ring.cy} rx={ring.rx - 22} ry={ring.ry - 6} class="ring-inner" />
+        {#each ticks as tick}
+          <line x1={tick.inner.x} y1={tick.inner.y} x2={tick.outer.x} y2={tick.outer.y} class:major={tick.major} class="ring-tick" />
+        {/each}
+        <line x1={ring.cx} y1={ring.cy} x2={onRing(views[view].bearing).x} y2={onRing(views[view].bearing).y} class="ring-needle" />
+        <circle cx={ring.cx} cy={ring.cy} r="3" class="ring-hub" />
+      </svg>
+      {#each views as angle, index}
+        {@const point = onRing(angle.bearing)}
+        <button class="camera-node" class:active={view === index} class:far={angle.bearing > 90 && angle.bearing < 270}
+          style={`left:${point.x / 6}%;top:${point.y / .92}%`} aria-pressed={view === index} aria-label={angle.name}
+          onclick={() => view = index}><span class="node-dot"></span><span class="node-label">{angle.bearing}°</span></button>
+      {/each}
+    </div>
+    <button class="turn-button" aria-label="Повернуть стенд вправо" onclick={() => turn(1)}><ChevronRight size={20} /></button>
+    <p class="view-caption" aria-live="polite">{views[view].name}</p>
   </div>
 </div>

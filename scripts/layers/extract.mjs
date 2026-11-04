@@ -22,8 +22,34 @@ async function aligned(basePath, editPath, ignoreBoxes) {
   return { base, transform, B: pixels(base.canvas).data, E: pixels(warp(edit.canvas, transform)).data, editSize: [edit.width, edit.height] }
 }
 
-export async function extractMask(basePath, editPath) {
-  const { base, transform, B, E } = await aligned(basePath, editPath, [])
+/** @param sourcePath when the mask was painted over an edit (a new exhaust or wheel), that edit:
+ *  its pixels, not the base's, decide what is opaque and what colour family a pixel belongs to. */
+export async function extractMask(basePath, editPath, sourcePath = null, sourceBoxes = [], { perBox = false } = {}) {
+  let { base, transform, B: baseData, E } = await aligned(basePath, editPath, [])
+  let B = baseData
+  if (sourcePath) {
+    // A mask painted over an edit: align it to that edit inside the part's area first
+    // (Astra may redraw the part a few pixels off), then carry both onto the base.
+    const source = await load(sourcePath), mask = await load(editPath)
+    const toBase = register(base.canvas, source.canvas, sourceBoxes)
+    const local = register(source.canvas, mask.canvas, [], sourceBoxes.length ? sourceBoxes : null)
+    const maskOnSource = warp(mask.canvas, local)
+    E = pixels(warp(maskOnSource, toBase)).data
+    B = pixels(warp(source.canvas, toBase)).data
+    transform = local
+    if (perBox) {
+      // Same per-wheel alignment as extractLayer, so mask and layer stay in register.
+      for (const box of sourceBoxes) {
+        const t = register(base.canvas, source.canvas, [], [box])
+        const Eb = pixels(warp(maskOnSource, t)).data, Bb = pixels(warp(source.canvas, t)).data
+        const [l, tp, r, b] = box
+        for (let y = Math.max(0, tp); y < Math.min(H, b); y++) for (let x = Math.max(0, l); x < Math.min(W, r); x++) {
+          const k = (y * W + x) * 4
+          for (let c = 0; c < 4; c++) { E[k + c] = Eb[k + c]; B[k + c] = Bb[k + c] }
+        }
+      }
+    }
+  }
   const paint = new Float32Array(W * H), leather = new Float32Array(W * H), wheels = new Float32Array(W * H)
   for (let i = 0; i < W * H; i++) {
     if (B[i * 4 + 3] < 8) continue
@@ -74,8 +100,24 @@ export async function extractMask(basePath, editPath) {
 }
 
 /** @param layerMaterials optional mask made from the edit itself (already aligned to the base): exact weights inside the layer. */
-export async function extractLayer(basePath, editPath, boxes, materials, layerMaterials = null) {
+export async function extractLayer(basePath, editPath, boxes, materials, layerMaterials = null, { tight = false, perBox = false } = {}) {
   const { base, transform, B, E } = await aligned(basePath, editPath, boxes)
+  if (perBox) {
+    // Astra can move each wheel a little differently from the rest of the frame:
+    // align every box on its own (the tyre outline is a strong, unchanged edge).
+    const edit = await load(editPath)
+    transform.local = []
+    for (const box of boxes) {
+      const local = register(base.canvas, edit.canvas, [], [box])
+      transform.local.push(local)
+      const P = pixels(warp(edit.canvas, local)).data
+      const [l, t, r, b] = box
+      for (let y = Math.max(0, t); y < Math.min(H, b); y++) for (let x = Math.max(0, l); x < Math.min(W, r); x++) {
+        const k = (y * W + x) * 4
+        E[k] = P[k]; E[k + 1] = P[k + 1]; E[k + 2] = P[k + 2]; E[k + 3] = P[k + 3]
+      }
+    }
+  }
   const M = materials ? pixels(materials).data : null
   const LM = layerMaterials ? pixels(layerMaterials).data : null
 
@@ -92,14 +134,41 @@ export async function extractLayer(basePath, editPath, boxes, materials, layerMa
     const diff = Math.abs(sb[0][i] - se[0][i]) + Math.abs(sb[1][i] - se[1][i]) + Math.abs(sb[2][i] - se[2][i])
     if (diff > 70 || Math.abs(sb[3][i] - se[3][i]) > 50) changed[i] = 1
   }
-  // One solid part: close gaps, drop noise, grow a little.
-  let core = morph(morph(changed, 10), -10)
-  core = despeckle(core, 600)
-  core = morph(core, 4)
+  // Exact per-pixel difference, to tell a real part pixel from an unchanged one.
+  const rawDiff = i => Math.abs(B[i * 4] - E[i * 4]) + Math.abs(B[i * 4 + 1] - E[i * 4 + 1]) + Math.abs(B[i * 4 + 2] - E[i * 4 + 2])
+  // A wheel rim seen through the part, as the edit's own (locally aligned) mask says,
+  // a little inside its edge so antialiased pipe borders stay with the pipe.
+  let deepRim = null
+  if (LM) {
+    deepRim = new Float32Array(W * H)
+    for (let i = 0; i < W * H; i++) deepRim[i] = LM[i * 4 + 2] > 128 ? 1 : 0
+    deepRim = morph(deepRim, -3)
+  }
+  const rimBehind = i => !!deepRim && deepRim[i] > 0
+  let core
+  if (tight) {
+    // Only the part itself, never a wheel rim or empty space seen through it:
+    // whatever lies behind comes from the layers drawn before this one.
+    const behind = i => rimBehind(i) || E[i * 4 + 3] < 128
+    for (let i = 0; i < W * H; i++) {
+      // Black pipe over a black rim barely changes colour, but the masks tell:
+      // the base had rim here and the edit no longer does, so the part covers it.
+      if (M && LM && inBoxes(i % W, (i / W) | 0, boxes) && M[i * 4 + 2] > 128 && LM[i * 4 + 2] < 64) changed[i] = 1
+      if (behind(i)) changed[i] = 0
+    }
+    // Black pipe over black swingarm or hub barely changes either: close those holes.
+    core = despeckle(morph(morph(changed, 8), -8), 150)
+    core = morph(core, 2)
+    for (let i = 0; i < W * H; i++) if (behind(i)) core[i] = 0
+  } else {
+    // One solid part: close gaps, drop noise, grow a little.
+    core = despeckle(morph(morph(changed, 10), -10), 600)
+    core = morph(core, 4)
+  }
   for (let i = 0; i < W * H; i++) if (!inBoxes(i % W, (i / W) | 0, boxes)) core[i] = 0
   // Soft blend weight inside a hard cut: the edge band is pre-mixed with the base,
   // so replacing the cut region reproduces the base exactly at the border (no halo).
-  const weight = blur(core, 4)
+  const weight = blur(core, tight ? 2 : 4)
 
   let l = W, t = H, r = -1, b = -1, area = 0
   for (let i = 0; i < W * H; i++) {
@@ -116,6 +185,16 @@ export async function extractLayer(basePath, editPath, boxes, materials, layerMa
     const i = y * W + x, w = weight[i]
     if (w <= .002) continue
     const k = i * 4, o = ((y - t) * bw + (x - l)) * 4
+    if (tight) {
+      // Drawn OVER whatever is below: the soft edge blends into the layers underneath
+      // (a new wheel), not into the original photo.
+      for (let c = 0; c < 3; c++) ci.data[o + c] = E[k + c]
+      ci.data[o + 3] = E[k + 3] * w
+      const rim = rimBehind(i) ? 1 : 0
+      for (let c = 0; c < 3; c++) mi.data[o + c] = LM ? (c === 2 ? LM[k + c] * rim : LM[k + c]) : 0
+      mi.data[o + 3] = 255 * w
+      continue
+    }
     const ab = B[k + 3] / 255, ae = E[k + 3] / 255
     const a = ab * (1 - w) + ae * w
     for (let c = 0; c < 3; c++) ci.data[o + c] = a > 0 ? (B[k + c] * ab * (1 - w) + E[k + c] * ae * w) / a : 0
@@ -139,12 +218,12 @@ export async function extractLayer(basePath, editPath, boxes, materials, layerMa
   q.drawImage(base.canvas, 0, 0)
   const composite = createCanvas(W, H), c = composite.getContext('2d')
   c.drawImage(base.canvas, 0, 0)
-  c.globalCompositeOperation = 'destination-out'; c.drawImage(meta, l, t)
+  if (!tight) { c.globalCompositeOperation = 'destination-out'; c.drawImage(meta, l, t) }
   c.globalCompositeOperation = 'source-over'; c.drawImage(content, l, t)
   q.drawImage(composite, W, 0)
   q.strokeStyle = '#e0457b'; q.lineWidth = 3
   for (const [bl, bt, br, bb] of boxes) q.strokeRect(W + bl, bt, br - bl, bb - bt)
-  return { content, meta, qa, box: [l, t, bw, bh], area, transform }
+  return { content, meta, qa, box: [l, t, bw, bh], area, transform, over: tight }
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

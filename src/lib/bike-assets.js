@@ -6,7 +6,7 @@ import manifest from './vrod-layers.json'
 export { frameSize } from './bike-renderer.js'
 export { cameras } from './cameras.js'
 
-/** @typedef {{ materials: string | null, stats: Record<string, { luminance: number, pixels: number } | null>, layers: Record<string, { box: number[] }> }} ViewAssets */
+/** @typedef {{ materials: string | null, stats: Record<string, { luminance: number, pixels: number } | null>, layers: Record<string, { box: number[], over?: boolean }> }} ViewAssets */
 /** @type {Record<string, ViewAssets>} */
 export const viewAssets = manifest.views
 

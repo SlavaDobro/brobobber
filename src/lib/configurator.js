@@ -26,6 +26,13 @@ export const wheels = [
   { id: 'polished', name: 'Полированный', description: 'Зеркальный алюминий с бликами.', hex: '#c4c7c9', swatch: '#c4c7c9', finish: 'polished', price: 44000 },
 ]
 
+export const rims = [
+  { id: 'blade', name: 'Blade', description: 'Исходные диски: семь овальных окон.', layer: null, price: 0 },
+  { id: 'disc', name: 'Монолит', description: 'Литой диск без окон — как у первых V-Rod 2002 года.', layer: 'wheels-disc', price: 118000 },
+  { id: 'twist', name: 'Twist', description: 'Пять тонких спиц, закрученных как лопатки турбины.', layer: 'wheels-twist', price: 112000 },
+  { id: 'split', name: 'Split', description: 'Десять тонких спиц парами, спортивная ковка.', layer: 'wheels-split', price: 104000 },
+]
+
 export const exhausts = [
   { id: 'short', name: 'Short Cut', description: 'Исходный выхлоп. Короткие трубы из нержавеющей стали.', layer: null, price: 0 },
   { id: 'drag', name: 'Drag Black', description: 'Длинные прямые трубы в чёрной керамике, косой срез.', layer: 'exhaust-drag', price: 89000 },
@@ -37,20 +44,21 @@ export const accessories = [
 ]
 
 export const categories = [
-  { id: 'paint', name: 'Цвет', title: 'Цвет кузова' },
-  { id: 'leather', name: 'Кожа', title: 'Отделка сиденья' },
-  { id: 'wheels', name: 'Диски', title: 'Цвет дисков' },
-  { id: 'exhaust', name: 'Выхлоп', title: 'Выхлопная система' },
-  { id: 'accessories', name: 'Детали', title: 'Аксессуары' },
+  { id: 'paint', name: 'Кузов', title: 'Цвет кузова', hint: 'Бак, боковины и оба крыла.' },
+  { id: 'leather', name: 'Сиденье', title: 'Кожа сиденья', hint: 'Ромбовидная прострочка остаётся.' },
+  { id: 'wheels', name: 'Колёса', title: 'Диски', hint: 'Сначала форма, потом цвет.' },
+  { id: 'exhaust', name: 'Выхлоп', title: 'Выхлопная система', hint: 'Трубы справа, слева их не видно.' },
+  { id: 'accessories', name: 'Детали', title: 'Аксессуары', hint: 'Можно добавить несколько.' },
 ]
 
+// bearing: where the camera stands around the motorcycle, 0° = straight ahead of the front wheel.
 export const views = [
-  { id: 'right', name: 'Правый профиль', short: 'Справа' },
-  { id: 'front-quarter', name: 'Спереди, три четверти', short: 'Перед ¾' },
-  { id: 'front', name: 'Вид спереди', short: 'Анфас' },
-  { id: 'left', name: 'Левый профиль', short: 'Слева' },
-  { id: 'rear', name: 'Вид сзади', short: 'Сзади' },
-  { id: 'rear-quarter', name: 'Сзади, три четверти', short: 'Корма ¾' },
+  { id: 'right', name: 'Правый профиль', short: 'Справа', bearing: 90 },
+  { id: 'front-quarter', name: 'Спереди справа', short: 'Перед ¾', bearing: 45 },
+  { id: 'front', name: 'Спереди', short: 'Анфас', bearing: 0 },
+  { id: 'left', name: 'Левый профиль', short: 'Слева', bearing: 270 },
+  { id: 'rear', name: 'Сзади', short: 'Корма', bearing: 180 },
+  { id: 'rear-quarter', name: 'Сзади справа', short: 'Корма ¾', bearing: 135 },
 ]
 
 // Backdrops behind the motorcycle. focusY keeps the floor line of the photo under the tyres.
@@ -61,10 +69,10 @@ export const environments = [
 ]
 
 export const basePrice = 149000
-/** @typedef {{ paint: string, leather: string, wheels: string, exhaust: string, accessories: string[] }} Configuration */
+/** @typedef {{ paint: string, leather: string, rims: string, wheels: string, exhaust: string, accessories: string[] }} Configuration */
 /** @type {Configuration} */
-export const defaults = { paint: 'petrol', leather: 'cognac', wheels: 'gloss-black', exhaust: 'short', accessories: [] }
-export const storageKey = 'brobobber-vrod-v2'
+export const defaults = { paint: 'petrol', leather: 'cognac', rims: 'blade', wheels: 'gloss-black', exhaust: 'short', accessories: [] }
+export const storageKey = 'brobobber-vrod-v3'
 
 /** @template {{ id: string }} T @param {T[]} list @param {unknown} id @returns {T} */
 export const pick = (list, id) => list.find(item => item.id === id) || list[0]
@@ -79,6 +87,7 @@ export function normalizeConfiguration(value) {
   return {
     paint: valid(paints, 'paint'),
     leather: valid(leathers, 'leather'),
+    rims: valid(rims, 'rims'),
     wheels: valid(wheels, 'wheels'),
     exhaust: valid(exhausts, 'exhaust'),
     accessories: accessories.filter(item => extras.includes(item.id)).map(item => item.id),
@@ -87,7 +96,7 @@ export function normalizeConfiguration(value) {
 
 export function readConfiguration() {
   const params = new URLSearchParams(window.location.search)
-  if (['paint', 'leather', 'wheels', 'exhaust', 'accessories'].some(key => params.has(key))) {
+  if (['paint', 'leather', 'rims', 'wheels', 'exhaust', 'accessories'].some(key => params.has(key))) {
     return normalizeConfiguration(Object.fromEntries(params))
   }
   try {
@@ -113,7 +122,8 @@ export function lineItems(configuration) {
   return [
     { category: 'Цвет кузова', item: pick(paints, configuration.paint) },
     { category: 'Сиденье', item: pick(leathers, configuration.leather) },
-    { category: 'Диски', item: pick(wheels, configuration.wheels) },
+    { category: 'Диски', item: pick(rims, configuration.rims) },
+    { category: 'Цвет дисков', item: pick(wheels, configuration.wheels) },
     { category: 'Выхлоп', item: pick(exhausts, configuration.exhaust) },
     ...accessories.filter(item => configuration.accessories.includes(item.id)).map(item => ({ category: 'Аксессуар', item })),
   ]
@@ -126,7 +136,10 @@ export function totalPrice(configuration) {
 
 /** Layers to draw, in a fixed order so results never depend on click order. @param {Configuration} configuration */
 export function selectedLayers(configuration) {
+  // Wheels first: the exhaust passes in front of the rear wheel and must stay on top.
   const layers = []
+  const rim = pick(rims, configuration.rims)
+  if (rim.layer) layers.push(rim.layer)
   const exhaust = pick(exhausts, configuration.exhaust)
   if (exhaust.layer) layers.push(exhaust.layer)
   for (const item of accessories) if (configuration.accessories.includes(item.id)) layers.push(item.layer)
@@ -135,7 +148,7 @@ export function selectedLayers(configuration) {
 
 /** Stable work-order number: the same build always gets the same number. @param {Configuration} configuration */
 export function buildNumber(configuration) {
-  const text = JSON.stringify([configuration.paint, configuration.leather, configuration.wheels, configuration.exhaust, [...configuration.accessories].sort()])
+  const text = JSON.stringify([configuration.paint, configuration.leather, configuration.rims, configuration.wheels, configuration.exhaust, [...configuration.accessories].sort()])
   let hash = 2166136261
   for (let i = 0; i < text.length; i++) hash = Math.imul(hash ^ text.charCodeAt(i), 16777619)
   return 'VR-' + String((hash >>> 0) % 9000 + 1000)

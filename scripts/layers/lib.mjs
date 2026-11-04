@@ -72,8 +72,9 @@ function boxMask(boxes, w, h) {
   return m
 }
 
-/** Finds scale + shift that best maps `moving` onto `fixed`. Coarse-to-fine grid search. */
-export function register(fixed, moving, ignoreBoxes = []) {
+/** Finds scale + shift that best maps `moving` onto `fixed`. Coarse-to-fine grid search.
+ * @param onlyBoxes when given, only these areas are compared (a local alignment). */
+export function register(fixed, moving, ignoreBoxes = [], onlyBoxes = null) {
   let best = { scale: 1, dx: 0, dy: 0, error: Infinity }
   const levels = [
     { w: 192, h: 128, scales: [.96, .97, .98, .99, 1, 1.01, 1.02, 1.03, 1.04], range: 40, step: 8 },
@@ -83,7 +84,11 @@ export function register(fixed, moving, ignoreBoxes = []) {
   ]
   for (const [index, level] of levels.entries()) {
     const target = signature(fixed, level.w, level.h)
-    const ignore = boxMask(ignoreBoxes, level.w, level.h)
+    let ignore = boxMask(ignoreBoxes, level.w, level.h)
+    if (onlyBoxes) {
+      const keep = boxMask(onlyBoxes, level.w, level.h)
+      ignore = keep.map((inside, i) => (inside && !(ignore && ignore[i])) ? 0 : 1)
+    }
     const centre = best
     // Errors from different resolutions are not comparable: each level starts fresh around the previous winner.
     best = { ...centre, error: Infinity }
