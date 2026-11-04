@@ -48,14 +48,27 @@
   }
 
   /** Tint only the chromatic bodywork and leather, retaining neutral mechanical parts and highlights.
-   * @param {ImageData} frame @param {string} bodyColor @param {string} leatherColor */
-  function tintMaterials(frame, bodyColor, leatherColor) {
+   * @param {ImageData} frame @param {string} bodyColor @param {string} leatherColor @param {number[]} seatBounds */
+  function tintMaterials(frame, bodyColor, leatherColor, seatBounds) {
     const body = rgb(bodyColor)
     const leather = rgb(leatherColor)
     const pixels = frame.data
     for (let index = 0; index < pixels.length; index += 4) {
       if (!pixels[index + 3]) continue
       const r = pixels[index], g = pixels[index + 1], b = pixels[index + 2]
+      // Desaturate warm highlights and stitching inside the saddle as well as its base colour.
+      // Bounds are expressed in a 768x512 frame and exclude warm metal elsewhere on the bike.
+      const x = (index / 4 % frame.width) * 768 / frame.width
+      const y = Math.floor(index / 4 / frame.width) * 512 / frame.height
+      if (leatherColor === '#29292a' && x >= seatBounds[0] && x <= seatBounds[2]
+        && y >= seatBounds[1] && y <= seatBounds[3] && r - g > 4 && g - b > 3) {
+        const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b
+        const tone = luminance * 0.34 + Math.max(0, luminance - 150) * 0.35
+        pixels[index] = tone
+        pixels[index + 1] = tone
+        pixels[index + 2] = tone + 1
+        continue
+      }
       const bodyStrength = Math.min(g, b) - r
       const leatherStrength = r - Math.max(g, b)
       let target, strength, shade, reflection
@@ -80,7 +93,9 @@
 
   $effect(() => {
     const selectedView = views[view]
-    const path = selectedView.axial ? '/images/vrod-axial.png' : source
+    // The exhaust is hidden in the left profile; share one frame to prevent wheel geometry changing.
+    const path = selectedView.axial ? '/images/vrod-axial.png'
+      : selectedView.frame === 3 ? '/images/vrod-short.png' : source
     const angle = selectedView.frame + (selectedView.axial ? axialRow * 2 : 0)
     const body = paint, leather = seat
     retry
@@ -100,7 +115,7 @@
         const context = buffer.getContext('2d', { willReadFrequently: true })
         if (!context) throw new Error('Canvas unavailable')
         context.drawImage(image, (angle % 2) * width, Math.floor(angle / 2) * height, width, height, 0, 0, width, height)
-        frame = tintMaterials(context.getImageData(0, 0, width, height), body, leather)
+        frame = tintMaterials(context.getImageData(0, 0, width, height), body, leather, selectedView.seatBounds)
         if (cache.size >= 12) cache.delete(cache.keys().next().value)
         cache.set(key, frame)
       }

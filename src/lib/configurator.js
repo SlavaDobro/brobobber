@@ -16,12 +16,12 @@ export const exhausts = [
 ]
 
 export const views = [
-  { name: 'Правый профиль', short: 'Справа', frame: 0, axial: false, bearing: 90 },
-  { name: 'Спереди, три четверти', short: 'Перед ¾', frame: 1, axial: false, bearing: 45 },
-  { name: 'Вид прямо спереди', short: 'Анфас', frame: 0, axial: true, bearing: 0 },
-  { name: 'Левый профиль', short: 'Слева', frame: 3, axial: false, bearing: -90 },
-  { name: 'Вид прямо сзади', short: 'Сзади', frame: 1, axial: true, bearing: -180 },
-  { name: 'Сзади, три четверти', short: 'Корма ¾', frame: 2, axial: false, bearing: -225 },
+  { name: 'Правый профиль', short: 'Справа', frame: 0, axial: false, bearing: 90, seatBounds: [120, 155, 335, 245] },
+  { name: 'Спереди, три четверти', short: 'Перед ¾', frame: 1, axial: false, bearing: 45, seatBounds: [125, 155, 320, 245] },
+  { name: 'Вид прямо спереди', short: 'Анфас', frame: 0, axial: true, bearing: 0, seatBounds: [310, 130, 525, 180] },
+  { name: 'Левый профиль', short: 'Слева', frame: 3, axial: false, bearing: -90, seatBounds: [410, 150, 650, 235] },
+  { name: 'Вид прямо сзади', short: 'Сзади', frame: 1, axial: true, bearing: -180, seatBounds: [225, 95, 425, 195] },
+  { name: 'Сзади, три четверти', short: 'Корма ¾', frame: 2, axial: false, bearing: -225, seatBounds: [155, 125, 390, 225] },
 ]
 
 export const defaults = { paint: 'graphite', seat: 'black', exhaust: 'twin' }

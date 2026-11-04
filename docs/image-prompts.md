@@ -1,5 +1,29 @@
 # Additional V-Rod views
 
+## Latest change: remove plate bracket
+
+At the user's request, removed the protruding plate and bracket from both left-profile images and its visible edge in the axial sheet. This supersedes the earlier plate-restoration prompts below. Final files are the three `public/images/vrod-*.png` atlases. Built-in ImageGen mode.
+
+### Main sheets
+
+Strict localized object removal from this transparent 1536x1024 2x2 motorcycle atlas. In the BOTTOM RIGHT cell (left-side profile), remove ONLY the protruding license-plate panel and its mounting bracket behind the rear wheel, at the far right edge of the motorcycle. It is the silver/white diagonal narrow rectangle sticking out next to the rear tire and its small dark mounting arm. Restore the tire edge where obscured and true transparent alpha outside the tire. Keep the repaired rear wheel, blade spokes, small belt pulley, belt, swingarm, shock absorber, all wheel openings and their alpha, every other bike part and all other three cells exactly unchanged. Do NOT remove belt or swingarm. Do not add any substitute panel, lights or parts. Preserve exact composition, scale, positions, 1536x1024 dimensions, 2x2 grid, all colors and genuinely transparent alpha including wheel openings.
+
+### Axial sheet
+
+Strict localized removal. Edit this transparent 1536x1024 2x2 V-Rod atlas. Remove ONLY the little vertical license plate bracket/panel visible edge-on at the outer VIEWER LEFT side of both REAR-view motorcycles in the RIGHT column, beside the upper rear shock. It is the narrow vertical black rectangle at approximately x980 y210 and x980 y722. Restore small mechanical/transparent area behind it. If the same plate edge is visible at the outer VIEWER RIGHT of the front-view bikes, remove only that edge too. Preserve shock absorbers, foot pegs, wheel and tire sizes, exact front tire width, two right-side exhausts, all colors, leather, tank, headlight, cameras, every position, 2x2 layout and all other parts exactly unchanged. No added parts. Maintain genuine transparent alpha and 1536x1024 dimensions.
+
+## Wheel transparency and drive repair
+
+Built-in ImageGen edited `public/images/vrod-twin.png` and `public/images/vrod-short.png` to repair the left-profile rear wheel/pulley and remove opaque background fills between the Short Cut wheel spokes. Black leather highlights are now desaturated within per-view saddle bounds by the viewer, preserving alpha and avoiding broad changes to surrounding metal.
+
+### Twin Black repair prompt
+
+Precise localized product-image repair. EDIT TARGET is this transparent 1536x1024 2x2 motorcycle atlas. Change ONLY the REAR WHEEL ASSEMBLY in the BOTTOM-RIGHT cell (left side profile, motorcycle facing left). The rear wheel has malformed overlapping melted rings and ambiguous spokes. Repair it as one physically coherent black alloy rear wheel: perfectly concentric rim and tire, clean broad curved blade spokes consistent with the front wheel, a smaller circular belt pulley centered on the rear axle, a toothed drive belt running from the front drive sprocket tangentially around that rear pulley. Keep the swingarm and shock attachment readable. The wheel openings must be genuinely transparent wherever no wheel/drive part occludes the background; no painted black or grey fill in empty holes. Keep current rear tire size, center, camera, placement and orientation exactly. Preserve all bodywork, headlight, seat, exhaust, plate bracket and ALL OTHER THREE CELLS exactly unchanged. Do not add any extra circles, sprockets, pipes, fork parts or text. Maintain exact 1536x1024 canvas and 2x2 layout; each cell 768x512; genuine transparent alpha background.
+
+### Short Cut repair prompt
+
+Precise alpha-mask and rear-wheel repair. Image 1 is the EDIT TARGET: transparent 1536x1024 2x2 V-Rod short stainless exhaust atlas. Image 2 is REFERENCE: same bike with long black pipes and a repaired left-profile rear wheel. (1) Fix alpha in EVERY wheel in image 1: the empty open spaces BETWEEN the alloy wheel spokes must have genuine alpha=0, allowing any webpage background to show through. Currently they are wrongly filled opaque dark charcoal. Remove ONLY these unwanted background fills, not the physical black spokes, rim, tire, brake rotor, swingarm or belt. No white/grey replacement paint: actual transparency inside the wheel holes, matching reference 2. (2) In bottom-right LEFT PROFILE cell, match the repaired rear wheel and small concentric belt pulley from reference 2, including correct tangent belt path and transparent spoke openings. Keep the left-profile motorcycle otherwise identical to reference 2 because right-side exhaust is hidden. Keep all SHORT stainless exhausts from image 1 in the other three cells. Preserve ALL remaining image1 geometry, scale, location, tank, saddle, headlamp, tires and framing. Do not change color or introduce new parts. Exact same 1536x1024, four 768x512 cells, no text, genuine transparent alpha everywhere outside the physical motorcycle including enclosed wheel openings. The result will be displayed on a PALE background, so opaque dark blobs in empty holes are unacceptable.
+
 ## Visual review
 
 Reviewed all 12 source frames (six angles × two exhaust options). After user feedback, widened the front tire and fender. Updated all four main angles against the workshop reference to bring tank contour, saddle, wheel pattern and plate bracket closer to the reference. Derived Short Cut from the corrected Twin Black sheet with an exhaust-only edit, then aligned the axial views with the updated build. Paint and leather are recolored from these frames rather than regenerated for each selection.
