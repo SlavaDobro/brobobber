@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "codex": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["C:\\Users\\slava\\OneDrive\\Рабочий стол\\sait\\brobobber\\svelt-brobobber\\brobobber\\scripts\\codex-mcp\\server.mjs"],
+      "env": {
+        "CODEX_PROJECT_DIR": "C:\\Users\\slava\\OneDrive\\Рабочий стол\\sait\\brobobber\\svelt-brobobber\\brobobber"
+      }
+    }
+  }
+}
