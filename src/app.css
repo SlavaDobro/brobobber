@@ -69,14 +69,16 @@ h1 span { color: #7b8679; }
 .view-navigation { display: flex; align-items: center; gap: 14px; }
 .view-counter { font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .view-counter > span { color: #7b8778; font-weight: 400; }
-.angle-tabs { display: flex; justify-content: center; gap: 8px; padding: 14px 20px 20px; border-top: 1px solid #d8dfd1; position: relative; }
-.angle-tabs button { display: flex; justify-content: center; align-items: center; gap: 9px; min-height: 38px; padding: 7px 17px; border-radius: 5px; color: #6b7965; font-size: 12px; border: 1px solid transparent; }
-.angle-tabs button.active { color: #2d4735; border-color: #b2bfaa; background: #f7f9f1; }
+.angle-tabs { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; padding: 14px 20px 20px; border-top: 1px solid #d8dfd1; position: relative; }
+.angle-tabs button { position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 7px; min-height: 83px; padding: 10px 3px; border-radius: 5px; color: #64715f; font-size: 12px; border: 1px solid transparent; }
+.angle-tabs button.active { color: #2d4735; border-color: #a7b69e; background: #f7f9f1; }
 .angle-tabs button:hover { background: #f5f7ef; }
-.angle-marker { width: 15px; height: 7px; border: 1px solid currentColor; border-radius: 50%; transform: rotate(-25deg); opacity: .75; }
-.angle-tabs button:nth-child(2) .angle-marker { transform: rotate(40deg); }
-.angle-tabs button:nth-child(3) .angle-marker { transform: rotate(-60deg); }
-.angle-tabs button:nth-child(4) .angle-marker { transform: rotate(25deg); }
+.angle-number { position: absolute; left: 7px; top: 5px; font-size: 10px; font-variant-numeric: tabular-nums; opacity: .7; }
+.angle-compass { position: relative; width: 30px; height: 30px; border: 1px solid #b6c1af; border-radius: 50%; }
+.angle-compass::before { content: ''; position: absolute; width: 5px; height: 15px; left: 11px; top: 6px; border: 1px solid currentColor; border-radius: 3px; }
+.angle-compass > span { position: absolute; inset: -4px; transform: rotate(var(--bearing)); }
+.angle-compass > span::before { content: ''; position: absolute; width: 7px; height: 7px; border-radius: 50%; background: currentColor; left: calc(50% - 3.5px); top: -1px; box-shadow: 0 0 0 3px #edf1e7; }
+.angle-tabs button.active .angle-compass { border-color: #59744f; }
 .viewer-loading, .viewer-error { position: absolute; top: 44%; left: 50%; transform: translate(-50%, -50%); background: #f7f8f5f2; padding: 16px 24px; border: 1px solid var(--line); border-radius: 8px; font-size: 13px; z-index: 3; text-align: center; }
 .viewer-loading span { display: block; width: 35px; height: 2px; background: var(--green); margin: 12px auto 0; animation: breathe 1s ease infinite alternate; }
 @keyframes breathe { to { opacity: .2; transform: scaleX(.4); } }
@@ -192,7 +194,6 @@ h1 span { color: #7b8679; }
   .viewer-bottom { margin-inline: 18px; }
   .angle-tabs { gap: 3px; padding-inline: 8px; }
   .angle-tabs button { padding-inline: 10px; }
-  .angle-marker { display: none; }
   .studio-note { grid-template-columns: 1fr 1.2fr; gap: 20px; }
   .studio-note button { grid-column: 2; width: fit-content; }
 }
@@ -220,8 +221,8 @@ h1 span { color: #7b8679; }
   .view-direction { font-size: 12px; gap: 6px; max-width: 155px; }
   .view-navigation { gap: 8px; }
   .view-counter { font-size: 12px; }
-  .angle-tabs { padding: 10px 10px 12px; }
-  .angle-tabs button { flex: 1; font-size: 12px; min-height: 42px; }
+  .angle-tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 10px 10px 12px; }
+  .angle-tabs button { font-size: 12px; min-height: 76px; }
   .bike-specs { padding: 17px 20px; }
   .bike-specs strong { font-size: 22px; }
   .bike-specs > div > span { font-size: 12px; }

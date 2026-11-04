@@ -4,8 +4,8 @@
   import { ArrowLeft, ArrowRight, ZoomIn, ZoomOut, RotateCcw, ImageOff } from '@lucide/svelte'
   import { views } from './configurator'
 
-  /** @type {{ paint: string, seat: string, source: string, view?: number }} */
-  let { paint, seat, source, view = $bindable(0) } = $props()
+  /** @type {{ paint: string, seat: string, source: string, axialRow: number, view?: number }} */
+  let { paint, seat, source, axialRow, view = $bindable(0) } = $props()
   /** @type {HTMLCanvasElement} */
   let canvas
   let ready = $state(false)
@@ -79,7 +79,10 @@
   }
 
   $effect(() => {
-    const path = source, angle = view, body = paint, leather = seat
+    const selectedView = views[view]
+    const path = selectedView.axial ? '/images/vrod-axial.png' : source
+    const angle = selectedView.frame + (selectedView.axial ? axialRow * 2 : 0)
+    const body = paint, leather = seat
     retry
     let cancelled = false
     ready = false
@@ -142,13 +145,17 @@
     <div class="view-direction"><span class="live-dot"></span><span aria-live="polite">{views[view].name}</span></div>
     <div class="view-navigation">
       <button class="icon-button" aria-label="Предыдущий ракурс" onclick={() => turn(-1)}><ArrowLeft size={18} /></button>
-      <span class="view-counter">0{view + 1}<span> / 04</span></span>
+      <span class="view-counter">{String(view + 1).padStart(2, '0')}<span> / {String(views.length).padStart(2, '0')}</span></span>
       <button class="icon-button" aria-label="Следующий ракурс" onclick={() => turn(1)}><ArrowRight size={18} /></button>
     </div>
   </div>
-  <div class="angle-tabs" aria-label="Ракурсы мотоцикла">
+  <div class="angle-tabs" role="group" aria-label="Шесть ракурсов мотоцикла">
     {#each views as angle, index}
-      <button class:active={view === index} aria-pressed={view === index} onclick={() => view = index}><span class="angle-marker"></span>{angle.short}</button>
+      <button class:active={view === index} aria-label={angle.name} aria-pressed={view === index} onclick={() => view = index}>
+        <span class="angle-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+        <span class="angle-compass" style={'--bearing:' + angle.bearing + 'deg'} aria-hidden="true"><span></span></span>
+        <span>{angle.short}</span>
+      </button>
     {/each}
   </div>
 </div>

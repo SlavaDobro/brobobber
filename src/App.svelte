@@ -84,7 +84,7 @@
 
 <svelte:head>
   <title>V-Rod — собери свой характер | BROBOBBER</title>
-  <meta name="description" content="Визуальная студия Brobobber. Настрой цвет, сиденье и выхлоп V-Rod, посмотри сборку с четырёх сторон и сохрани свою идею." />
+  <meta name="description" content="Визуальная студия Brobobber. Настрой цвет, сиденье и выхлоп V-Rod, посмотри сборку с шести ракурсов и сохрани свою идею." />
 </svelte:head>
 
 <a class="skip-link" href="#configuration">Перейти к настройкам</a>
@@ -108,7 +108,7 @@
 
   <div class="workspace">
     <section class="showroom" aria-label="Визуализация мотоцикла">
-      <BikeViewer paint={paint.hex} seat={seat.hex} source={exhaust.image} bind:view />
+      <BikeViewer paint={paint.hex} seat={seat.hex} source={exhaust.image} axialRow={exhaust.axialRow} bind:view />
       <div class="bike-specs">
         <div><strong>1 130 <span>см³</span></strong><span>V-twin Revolution</span></div>
         <div><strong>115 <span>л. с.</span></strong><span>Характер в основе</span></div>
