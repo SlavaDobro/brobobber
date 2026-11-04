@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte'
-  import { ArrowUpRight, ArrowRight, Check, Asterisk, X, Copy, Download, RotateCcw, SlidersHorizontal, Bookmark, Info, ExternalLink } from '@lucide/svelte'
+  import { ArrowUpRight, ArrowRight, Check, Asterisk, X, Copy, Download, RotateCcw, SlidersHorizontal, Bookmark, Info } from '@lucide/svelte'
   import BikeViewer from './lib/BikeViewer.svelte'
   import { paints, seats, exhausts, defaults, storageKey, readConfiguration, configurationUrl, money, downloadFile } from './lib/configurator'
 
@@ -36,7 +36,6 @@
     '',
     configurationUrl(configuration),
   ].join('\n'))
-  let mailUrl = $derived('mailto:brobobber@mail.ru?subject=' + encodeURIComponent('Обсудить V-Rod — ' + buildName) + '&body=' + encodeURIComponent(specification))
 
   onMount(() => {
     initialized = true
@@ -90,14 +89,12 @@
 
 <a class="skip-link" href="#configuration">Перейти к настройкам</a>
 
-<header class="site-header">
-  <a class="wordmark" href="https://brobobber.moscow/" aria-label="Brobobber — действующий сайт мастерской">BROBOBBER<span class="wordmark-dot"></span></a>
+<header class="site-header" id="page-top">
+  <a class="wordmark" href="#page-top" aria-label="Brobobber — в начало конфигуратора">BROBOBBER<span class="wordmark-dot"></span></a>
   <nav aria-label="Основная навигация">
-    <a href="https://brobobber.moscow/">Мастерская</a>
-    <a href="https://brobobber.moscow/v-rod">Проект V-Rod <ArrowUpRight size={12} /></a>
-    <a class="current" href="/configurator" aria-current="page">Конфигуратор</a>
+    <a class="current" href="#configuration" aria-current="page">Конфигуратор V-Rod</a>
   </nav>
-  <a class="header-contact" href="tel:+79254852661">Обсудить проект <ArrowUpRight size={17} /></a>
+  <button class="header-contact" onclick={() => summaryDialog.showModal()}>Моя сборка <ArrowRight size={17} /></button>
 </header>
 
 <main>
@@ -116,7 +113,6 @@
         <div><strong>1 130 <span>см³</span></strong><span>V-twin Revolution</span></div>
         <div><strong>115 <span>л. с.</span></strong><span>Характер в основе</span></div>
         <div><strong>300 <span>мм</span></strong><span>Заднее колесо проекта</span></div>
-        <a href="https://brobobber.moscow/v-rod" target="_blank" rel="noreferrer">Реальный проект<ArrowUpRight size={17} /></a>
       </div>
     </section>
 
@@ -182,18 +178,18 @@
 
   <section class="studio-note">
     <div class="studio-note-title"><Asterisk class="small-star" size={33} aria-hidden="true" /><h2>Из идеи — в металл.</h2></div>
-    <p>Это первый эскиз твоего кастома. Сохрани сборку, а мы обсудим посадку, детали и то, каким должен быть твой V-Rod.</p>
-    <button onclick={() => summaryDialog.showModal()}>Обсудить сборку <ArrowUpRight size={19} /></button>
+    <p>Это первый эскиз твоего кастома. Выбери детали, рассмотри мотоцикл с разных сторон и сохрани свою сборку.</p>
+    <button onclick={() => summaryDialog.showModal()}>Посмотреть сборку <ArrowRight size={19} /></button>
   </section>
 </main>
 
-<footer class="site-footer"><span>© {new Date().getFullYear()} BROBOBBER</span><span><Info size={13} />Изображения — сгенерированная визуальная концепция V-Rod</span><a href="https://brobobber.moscow/">На сайт мастерской <ExternalLink size={12} /></a></footer>
+<footer class="site-footer"><span>© {new Date().getFullYear()} BROBOBBER</span><span><Info size={13} />Изображения — сгенерированная визуальная концепция V-Rod</span><a href="#page-top">Наверх <ArrowUpRight size={12} /></a></footer>
 
 <dialog bind:this={summaryDialog} class="summary-dialog" aria-labelledby="summary-title">
   <div class="dialog-heading"><span class="wordmark">BROBOBBER<span class="wordmark-dot"></span></span><button class="icon-button" aria-label="Закрыть сборку" onclick={() => summaryDialog.close()}><X size={21} /></button></div>
   <p class="dialog-eyebrow">Harley-Davidson V-Rod</p>
   <h2 id="summary-title">{buildName}</h2>
-  <p class="dialog-intro">Твоя идея готова к обсуждению.</p>
+  <p class="dialog-intro">Твоя идея — в одной сборке. Сохрани выбранные детали или скопируй ссылку.</p>
   <dl class="specification-list">
     <div><dt>Цвет кузова</dt><dd><span class="mini-swatch" style={'background:' + paint.hex}></span>{paint.name}</dd></div>
     <div><dt>Сиденье</dt><dd>{seat.name}</dd></div>
@@ -201,9 +197,8 @@
     <div class="specification-total"><dt>Ориентир работ</dt><dd>{money(total)}</dd></div>
   </dl>
   <p class="dialog-disclaimer">Демонстрационная оценка. Мотоцикл не включён. Совместимость деталей, стоимость и сроки подтвердит мастерская.</p>
-  <a class="primary-button" href={mailUrl}>Написать в мастерскую <ArrowUpRight size={19} /></a>
-  <p class="email-note">Откроется почтовое приложение с вашей сборкой.</p>
-  <div class="dialog-actions"><button onclick={copyLink}><Copy size={16} />Скопировать ссылку</button><button onclick={saveSpecification}><Download size={16} />Скачать</button></div>
+  <button class="primary-button" onclick={saveSpecification}>Скачать спецификацию <Download size={19} /></button>
+  <div class="dialog-actions"><button onclick={copyLink}><Copy size={16} />Скопировать ссылку</button><button onclick={() => summaryDialog.close()}>Продолжить настройку</button></div>
   <p class="dialog-notice" role="status">{notice}</p>
 </dialog>
 
