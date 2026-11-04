@@ -49,16 +49,18 @@ function findCodexExe() {
 
 // ---------- running codex exec ----------
 
-function runCodex({ prompt, cwd, sessionId, model, sandbox, timeoutSec }) {
+function runCodex({ prompt, cwd, sessionId, model, sandbox, timeoutSec, images = [] }) {
   const exe = findCodexExe();
   const args = ["exec"];
+  // Attached images reach the model directly, so edits see the exact source pixels.
+  const attach = images.flatMap((file) => ["-i", file]);
   if (sessionId) {
     // resume has no -s/-C flags: sandbox goes through config, cwd through the process.
-    args.push("resume", "--json", "--skip-git-repo-check", "-c", `sandbox_mode="${sandbox}"`);
+    args.push("resume", "--json", "--skip-git-repo-check", "-c", `sandbox_mode="${sandbox}"`, ...attach);
     if (model) args.push("-m", model);
     args.push(sessionId, "-");
   } else {
-    args.push("--json", "--skip-git-repo-check", "-s", sandbox, "-C", cwd);
+    args.push("--json", "--skip-git-repo-check", "-s", sandbox, "-C", cwd, ...attach);
     if (model) args.push("-m", model);
     args.push("-");
   }
@@ -221,7 +223,10 @@ async function callCodexImage(args) {
 
   const prompt = [
     `Use your image generation tool to create ${count === 1 ? "one image" : `${count} separate image variants`}.`,
-    refs.length ? `Use these files as reference: ${refs.join(", ")}` : "",
+    refs.length
+      ? `The ${refs.length === 1 ? "attached image is" : "attached images are"} the source/reference (in order: ${refs.map((p) => path.basename(p)).join(", ")}). ` +
+        "If the request asks for an edit, edit the first attached image itself and keep its canvas size, framing and every unmentioned pixel."
+      : "",
     "Do not write code, do not edit project files, do not save files yourself: just generate the image(s).",
     "When done, reply with one short sentence describing the result.",
     "",
@@ -235,6 +240,7 @@ async function callCodexImage(args) {
     model: process.env.CODEX_MODEL,
     sandbox: "read-only",
     timeoutSec: args.timeout_sec,
+    images: refs,
   });
 
   const images = newImagesFor(result.threadId, result.startedAt).slice(-count);

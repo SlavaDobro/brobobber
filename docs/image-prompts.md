@@ -1,4 +1,4 @@
-> История предыдущих итераций. Актуальные изображения, архитектура слоёв и полный набор промптов: [vrod-assets.md](vrod-assets.md). Старые атласы заменены отдельными основами и больше не используются.
+> Early history of the atlas experiments. Current pipeline: [vrod-assets.md](vrod-assets.md). These atlases and the overlay files are no longer used.
 
 # Additional V-Rod views
 

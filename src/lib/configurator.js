@@ -1,59 +1,144 @@
+// Option catalogue for the V-Rod configurator.
+// `hex: null` means "as photographed": the base photograph is shown unchanged.
+// `layer` names a registered image layer (see bike-assets.js); materials are recoloured from masks.
+
 export const paints = [
-  { id: 'graphite', name: 'Графит', description: 'Глубокий тёмный металлик', hex: '#3c4247', price: 0 },
-  { id: 'petrol', name: 'Петроль', description: 'Холодный оттенок с характером', hex: '#247875', price: 35000 },
-  { id: 'copper', name: 'Медь', description: 'Тёплый металл в студийном свете', hex: '#b8653c', price: 35000 },
-  { id: 'pearl', name: 'Жемчуг', description: 'Светлая эмаль, тёмная механика', hex: '#d4d3ca', price: 40000 },
+  { id: 'petrol', name: 'Петроль', description: 'Исходный цвет проекта. Глубокий бирюзовый металлик.', hex: null, swatch: '#1f7a78', finish: 'metallic', price: 0 },
+  { id: 'graphite', name: 'Графит', description: 'Тёмный металлик с холодным отливом.', hex: '#41474c', swatch: '#41474c', finish: 'metallic', price: 35000 },
+  { id: 'copper', name: 'Медь', description: 'Тёплый металл, оживает в студийном свете.', hex: '#a85b34', swatch: '#a85b34', finish: 'metallic', price: 35000 },
+  { id: 'oxide', name: 'Оксид', description: 'Тёмно-красная эмаль с глубоким глянцем.', hex: '#7c1f1d', swatch: '#7c1f1d', finish: 'gloss', price: 38000 },
+  { id: 'pearl', name: 'Жемчуг', description: 'Светлая эмаль на фоне тёмной механики.', hex: '#d6d4ca', swatch: '#d6d4ca', finish: 'gloss', price: 40000 },
+  { id: 'olive', name: 'Олива мат', description: 'Военная олива без блеска.', hex: '#56603f', swatch: '#56603f', finish: 'matte', price: 45000 },
+  { id: 'stealth', name: 'Чёрный мат', description: 'Матовый чёрный, тёмный силуэт целиком.', hex: '#26282a', swatch: '#26282a', finish: 'matte', price: 42000 },
 ]
 
-export const seats = [
-  { id: 'black', name: 'Чёрная кожа', description: 'Классическая ромбовидная прострочка', hex: '#29292a', price: 0 },
-  { id: 'cognac', name: 'Коньячная кожа', description: 'Тёплый акцент на тёмном силуэте', hex: '#9a5d34', price: 16000 },
+export const leathers = [
+  { id: 'cognac', name: 'Коньяк', description: 'Исходная кожа. Ромбовидная прострочка.', hex: null, swatch: '#9a5d34', price: 0 },
+  { id: 'black', name: 'Чёрная', description: 'Классика, которая подходит к любому цвету.', hex: '#2a2a2b', swatch: '#2a2a2b', price: 12000 },
+  { id: 'oxblood', name: 'Бордо', description: 'Тёмно-винная кожа с тёплым отливом.', hex: '#5e1d22', swatch: '#5e1d22', price: 18000 },
+  { id: 'tobacco', name: 'Табак', description: 'Глубокий коричневый, винтажный характер.', hex: '#5b3d24', swatch: '#5b3d24', price: 16000 },
+]
+
+export const wheels = [
+  { id: 'gloss-black', name: 'Чёрный глянец', description: 'Исходные диски. Глубокий чёрный лак.', hex: null, swatch: '#151617', finish: 'gloss', price: 0 },
+  { id: 'graphite', name: 'Графит сатин', description: 'Полуматовый графит, спокойный и технологичный.', hex: '#55595d', swatch: '#55595d', finish: 'satin', price: 26000 },
+  { id: 'bronze', name: 'Бронза', description: 'Тёплая бронза, контраст с тёмной механикой.', hex: '#8f6a37', swatch: '#8f6a37', finish: 'satin', price: 38000 },
+  { id: 'polished', name: 'Полированный', description: 'Зеркальный алюминий с бликами.', hex: '#c4c7c9', swatch: '#c4c7c9', finish: 'polished', price: 44000 },
 ]
 
 export const exhausts = [
-  { id: 'twin', name: 'Twin Black', description: 'Две длинные трубы. Лаконичная линия.', price: 0 },
-  { id: 'short', name: 'Short Cut', description: 'Короткий выхлоп. Открытый задний диск.', price: 48000 },
+  { id: 'short', name: 'Short Cut', description: 'Исходный выхлоп. Короткие трубы из нержавеющей стали.', layer: null, price: 0 },
+  { id: 'drag', name: 'Drag Black', description: 'Длинные прямые трубы в чёрной керамике, косой срез.', layer: 'exhaust-drag', price: 89000 },
+  { id: 'shotgun', name: 'Shotgun Chrome', description: 'Длинные хромированные трубы с прямым срезом.', layer: 'exhaust-shotgun', price: 96000 },
+]
+
+export const accessories = [
+  { id: 'cowl', name: 'Карбоновый козырёк фары', description: 'Компактный обтекатель из карбона над фарой.', layer: 'cowl', price: 24000 },
+]
+
+export const categories = [
+  { id: 'paint', name: 'Цвет', title: 'Цвет кузова' },
+  { id: 'leather', name: 'Кожа', title: 'Отделка сиденья' },
+  { id: 'wheels', name: 'Диски', title: 'Цвет дисков' },
+  { id: 'exhaust', name: 'Выхлоп', title: 'Выхлопная система' },
+  { id: 'accessories', name: 'Детали', title: 'Аксессуары' },
 ]
 
 export const views = [
-  { name: 'Правый профиль', short: 'Справа', bearing: 90 },
-  { name: 'Спереди, три четверти', short: 'Перед ¾', bearing: 45 },
-  { name: 'Вид прямо спереди', short: 'Анфас', bearing: 0 },
-  { name: 'Левый профиль', short: 'Слева', bearing: -90 },
-  { name: 'Вид прямо сзади', short: 'Сзади', bearing: -180 },
-  { name: 'Сзади, три четверти', short: 'Корма ¾', bearing: -225 },
+  { id: 'right', name: 'Правый профиль', short: 'Справа' },
+  { id: 'front-quarter', name: 'Спереди, три четверти', short: 'Перед ¾' },
+  { id: 'front', name: 'Вид спереди', short: 'Анфас' },
+  { id: 'left', name: 'Левый профиль', short: 'Слева' },
+  { id: 'rear', name: 'Вид сзади', short: 'Сзади' },
+  { id: 'rear-quarter', name: 'Сзади, три четверти', short: 'Корма ¾' },
 ]
 
-export const defaults = { paint: 'graphite', seat: 'black', exhaust: 'twin' }
-export const storageKey = 'brobobber-vrod-v1'
+// Backdrops behind the motorcycle. focusY keeps the floor line of the photo under the tyres.
+export const environments = [
+  { id: 'studio', name: 'Студия', image: null, dark: false, focusY: .5 },
+  { id: 'workshop', name: 'Мастерская', image: '/images/env/workshop.webp', dark: true, focusY: .7 },
+  { id: 'night', name: 'Ночь', image: '/images/env/night.webp', dark: true, focusY: .7 },
+]
 
-/** @param {unknown} value */
+export const basePrice = 149000
+/** @typedef {{ paint: string, leather: string, wheels: string, exhaust: string, accessories: string[] }} Configuration */
+/** @type {Configuration} */
+export const defaults = { paint: 'petrol', leather: 'cognac', wheels: 'gloss-black', exhaust: 'short', accessories: [] }
+export const storageKey = 'brobobber-vrod-v2'
+
+/** @template {{ id: string }} T @param {T[]} list @param {unknown} id @returns {T} */
+export const pick = (list, id) => list.find(item => item.id === id) || list[0]
+
+/** @param {unknown} value @returns {Configuration} */
 export function normalizeConfiguration(value) {
-  const record = value && typeof value === 'object' ? value : {}
+  const record = /** @type {Record<string, unknown>} */ (value && typeof value === 'object' ? value : {})
+  const valid = (/** @type {{ id: string }[]} */ list, /** @type {string} */ key) =>
+    list.some(item => item.id === record[key]) ? String(record[key]) : /** @type {any} */ (defaults)[key]
+  const extras = Array.isArray(record.accessories) ? record.accessories
+    : typeof record.accessories === 'string' ? record.accessories.split(',') : []
   return {
-    paint: 'paint' in record && paints.some(item => item.id === record.paint) ? String(record.paint) : defaults.paint,
-    seat: 'seat' in record && seats.some(item => item.id === record.seat) ? String(record.seat) : defaults.seat,
-    exhaust: 'exhaust' in record && exhausts.some(item => item.id === record.exhaust) ? String(record.exhaust) : defaults.exhaust,
+    paint: valid(paints, 'paint'),
+    leather: valid(leathers, 'leather'),
+    wheels: valid(wheels, 'wheels'),
+    exhaust: valid(exhausts, 'exhaust'),
+    accessories: accessories.filter(item => extras.includes(item.id)).map(item => item.id),
   }
 }
 
 export function readConfiguration() {
   const params = new URLSearchParams(window.location.search)
-  if (['paint', 'seat', 'exhaust'].some(key => params.has(key))) {
+  if (['paint', 'leather', 'wheels', 'exhaust', 'accessories'].some(key => params.has(key))) {
     return normalizeConfiguration(Object.fromEntries(params))
   }
   try {
     return normalizeConfiguration(JSON.parse(localStorage.getItem(storageKey) || 'null'))
   } catch {
-    return { ...defaults }
+    return normalizeConfiguration(null)
   }
 }
 
-/** @param {typeof defaults} configuration */
+/** @param {Configuration} configuration */
 export function configurationUrl(configuration) {
   const url = new URL(window.location.href)
-  for (const [key, value] of Object.entries(configuration)) url.searchParams.set(key, value)
+  for (const [key, value] of Object.entries(configuration)) {
+    const text = Array.isArray(value) ? value.join(',') : value
+    if (text) url.searchParams.set(key, text)
+    else url.searchParams.delete(key)
+  }
   return url.href
+}
+
+/** Selected items with their prices, in category order. @param {Configuration} configuration */
+export function lineItems(configuration) {
+  return [
+    { category: 'Цвет кузова', item: pick(paints, configuration.paint) },
+    { category: 'Сиденье', item: pick(leathers, configuration.leather) },
+    { category: 'Диски', item: pick(wheels, configuration.wheels) },
+    { category: 'Выхлоп', item: pick(exhausts, configuration.exhaust) },
+    ...accessories.filter(item => configuration.accessories.includes(item.id)).map(item => ({ category: 'Аксессуар', item })),
+  ]
+}
+
+/** @param {Configuration} configuration */
+export function totalPrice(configuration) {
+  return basePrice + lineItems(configuration).reduce((sum, line) => sum + line.item.price, 0)
+}
+
+/** Layers to draw, in a fixed order so results never depend on click order. @param {Configuration} configuration */
+export function selectedLayers(configuration) {
+  const layers = []
+  const exhaust = pick(exhausts, configuration.exhaust)
+  if (exhaust.layer) layers.push(exhaust.layer)
+  for (const item of accessories) if (configuration.accessories.includes(item.id)) layers.push(item.layer)
+  return layers
+}
+
+/** Stable work-order number: the same build always gets the same number. @param {Configuration} configuration */
+export function buildNumber(configuration) {
+  const text = JSON.stringify([configuration.paint, configuration.leather, configuration.wheels, configuration.exhaust, [...configuration.accessories].sort()])
+  let hash = 2166136261
+  for (let i = 0; i < text.length; i++) hash = Math.imul(hash ^ text.charCodeAt(i), 16777619)
+  return 'VR-' + String((hash >>> 0) % 9000 + 1000)
 }
 
 /** @param {number} value */
