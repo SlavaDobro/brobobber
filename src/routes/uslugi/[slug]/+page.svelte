@@ -5,10 +5,12 @@
   import Faq from '$lib/site/Faq.svelte'
   import { services, faq } from '$lib/site/data.js'
   import { Check } from '@lucide/svelte'
+  import videos from '$lib/site/videos.json'
 
   let { data } = $props()
   let service = $derived(data.service)
   let others = $derived(services.filter(s => s.slug !== service.slug).slice(0, 6))
+  let clip = $derived(videos.find(v => v.id === service.video))
   // The price depends on the motorcycle and parts, so the "calculator" lists what the master needs to estimate it.
   const estimate = ['Марка, модель и год мотоцикла', 'Фото мотоцикла сейчас', 'Фото или пример желаемого результата', 'Детали и бренды, если уже выбраны']
 </script>
@@ -34,6 +36,20 @@
     </ul>
   </div>
 </section>
+
+{#if clip}
+  <section class="section">
+    <div class="wrap two clip">
+      <div class="clip-copy">
+        <h2 class="h2">Как это делаем</h2>
+        <p class="muted">{clip.title}. Ролик из нашего Telegram-канала.</p>
+        <a class="link-brass" href={clip.post} target="_blank" rel="noopener">Открыть пост</a>
+      </div>
+      <!-- svelte-ignore a11y_media_has_caption -->
+      <video class="clip-video" src={`${base + clip.src}#t=0.6`} controls playsinline preload="metadata"></video>
+    </div>
+  </section>
+{/if}
 
 {#if data.related.length}
   <section class="section">
@@ -77,6 +93,9 @@
   .points { display: grid; gap: 4px; }
   .points li { display: flex; gap: 14px; padding: 16px 0; border-bottom: 1px solid var(--rule); font-size: 18px; }
   .points :global(svg) { color: var(--brass); flex: none; margin-top: 4px; }
+  .clip { align-items: center; }
+  .clip-copy { display: grid; gap: 16px; justify-items: start; }
+  .clip-video { width: min(100%, 340px); aspect-ratio: 9 / 16; border-radius: 6px; background: var(--asphalt-2); object-fit: cover; }
   .projects { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
   .estimate-copy { display: grid; gap: 16px; }
   .estimate { display: grid; gap: 10px; counter-reset: e; }

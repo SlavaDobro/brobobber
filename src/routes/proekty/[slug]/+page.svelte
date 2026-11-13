@@ -5,12 +5,21 @@
   import Odometer from '$lib/site/Odometer.svelte'
   import ProjectCard from '$lib/site/ProjectCard.svelte'
   import { styles, photoSrc, plural } from '$lib/site/data.js'
+  import videos from '$lib/site/videos.json'
 
   let { data } = $props()
   let project = $derived(data.project)
   let style = $derived(styles.find(s => s.slug === project.style))
   let cover = $derived(project.gallery[0])
-  let rest = $derived(project.gallery.slice(1))
+  let lowRes = $derived(!!cover && cover.w < 1200 && project.gallery.length >= 3)
+  let rest = $derived(project.gallery.slice(lowRes ? 3 : 1))
+  let restStart = $derived(lowRes ? 3 : 1)
+  let meta = $derived([
+    project.brand + (style ? `, ${style.name.toLowerCase()}` : ''),
+    project.works.length ? `${project.works.length} ${plural(project.works.length, ['работа', 'работы', 'работ'])} по проекту` : '',
+    project.year ? `${project.year} год` : '',
+  ].filter(Boolean).join('. ') + '.')
+  let clip = $derived(project.post ? videos.find(v => v.post === project.post) : undefined)
 
   /** @type {HTMLDialogElement} */ let viewer
   let shown = $state(0)
@@ -31,9 +40,18 @@
   <div class="wrap top">
     <nav class="crumbs" aria-label="Вы здесь"><a href="{base}/">Главная</a><span>/</span><a href="{base}/proekty">Проекты</a><span>/</span></nav>
     <h1 class="h1">{project.name}</h1>
-    <p class="meta">{project.brand}{style ? `, ${style.name.toLowerCase()}` : ''}. {project.works.length} {plural(project.works.length, ['работа', 'работы', 'работ'])} по проекту.</p>
+    <p class="meta">{meta}</p>
   </div>
-  {#if cover}
+  {#if cover && lowRes}
+    <!-- Channel photos are 800 px: three side by side stay sharp where one full-width would blur. -->
+    <div class="cover-row">
+      {#each project.gallery.slice(0, 3) as photo, i}
+        <button onclick={() => open(i)} aria-label={`Фото ${i + 1} на весь экран`}>
+          <Photo base={photo.src} alt={i === 0 ? project.name : ''} sizes="34vw" eager w={photo.w} h={photo.h} />
+        </button>
+      {/each}
+    </div>
+  {:else if cover}
     <button class="cover" onclick={() => open(0)} aria-label="Открыть фото на весь экран">
       <Photo base={cover.src} alt={project.name} sizes="100vw" eager w={cover.w} h={cover.h} />
     </button>
@@ -48,6 +66,23 @@
   </section>
 {/if}
 
+{#if project.story?.length}
+  <section class="section">
+    <div class="wrap two">
+      <h2 class="h2">История проекта</h2>
+      <div class="story">
+        {#each project.story as paragraph, i}<p class:first={i === 0}>{paragraph}</p>{/each}
+        {#if project.post}<a class="link-brass" href={project.post} target="_blank" rel="noopener">Пост о проекте в Telegram-канале</a>{/if}
+        {#if clip}
+          <!-- svelte-ignore a11y_media_has_caption -->
+          <video class="clip" src={`${base + clip.src}#t=0.6`} controls playsinline preload="metadata"></video>
+        {/if}
+      </div>
+    </div>
+  </section>
+{/if}
+
+{#if project.works.length}
 <section class="section">
   <div class="wrap two">
     <div class="sticky">
@@ -60,6 +95,7 @@
     </ol>
   </div>
 </section>
+{/if}
 
 {#if rest.length}
   <section class="section">
@@ -68,8 +104,8 @@
       <ul class="gallery">
         {#each rest as photo, i}
           <li class:tall={photo.h > photo.w}>
-            <button onclick={() => open(i + 1)} aria-label={`Фото ${i + 2} из ${project.gallery.length}`}>
-              <Photo base={photo.src} alt={`${project.name}, фото ${i + 2}`} sizes="(max-width: 700px) 50vw, 25vw" w={photo.w} h={photo.h} />
+            <button onclick={() => open(i + restStart)} aria-label={`Фото ${i + restStart + 1} из ${project.gallery.length}`}>
+              <Photo base={photo.src} alt={`${project.name}, фото ${i + restStart + 1}`} sizes="(max-width: 700px) 50vw, 25vw" w={photo.w} h={photo.h} />
             </button>
           </li>
         {/each}
@@ -107,11 +143,20 @@
   .meta { color: var(--concrete); font-size: 17px; }
   .cover { display: block; width: 100%; height: min(82vh, 860px); overflow: hidden; cursor: zoom-in; }
   .cover :global(img) { width: 100%; height: 100%; object-fit: cover; animation: rollup 1.2s .1s var(--ease) both; }
+  .cover-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; height: min(64vh, 620px); }
+  .cover-row button { overflow: hidden; cursor: zoom-in; }
+  .cover-row :global(img) { width: 100%; height: 100%; object-fit: cover; animation: rollup 1.2s var(--ease) both; }
+  .cover-row button:nth-child(2) :global(img) { animation-delay: .12s; }
+  .cover-row button:nth-child(3) :global(img) { animation-delay: .24s; }
   @keyframes rollup { from { clip-path: inset(0 0 100% 0); transform: scale(1.08); } to { clip-path: inset(0 0 0 0); transform: scale(1); } }
   .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
   .specs { padding: clamp(48px, 6vw, 80px) 0; }
   .two { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: clamp(28px, 5vw, 80px); align-items: start; }
   .sticky { position: sticky; top: calc(var(--header) + 32px); display: grid; gap: 18px; justify-items: start; }
+  .story { display: grid; gap: 18px; max-width: 64ch; justify-items: start; }
+  .story p { font-size: 18px; line-height: 1.65; color: #ece8dfd9; }
+  .story .clip { width: min(100%, 320px); aspect-ratio: 9 / 16; border-radius: 6px; background: var(--asphalt-2); object-fit: cover; margin-top: 8px; }
+  .story p.first { font-size: clamp(20px, 1.8vw, 24px); color: var(--paper); }
   .works li { display: grid; grid-template-columns: 34px 1fr 18px; gap: 12px; padding: 15px 0; border-bottom: 1px solid var(--rule); font-size: 17px; align-items: start; }
   .works .n { font-family: var(--display); font-size: 13px; color: var(--brass); padding-top: 4px; }
   .works :global(svg) { color: var(--brass); margin-top: 4px; }
@@ -137,5 +182,8 @@
     .sticky { position: static; }
     .grid3, .more { grid-template-columns: 1fr; }
     .cover { height: 60vh; }
+    .cover-row { grid-template-columns: 1fr 1fr; height: auto; }
+    .cover-row button { aspect-ratio: 4 / 5; }
+    .cover-row button:first-child { grid-column: 1 / -1; aspect-ratio: 1; }
   }
 </style>

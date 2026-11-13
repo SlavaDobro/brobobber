@@ -7,7 +7,8 @@
   import Reviews from '$lib/site/Reviews.svelte'
   import Faq from '$lib/site/Faq.svelte'
   import Photo from '$lib/site/Photo.svelte'
-  import { projects, advantages, contacts } from '$lib/site/data.js'
+  import VideoReel from '$lib/site/VideoReel.svelte'
+  import { projects, advantages, contacts, plural } from '$lib/site/data.js'
 </script>
 
 <svelte:head>
@@ -40,7 +41,7 @@
 <ProjectRail {projects}>
   <div class="section-head">
     <h2 class="h2">Наши проекты</h2>
-    <p>Тринадцать мотоциклов, которые прошли через мастерскую. Внутри каждого — список работ и фото.</p>
+    <p>{projects.length} {plural(projects.length, ['мотоцикл', 'мотоцикла', 'мотоциклов'])}, которые прошли через мастерскую, — от свежих сборок 2026 года до архивных. Внутри каждого история, список работ и фото.</p>
     <a class="link-brass" href="{base}/proekty">Все проекты</a>
   </div>
 </ProjectRail>
@@ -87,6 +88,17 @@
       <p>Что пишут те, кто уже ездит на мотоциклах из мастерской.</p>
     </div>
     <Reviews />
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 class="h2">Жизнь мастерской</h2>
+      <p>Короткие ролики из нашего Telegram-канала: новые проекты, детали и поездки.</p>
+      <a class="link-brass" href={contacts.channel.href} target="_blank" rel="noopener">Канал {contacts.channel.handle}</a>
+    </div>
+    <VideoReel />
   </div>
 </section>
 
