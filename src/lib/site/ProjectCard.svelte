@@ -1,4 +1,5 @@
 <script>
+  import { base } from '$app/paths'
   import Photo from './Photo.svelte'
   import { styles, plural } from './data.js'
 
@@ -8,7 +9,7 @@
   let style = $derived(styles.find(s => s.slug === project.style))
 </script>
 
-<a class="card" href={`/proekty/${project.slug}`}>
+<a class="card" href={`${base}/proekty/${project.slug}`}>
   <span class="frame">
     {#if cover}<Photo base={cover.src} alt={project.name} {sizes} w={cover.w} h={cover.h} />{/if}
   </span>

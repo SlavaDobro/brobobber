@@ -1,4 +1,5 @@
 <script>
+  import { base } from '$app/paths'
   import PageHero from '$lib/site/PageHero.svelte'
   import Photo from '$lib/site/Photo.svelte'
   import ServiceBike from '$lib/site/ServiceBike.svelte'
@@ -18,7 +19,7 @@
     <ul class="styles">
       {#each styles as style, i}
         <li>
-          <a href={`/motocikly/${style.slug}`}>
+          <a href={`${base}/motocikly/${style.slug}`}>
             <span class="pic"><Photo base={style.image} alt={style.name} sizes="(max-width: 700px) 100vw, 50vw" /></span>
             <span class="row"><span class="name">{style.name}</span><span class="count">{projects.filter(p => p.style === style.slug).length || ''}</span></span>
             <span class="lead-s">{style.lead}</span>
@@ -38,7 +39,7 @@
 
 <section class="section">
   <div class="wrap">
-    <div class="section-head"><h2 class="h2">Наши проекты</h2><a class="link-brass" href="/proekty">Все проекты</a></div>
+    <div class="section-head"><h2 class="h2">Наши проекты</h2><a class="link-brass" href="{base}/proekty">Все проекты</a></div>
     <ul class="projects">{#each projects.slice(0, 4) as project}<li><ProjectCard {project} /></li>{/each}</ul>
   </div>
 </section>

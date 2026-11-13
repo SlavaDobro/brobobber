@@ -1,4 +1,5 @@
 <script>
+  import { base } from '$app/paths'
   import { page } from '$app/state'
 </script>
 
@@ -9,7 +10,7 @@
     <p class="code">{page.status}</p>
     <h1 class="h2">{page.status === 404 ? 'Такой страницы нет' : 'Что-то сломалось'}</h1>
     <p class="muted">Возможно, адрес устарел. Начните с главной или посмотрите проекты.</p>
-    <div class="actions"><a class="btn btn-signal" href="/">На главную</a><a class="btn btn-line" href="/proekty">Проекты</a></div>
+    <div class="actions"><a class="btn btn-signal" href="{base}/">На главную</a><a class="btn btn-line" href="{base}/proekty">Проекты</a></div>
   </div>
 </section>
 

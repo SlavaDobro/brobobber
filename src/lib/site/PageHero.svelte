@@ -1,4 +1,5 @@
 <script>
+  import { base } from '$app/paths'
   // Inner page opening: title on the left, the picture rolls up like the workshop door.
   import Photo from './Photo.svelte'
 
@@ -11,7 +12,7 @@
     <div class="copy">
       {#if crumbs.length}
         <nav class="crumbs" aria-label="Вы здесь">
-          {#each crumbs as crumb}<a href={crumb.href}>{crumb.label}</a><span aria-hidden="true">/</span>{/each}
+          {#each crumbs as crumb}<a href={base + crumb.href}>{crumb.label}</a><span aria-hidden="true">/</span>{/each}
         </nav>
       {/if}
       <h1 class="h1">{title}</h1>

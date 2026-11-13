@@ -1,4 +1,5 @@
 <script>
+  import { base } from '$app/paths'
   // Services as a drawing: points on the motorcycle's parts. Hovering a point or a list item
   // draws a leader line from the part to a callout with the service.
   import { services } from './data.js'
@@ -16,7 +17,7 @@
   <ol class="list" aria-label="Услуги на мотоцикле">
     {#each spotted as service, i}
       <li>
-        <a href={`/uslugi/${service.slug}`} class:active={active === i}
+        <a href={`${base}/uslugi/${service.slug}`} class:active={active === i}
           onmouseenter={() => active = i} onfocus={() => active = i}>
           <span class="num">{String(i + 1).padStart(2, '0')}</span>{service.name}
         </a>
@@ -25,7 +26,7 @@
   </ol>
 
   <div class="drawing">
-    <img src="/images/vrod/right.png" alt="Мотоцикл с отмеченными узлами, к которым относятся услуги" width="1536" height="1024" loading="lazy" decoding="async" />
+    <img src="{base}/images/vrod/right.png" alt="Мотоцикл с отмеченными узлами, к которым относятся услуги" width="1536" height="1024" loading="lazy" decoding="async" />
     {#each spotted as service, i}
       <button class="spot" class:active={active === i} style={`left:${service.spot?.[0]}%;top:${service.spot?.[1]}%`}
         aria-label={service.name} onmouseenter={() => active = i} onfocus={() => active = i} onclick={() => active = i}>
@@ -38,14 +39,14 @@
         <div class="card">
           <strong>{current.name}</strong>
           <p>{current.short}</p>
-          <a class="link-brass" href={`/uslugi/${current.slug}`}>Подробнее об услуге</a>
+          <a class="link-brass" href={`${base}/uslugi/${current.slug}`}>Подробнее об услуге</a>
         </div>
       </div>
     {/key}
   </div>
 
   <ul class="extra" aria-label="Другие услуги">
-    {#each rest as service}<li><a href={`/uslugi/${service.slug}`}>{service.name}</a></li>{/each}
+    {#each rest as service}<li><a href={`${base}/uslugi/${service.slug}`}>{service.name}</a></li>{/each}
   </ul>
 </div>
 

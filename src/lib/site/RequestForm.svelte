@@ -1,4 +1,5 @@
 <script>
+  import { base } from '$app/paths'
   // "Discuss a project" form. The site is static, so the request leaves from the visitor's own
   // mail app or Telegram: the text is assembled here and nothing is stored or sent by the site.
   import { Send, Mail, Check } from '@lucide/svelte'
@@ -69,7 +70,7 @@
           </select>
         </label>
         <label class="full"><span>Что хотите сделать</span><textarea bind:value={message} rows="3"></textarea></label>
-        <label class="consent full"><input type="checkbox" bind:checked={agreed} /><span>Согласен на обработку персональных данных по <a class="link-brass" href="/politika">политике конфиденциальности</a></span></label>
+        <label class="consent full"><input type="checkbox" bind:checked={agreed} /><span>Согласен на обработку персональных данных по <a class="link-brass" href="{base}/politika">политике конфиденциальности</a></span></label>
         {#if error}<p class="error full" role="alert">{error}</p>{/if}
         <button class="btn btn-signal full" type="submit">Подготовить заявку</button>
       </form>

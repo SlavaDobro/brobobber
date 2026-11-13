@@ -1,4 +1,5 @@
 <script>
+  import { base } from '$app/paths'
   import PageHero from '$lib/site/PageHero.svelte'
   import Photo from '$lib/site/Photo.svelte'
   import ProjectRail from '$lib/site/ProjectRail.svelte'
@@ -52,7 +53,7 @@
 </section>
 
 <ProjectRail {projects}>
-  <div class="section-head"><h2 class="h2">Что мы построили</h2><a class="link-brass" href="/proekty">Все проекты</a></div>
+  <div class="section-head"><h2 class="h2">Что мы построили</h2><a class="link-brass" href="{base}/proekty">Все проекты</a></div>
 </ProjectRail>
 
 <section class="section">

@@ -1,5 +1,6 @@
 // Site content. Texts come from the client's old site (brobobber.moscow) and Telegram channel;
 // where the old site had no text, the copy is a plain description of the service, without promises.
+import { base } from '$app/paths'
 import projectsData from './projects.json'
 
 export const contacts = {
@@ -163,7 +164,10 @@ export const plural = (n, forms) => {
   return forms[a > 10 && a < 20 ? 2 : b === 1 ? 0 : b >= 2 && b <= 4 ? 1 : 2]
 }
 
-/** Responsive photo sources for a stored photo base path (without size suffix). @param {string} base */
-export const photoSrc = base => base.startsWith('/images/photos/')
-  ? { src: `${base}-1600.webp`, srcset: `${base}-800.webp 800w, ${base}-1600.webp 1600w` }
-  : { src: `${base}.webp`, srcset: `${base}-800.webp 800w, ${base}.webp 1536w` }
+/** Responsive photo sources for a stored photo path (without size suffix), inside the site's base folder. @param {string} stem */
+export const photoSrc = stem => {
+  const p = base + stem
+  return stem.startsWith('/images/photos/')
+    ? { src: `${p}-1600.webp`, srcset: `${p}-800.webp 800w, ${p}-1600.webp 1600w` }
+    : { src: `${p}.webp`, srcset: `${p}-800.webp 800w, ${p}.webp 1536w` }
+}

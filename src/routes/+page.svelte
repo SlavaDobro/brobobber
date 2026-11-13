@@ -1,4 +1,5 @@
 <script>
+  import { base } from '$app/paths'
   import HeroMask from '$lib/site/HeroMask.svelte'
   import ProjectRail from '$lib/site/ProjectRail.svelte'
   import ServiceBike from '$lib/site/ServiceBike.svelte'
@@ -20,7 +21,7 @@
     <p class="lead">Строим, тюнингуем и обслуживаем мотоциклы. Harley-Davidson, Triumph, Yamaha, BMW — и любой байк, который вы привезёте.</p>
     <div class="hero-actions">
       <a class="btn btn-signal" href="#zayavka">Обсудить проект</a>
-      <a class="btn btn-line" href="/proekty">Смотреть проекты</a>
+      <a class="btn btn-line" href="{base}/proekty">Смотреть проекты</a>
     </div>
   </div>
 </HeroMask>
@@ -40,7 +41,7 @@
   <div class="section-head">
     <h2 class="h2">Наши проекты</h2>
     <p>Тринадцать мотоциклов, которые прошли через мастерскую. Внутри каждого — список работ и фото.</p>
-    <a class="link-brass" href="/proekty">Все проекты</a>
+    <a class="link-brass" href="{base}/proekty">Все проекты</a>
   </div>
 </ProjectRail>
 
@@ -53,7 +54,7 @@
       <h2 class="h2">Мастерская на Кнутовской</h2>
       <p class="lead">Brobobber объединяет техническое мастерство и стильный дизайн. Детали проектируем в 3D и вытачиваем на станках с ЧПУ, красим сами, шьём сиденья сами.</p>
       <p class="muted">На связи с вами мастера ателье — {contacts.phones.map(p => p.name).join(' и ')}. Они ведут проект от первого разговора до передачи мотоцикла и потом обслуживают его.</p>
-      <a class="btn btn-line" href="/o-nas">О мастерской</a>
+      <a class="btn btn-line" href="{base}/o-nas">О мастерской</a>
     </div>
   </div>
 </section>
@@ -63,7 +64,7 @@
     <div class="section-head">
       <h2 class="h2">Что делаем</h2>
       <p>Наведите на отметку на мотоцикле, чтобы увидеть, какие узлы мы дорабатываем. У каждой услуги — своя страница.</p>
-      <a class="link-brass" href="/konfigurator">Соберите свой V-Rod в конфигураторе</a>
+      <a class="link-brass" href="{base}/konfigurator">Соберите свой V-Rod в конфигураторе</a>
     </div>
     <ServiceBike />
   </div>
@@ -73,7 +74,7 @@
   <div class="wrap">
     <div class="section-head">
       <h2 class="h2">Как создаётся кастом</h2>
-      <a class="link-brass" href="/process">Подробнее о процессе</a>
+      <a class="link-brass" href="{base}/process">Подробнее о процессе</a>
     </div>
     <ProcessRoad />
   </div>

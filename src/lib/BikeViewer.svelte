@@ -1,5 +1,6 @@
 <script>
   import { onMount } from 'svelte'
+  import { base } from '$app/paths'
   import { gsap } from 'gsap'
   import { ChevronLeft, ChevronRight, ImageOff, Camera, Maximize2, Minimize2 } from '@lucide/svelte'
   import { views, environments } from './configurator'
@@ -128,7 +129,7 @@
         const image = new Image()
         image.onload = () => resolve(image)
         image.onerror = reject
-        image.src = scene.image
+        image.src = base + scene.image
       })
       const scale = Math.max(1920 / backdrop.naturalWidth, 1080 / backdrop.naturalHeight)
       const w = backdrop.naturalWidth * scale, h = backdrop.naturalHeight * scale
@@ -153,7 +154,7 @@
 </script>
 
 <div class="bay" class:dark={scene.dark}>
-  {#if scene.image}<img class="bay-backdrop" src={scene.image} alt="" style={'object-position: 50% ' + scene.focusY * 100 + '%'} />{/if}
+  {#if scene.image}<img class="bay-backdrop" src={base + scene.image} alt="" style={'object-position: 50% ' + scene.focusY * 100 + '%'} />{/if}
 
   <div class="bay-tools">
     <div class="scene-switch" role="group" aria-label="Где стоит мотоцикл">
