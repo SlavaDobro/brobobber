@@ -1,4 +1,5 @@
 <script>
+  import { base } from '$app/paths'
   import PageHero from '$lib/site/PageHero.svelte'
   import ServiceBike from '$lib/site/ServiceBike.svelte'
   import ProjectCard from '$lib/site/ProjectCard.svelte'
@@ -37,7 +38,7 @@
     <div class="section-head">
       <h2 class="h2">{data.own.length ? `Наши проекты в этом стиле` : 'Наши проекты'}</h2>
       {#if !data.own.length}<p>Проектов именно в этом стиле на сайте пока нет — вот что мы строили недавно.</p>{/if}
-      <a class="link-brass" href="/proekty">Все проекты</a>
+      <a class="link-brass" href="{base}/proekty">Все проекты</a>
     </div>
     <ul class="projects">{#each shown as project}<li><ProjectCard {project} /></li>{/each}</ul>
   </div>
@@ -60,7 +61,7 @@
 <section class="section">
   <div class="wrap">
     <h2 class="h3 others-title">Другие стили</h2>
-    <ul class="others">{#each others as item}<li><a href={`/motocikly/${item.slug}`}>{item.name}</a></li>{/each}</ul>
+    <ul class="others">{#each others as item}<li><a href={`${base}/motocikly/${item.slug}`}>{item.name}</a></li>{/each}</ul>
   </div>
 </section>
 

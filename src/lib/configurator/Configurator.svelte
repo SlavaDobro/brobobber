@@ -1,4 +1,5 @@
 <script>
+  import { base } from '$app/paths'
   import { onMount } from 'svelte'
   import { replaceState } from '$app/navigation'
   import { Check, X, Copy, Download, RotateCcw, Plus, Minus, ChevronLeft, ChevronRight, ClipboardList } from '@lucide/svelte'
@@ -145,8 +146,8 @@
 <a class="skip-link" href="#options">К выбору деталей</a>
 
 <header class="topbar">
-  <a class="wordmark" href="/" id="top" aria-label="Brobobber, на главную">Brobobber</a>
-  <a class="topbar-model" href="/uslugi/kastomizaciya">Конфигуратор V-Rod, услуга «Кастомизация»</a>
+  <a class="wordmark" href="{base}/" id="top" aria-label="Brobobber, на главную">Brobobber</a>
+  <a class="topbar-model" href="{base}/uslugi/kastomizaciya">Конфигуратор V-Rod, услуга «Кастомизация»</a>
   <div class="topbar-order">
     <span class="topbar-total"><small>Сборка {orderNumber}</small><strong aria-live="polite">{money(total)}</strong></span>
     <button class="order-button" onclick={() => orderDialog.showModal()}><ClipboardList size={18} />Наряд-заказ</button>
@@ -267,7 +268,7 @@
     <ol class="story-steps">
       {#each stories as item, index}
         <li>
-          <img src={item.image} alt="" loading="lazy" width="1536" height="1024" />
+          <img src={base + item.image} alt="" loading="lazy" width="1536" height="1024" />
           <h3><span>{index + 1}</span>{item.title}</h3>
           <p>{item.text}</p>
         </li>

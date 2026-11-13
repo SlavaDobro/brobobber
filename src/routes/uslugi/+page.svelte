@@ -1,4 +1,5 @@
 <script>
+  import { base } from '$app/paths'
   import PageHero from '$lib/site/PageHero.svelte'
   import ServiceBike from '$lib/site/ServiceBike.svelte'
   import Photo from '$lib/site/Photo.svelte'
@@ -26,7 +27,7 @@
     <ul class="grid">
       {#each services as service, i}
         <li>
-          <a href={`/uslugi/${service.slug}`}>
+          <a href={`${base}/uslugi/${service.slug}`}>
             <span class="pic"><Photo base={service.photo} alt="" sizes="(max-width: 700px) 100vw, 33vw" /></span>
             <span class="n">{String(i + 1).padStart(2, '0')}</span>
             <span class="name">{service.name}</span>

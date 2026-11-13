@@ -1,4 +1,5 @@
 <script>
+  import { base } from '$app/paths'
   import PageHero from '$lib/site/PageHero.svelte'
   import ProjectCard from '$lib/site/ProjectCard.svelte'
   import Faq from '$lib/site/Faq.svelte'
@@ -21,7 +22,7 @@
   crumbs={[{ href: '/', label: 'Главная' }, { href: '/uslugi', label: 'Услуги' }]}>
   <div class="actions">
     <a class="btn btn-signal" href="#zayavka">Оставить заявку</a>
-    {#if service.slug === 'kastomizaciya'}<a class="btn btn-line" href="/konfigurator">Конфигуратор V-Rod</a>{/if}
+    {#if service.slug === 'kastomizaciya'}<a class="btn btn-line" href="{base}/konfigurator">Конфигуратор V-Rod</a>{/if}
   </div>
 </PageHero>
 
@@ -37,7 +38,7 @@
 {#if data.related.length}
   <section class="section">
     <div class="wrap">
-      <div class="section-head"><h2 class="h2">Работы по этой услуге</h2><a class="link-brass" href="/proekty">Все проекты</a></div>
+      <div class="section-head"><h2 class="h2">Работы по этой услуге</h2><a class="link-brass" href="{base}/proekty">Все проекты</a></div>
       <ul class="projects">{#each data.related as project}<li><ProjectCard {project} /></li>{/each}</ul>
     </div>
   </section>
@@ -66,7 +67,7 @@
 <section class="section">
   <div class="wrap">
     <h2 class="h3 others-title">Другие услуги</h2>
-    <ul class="others">{#each others as item}<li><a href={`/uslugi/${item.slug}`}>{item.name}</a></li>{/each}</ul>
+    <ul class="others">{#each others as item}<li><a href={`${base}/uslugi/${item.slug}`}>{item.name}</a></li>{/each}</ul>
   </div>
 </section>
 

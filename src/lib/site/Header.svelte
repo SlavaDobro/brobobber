@@ -1,4 +1,5 @@
 <script>
+  import { base } from '$app/paths'
   import { page } from '$app/state'
   import { Menu, X, ChevronDown, Phone } from '@lucide/svelte'
   import { nav, services, styles, contacts } from './data.js'
@@ -7,8 +8,10 @@
   let submenu = $state('')
   let scrolled = $state(false)
 
+  // The site may live in a subfolder (GitHub Pages): compare paths without it.
+  let path = $derived(page.url.pathname.slice(base.length) || '/')
   /** @param {string} href */
-  const active = href => page.url.pathname === href || page.url.pathname.startsWith(href + '/')
+  const active = href => path === href || path.startsWith(href + '/')
 
   $effect(() => {
     page.url.pathname
@@ -30,7 +33,7 @@
 
 <header class="header" class:scrolled class:open>
   <div class="bar wrap">
-    <a class="logo" href="/" aria-label="Brobobber, на главную">
+    <a class="logo" href="{base}/" aria-label="Brobobber, на главную">
       <span class="logo-word">Brobobber</span>
       <span class="logo-place">{contacts.addressShort}</span>
     </a>
@@ -39,19 +42,19 @@
       {#each nav as item}
         {#if item.menu}
           <div class="has-menu" role="presentation" onmouseleave={() => submenu = ''}>
-            <a href={item.href} class:active={active(item.href)} onmouseenter={() => submenu = item.menu ?? ''} onfocus={() => submenu = item.menu ?? ''}>
+            <a href={base + item.href} class:active={active(item.href)} onmouseenter={() => submenu = item.menu ?? ''} onfocus={() => submenu = item.menu ?? ''}>
               {item.label}<ChevronDown size={14} />
             </a>
             {#if submenu === item.menu}
               <div class="dropdown" class:wide={item.menu === 'services'}>
                 {#each item.menu === 'services' ? services : styles as entry}
-                  <a href={`${item.href}/${entry.slug}`}>{entry.name}</a>
+                  <a href={`${base}${item.href}/${entry.slug}`}>{entry.name}</a>
                 {/each}
               </div>
             {/if}
           </div>
         {:else}
-          <a href={item.href} class:active={active(item.href)}>{item.label}</a>
+          <a href={base + item.href} class:active={active(item.href)}>{item.label}</a>
         {/if}
       {/each}
     </nav>
@@ -68,9 +71,9 @@
   {#if open}
     <div class="sheet">
       <nav class="sheet-nav wrap" aria-label="Меню">
-        <a href="/" class:active={page.url.pathname === '/'}>Главная</a>
-        {#each nav as item}<a href={item.href} class:active={active(item.href)}>{item.label}</a>{/each}
-        <a href="/konfigurator">Конфигуратор V-Rod</a>
+        <a href="{base}/" class:active={path === '/'}>Главная</a>
+        {#each nav as item}<a href={base + item.href} class:active={active(item.href)}>{item.label}</a>{/each}
+        <a href="{base}/konfigurator">Конфигуратор V-Rod</a>
       </nav>
       <div class="sheet-contacts wrap">
         {#each contacts.phones as person}<a href={person.href}>{person.phone}<span>{person.name}</span></a>{/each}

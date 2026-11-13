@@ -1,23 +1,24 @@
 <script>
+  import { base } from '$app/paths'
   import { nav, contacts, services } from './data.js'
 </script>
 
 <footer class="footer">
   <div class="wrap top">
     <div class="brand">
-      <a class="word" href="/">Brobobber</a>
+      <a class="word" href="{base}/">Brobobber</a>
       <p class="muted">Кастом-ателье мотоциклов. Строим, тюнингуем и обслуживаем.</p>
     </div>
     <nav aria-label="Разделы">
       <h2>Разделы</h2>
       <ul>
-        {#each nav as item}<li><a href={item.href}>{item.label}</a></li>{/each}
-        <li><a href="/konfigurator">Конфигуратор V-Rod</a></li>
+        {#each nav as item}<li><a href={base + item.href}>{item.label}</a></li>{/each}
+        <li><a href="{base}/konfigurator">Конфигуратор V-Rod</a></li>
       </ul>
     </nav>
     <nav aria-label="Популярные услуги">
       <h2>Услуги</h2>
-      <ul>{#each services.slice(0, 6) as item}<li><a href={`/uslugi/${item.slug}`}>{item.name}</a></li>{/each}</ul>
+      <ul>{#each services.slice(0, 6) as item}<li><a href={`${base}/uslugi/${item.slug}`}>{item.name}</a></li>{/each}</ul>
     </nav>
     <div class="contact">
       <h2>Связаться</h2>
@@ -30,7 +31,7 @@
   </div>
   <div class="wrap bottom">
     <span>© {new Date().getFullYear()} Brobobber</span>
-    <a href="/politika">Политика конфиденциальности</a>
+    <a href="{base}/politika">Политика конфиденциальности</a>
   </div>
 </footer>
 

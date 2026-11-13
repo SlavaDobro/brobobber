@@ -1,3 +1,4 @@
+import { base } from '$app/paths'
 import manifest from './vrod-layers.json'
 
 // One frozen photograph per camera. Options never swap the photograph: they replace
@@ -11,6 +12,6 @@ export { cameras } from './cameras.js'
 export const viewAssets = manifest.views
 
 /** @param {string} file */
-export const assetUrl = file => `/images/vrod/${file}`
+export const assetUrl = file => `${base}/images/vrod/${file}`
 export const baseFile = (/** @type {string} */ view) => `${view}.png`
 export const layerFiles = (/** @type {string} */ view, /** @type {string} */ part) => ({ content: `layers/${view}-${part}.png`, meta: `layers/${view}-${part}-meta.png` })

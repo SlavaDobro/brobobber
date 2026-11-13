@@ -1,4 +1,5 @@
 <script>
+  import { base } from '$app/paths'
   import PageHero from '$lib/site/PageHero.svelte'
   import ProcessRoad from '$lib/site/ProcessRoad.svelte'
   import ProjectCard from '$lib/site/ProjectCard.svelte'
@@ -26,14 +27,14 @@
   <div class="wrap">
     <h2 class="h2 head">Из мастерской</h2>
     <ul class="strip">
-      {#each workshop as base}<li><Photo {base} alt="" sizes="(max-width: 700px) 50vw, 25vw" /></li>{/each}
+      {#each workshop as photo}<li><Photo base={photo} alt="" sizes="(max-width: 700px) 50vw, 25vw" /></li>{/each}
     </ul>
   </div>
 </section>
 
 <section class="section">
   <div class="wrap">
-    <div class="section-head"><h2 class="h2">Чем это заканчивается</h2><a class="link-brass" href="/proekty">Все проекты</a></div>
+    <div class="section-head"><h2 class="h2">Чем это заканчивается</h2><a class="link-brass" href="{base}/proekty">Все проекты</a></div>
     <ul class="projects">{#each projects.slice(0, 3) as project}<li><ProjectCard {project} /></li>{/each}</ul>
   </div>
 </section>

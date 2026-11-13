@@ -1,6 +1,7 @@
 <script>
   import '../app.css'
   import { onNavigate } from '$app/navigation'
+  import { base } from '$app/paths'
   import { page } from '$app/state'
   import Header from '$lib/site/Header.svelte'
   import Footer from '$lib/site/Footer.svelte'
@@ -13,7 +14,8 @@
   let shutter
 
   // The configurator is a full-screen tool with its own top bar.
-  let bare = $derived(page.url.pathname.startsWith('/konfigurator'))
+  let path = $derived(page.url.pathname.slice(base.length) || '/')
+  let bare = $derived(path.startsWith('/konfigurator'))
 
   onNavigate(navigation => {
     const from = navigation.from?.url.pathname, to = navigation.to?.url.pathname
@@ -38,6 +40,6 @@
 
 {#if !bare}
   <RequestForm topic={page.data?.topic ?? ''} title={page.data?.requestTitle} />
-  {#if !page.url.pathname.startsWith('/kontakty')}<MapBlock />{/if}
+  {#if !path.startsWith('/kontakty')}<MapBlock />{/if}
   <Footer />
 {/if}

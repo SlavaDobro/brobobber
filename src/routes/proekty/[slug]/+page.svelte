@@ -1,4 +1,5 @@
 <script>
+  import { base } from '$app/paths'
   import { X, ChevronLeft, ChevronRight, Check, ArrowRight } from '@lucide/svelte'
   import Photo from '$lib/site/Photo.svelte'
   import Odometer from '$lib/site/Odometer.svelte'
@@ -28,7 +29,7 @@
 
 <section class="project-hero">
   <div class="wrap top">
-    <nav class="crumbs" aria-label="Вы здесь"><a href="/">Главная</a><span>/</span><a href="/proekty">Проекты</a><span>/</span></nav>
+    <nav class="crumbs" aria-label="Вы здесь"><a href="{base}/">Главная</a><span>/</span><a href="{base}/proekty">Проекты</a><span>/</span></nav>
     <h1 class="h1">{project.name}</h1>
     <p class="meta">{project.brand}{style ? `, ${style.name.toLowerCase()}` : ''}. {project.works.length} {plural(project.works.length, ['работа', 'работы', 'работ'])} по проекту.</p>
   </div>
@@ -81,7 +82,7 @@
   <div class="wrap">
     <div class="section-head">
       <h2 class="h2">Ещё проекты</h2>
-      <a class="next" href={`/proekty/${data.next.slug}`}>Следующий: {data.next.name}<ArrowRight size={18} /></a>
+      <a class="next" href={`${base}/proekty/${data.next.slug}`}>Следующий: {data.next.name}<ArrowRight size={18} /></a>
     </div>
     <ul class="more">{#each data.more as item}<li><ProjectCard project={item} /></li>{/each}</ul>
   </div>
