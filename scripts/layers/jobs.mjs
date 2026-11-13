@@ -87,6 +87,29 @@ const stories = {
   delivery: 'Photorealistic photograph of a small custom motorcycle workshop at dusk with its roller door half open: a finished long, low black and copper custom cruiser motorcycle with a fat rear tyre stands on polished concrete, a mechanic seen from behind wipes the fuel tank with a microfibre cloth, warm workshop light inside and blue evening light outside. No visible faces, no text, no logos, no brand names, no number plates. Landscape 1536x1024.',
 }
 
+// Site illustrations: motorcycle styles the client has no photos of, and service scenes.
+// One look for all: a dark workshop bay at night, warm work lamps, concrete floor, no brands.
+const siteLook = 'Photorealistic photograph, dark custom motorcycle workshop at night, polished concrete floor, warm tungsten work lamps with soft haze, deep shadows, muted colours with warm brass highlights, shot on a 50 mm lens at about 1 m height. No logos, no brand names, no badges, no text, no number plates, no people unless stated. Landscape 1536x1024.'
+const siteStyles = {
+  bobber: 'a classic custom BOBBER motorcycle: short chopped rear fender, solo sprung leather seat, fat balloon tyres, low stance, matte black paint with a thin brass pinstripe, V-twin engine',
+  chopper: 'a classic custom CHOPPER motorcycle: long raked springer front fork, tall ape-hanger handlebars, skinny 21-inch front wheel, small peanut tank, sissy bar, gloss black with chrome engine, V-twin',
+  'kafe-reyser': 'a CAFE RACER motorcycle: long flat tank, short humped single seat, clip-on low handlebars, rear-set footpegs, round headlight with small fairing, parallel-twin engine, deep blue paint with a white racing stripe',
+  skrembler: 'a SCRAMBLER motorcycle: high-mounted twin exhaust on the side, knobby dual-sport tyres, wide flat handlebars, flat bench seat, small round headlight with mesh guard, burnt orange tank',
+  begger: 'a custom BAGGER touring motorcycle: large batwing front fairing, long hard saddlebags stretched low to the ground, big 23-inch front wheel, slammed rear, dark candy red paint, V-twin',
+  maskl: 'a MUSCLE CRUISER drag-style motorcycle: huge 300 mm rear tyre, long low wheelbase, aggressive angular tank, short drag handlebars, liquid-cooled V-twin with large radiator, satin black with gunmetal details',
+  'klab-stayl': 'a CLUB STYLE motorcycle: small headlight fairing with dark visor, tall T-bar handlebars, upright long-travel rear shocks, solo seat, minimal fenders, flat black paint, V-twin, aggressive West-Coast stance',
+  chikano: 'a CHICANO STYLE (cholo) custom motorcycle: long low-slung stance, deep candy maroon paint with gold leaf pinstripes and engraving, white-wall tyres, chrome spoked wheels, wide fenders, tall straight handlebars, V-twin',
+}
+const stylePrompt = subject => `${siteLook} The only subject: ${subject}. The motorcycle stands in three-quarter front view, sharp and fully in frame, centred with space around it.`
+const siteServices = {
+  ecu: 'A laptop on a workbench connected by a diagnostic cable to a black V-twin motorcycle, the screen shows abstract engine graphs (no readable text), a mechanic\'s gloved hand on the keyboard, close-up.',
+  kursy: 'Three people in work clothes seen from behind gathered around a partly disassembled motorcycle engine on a stand while an instructor points at it, workshop class, faces not visible.',
+  shiny: 'Extreme close-up of a fat black motorcycle tyre sidewall: the word BROBOBBER (exactly these 9 letters, B-R-O-B-O-B-B-E-R) in bold white raised letters along the curve of the sidewall, the last letters being painted with a fine brush by a gloved hand. This word is the ONLY text in the image.',
+  deteyling: 'Close-up of a gloved hand polishing the deep black glossy fuel tank of a motorcycle with a microfibre pad, reflections of the work lamps in the paint, foam and polish visible.',
+  evakuator: 'A small flatbed trailer behind a dark van at dusk outside the workshop roller door, a black cruiser motorcycle strapped securely on the trailer with yellow straps, wet asphalt.',
+}
+const servicePrompt = scene => `${siteLook} Scene: ${scene}`
+
 const raw = (name) => `.local/astra/${name}.png`
 const base = view => `public/images/vrod/${view}.png`
 
@@ -123,5 +146,7 @@ export function jobs() {
     }
   }
   for (const [id, prompt] of Object.entries(stories)) list.push({ name: `story-${id}`, prompt, refs: [] })
+  for (const [id, subject] of Object.entries(siteStyles)) list.push({ name: `site-style-${id}`, prompt: stylePrompt(subject), refs: [] })
+  for (const [id, scene] of Object.entries(siteServices)) list.push({ name: `site-service-${id}`, prompt: servicePrompt(scene), refs: [] })
   return list.map(job => ({ ...job, output: raw(job.name) }))
 }
