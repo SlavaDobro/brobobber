@@ -31,7 +31,7 @@ export const nav = [
   { href: '/kontakty', label: 'Контакты' },
 ]
 
-/** @typedef {{ slug: string, name: string, short: string, lead: string, points: string[], photo: string, spot?: [number, number], projects?: string[] }} Service */
+/** @typedef {{ slug: string, name: string, short: string, lead: string, points: string[], photo: string, spot?: [number, number], projects?: string[], video?: string }} Service */
 /** Hotspot positions `spot` are percentages on the V-Rod side photo (public/images/vrod/right.png). */
 /** @type {Service[]} */
 export const services = [
@@ -42,7 +42,7 @@ export const services = [
   { slug: 'tyuning', name: 'Тюнинг мотоциклов', short: 'Кастомные детали, покраска, тормоза и звук.',
     lead: 'Делаем и ставим кастомные детали, готовим и красим их, дорабатываем тормоза и звук выхлопа.',
     points: ['Изготовление и установка кастомных деталей: выхлопные системы, сиденья, ручки', 'Подготовка деталей: снятие хрома химическим способом, пескоструйная обработка, аквабластинг', 'Покраска деталей разными типами красок: порошковая, акриловая, термостойкая', 'Тюнинг тормозной системы', 'Звуковая модернизация: выхлопные системы и глушители'],
-    photo: '/images/photos/rocket/04', spot: [38, 67], projects: ['triumph-rocket-3r', 'yamaha-v-max-1700', 'harley-davidson-sportster-883'] },
+    photo: '/images/photos/rocket/04', spot: [38, 67], video: 'tg-493-1', projects: ['triumph-rocket-3r', 'yamaha-v-max-1700', 'harley-davidson-sportster-883'] },
   { slug: 'obsluzhivanie', name: 'Обслуживание и ремонт', short: 'ТО, диагностика, ремонт двигателя и вилки.',
     lead: 'Плановое обслуживание и ремонт любой сложности: от замены лампочки до капитального ремонта двигателя.',
     points: ['Плановое техническое обслуживание', 'Полная диагностика мотоцикла', 'Капитальный ремонт двигателя', 'Переборка вилки', 'Ультразвуковая чистка топливной системы', 'Шиномонтаж'],
@@ -54,11 +54,11 @@ export const services = [
   { slug: 'sideniya', name: 'Создание и модификация сидений', short: 'Индивидуальный пошив под посадку и стиль.',
     lead: 'Шьём сиденья под рост, посадку и стиль мотоцикла, в том числе пассажирские и складные.',
     points: ['Индивидуальная форма сиденья', 'Перетяжка премиальными материалами', 'Пассажирские и складные варианты', 'Подогрев сиденья'],
-    photo: '/images/photos/v-rod/04', spot: [28, 34], projects: ['harley-davidson-v-rod', 'triumph-rocket-3r'] },
+    photo: '/images/photos/v-rod/04', spot: [28, 34], video: 'tg-559-1', projects: ['harley-davidson-v-rod', 'triumph-rocket-3r'] },
   { slug: 'nakladki-na-bak', name: 'Накладки на бак Harley-Davidson', short: 'Металлические накладки с гравировкой.',
     lead: 'Делаем накладки на бак Harley-Davidson: форма, металл и гравировка под ваш мотоцикл.',
     points: ['Изготовление по форме бака', 'Гравировка надписи или рисунка', 'Установка без доработки бака'],
-    photo: '/images/photos/home/26', spot: [59, 30] },
+    photo: '/images/photos/home/26', spot: [59, 30], video: 'tg-384-1' },
   { slug: 'elektronika', name: 'Электроника и освещение', short: 'LED-оптика, сигнализация, проводка.',
     lead: 'Ставим современный свет и электронику и аккуратно переделываем проводку под новые детали.',
     points: ['Установка LED-оптики и светового оборудования', 'Модернизация электроники: сигнализация, GPS-навигация', 'Приборные панели и поворотники', 'Прокладка и обновление проводки'],

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Builds src/lib/site/projects.json from the imported old-site pages (.local/old-site/content.json)
 // and the prepared photos (src/lib/site/photos.json). Run after import-old-site and prepare-photos.
-import { readFileSync, writeFileSync } from 'node:fs'
+import { readFileSync, writeFileSync, existsSync } from 'node:fs'
 
 const content = JSON.parse(readFileSync('.local/old-site/content.json', 'utf8'))
 const photos = JSON.parse(readFileSync('src/lib/site/photos.json', 'utf8'))
@@ -50,5 +50,11 @@ const projects = pages.map(page => {
 })
 function dims(p) { return { w: p.w, h: p.h } }
 
-writeFileSync('src/lib/site/projects.json', JSON.stringify(projects, null, 1) + '\n')
-for (const p of projects) console.log(`${p.slug}: ${p.works.length} works, ${p.gallery.length} photos, cover ${p.gallery[0]?.src}`)
+// Projects and photos from the Telegram channel, when it has been imported.
+let all = projects
+if (existsSync('.local/telegram/posts.json')) {
+  const { prepareTelegramPhotos, mergeTelegram } = await import('./telegram-projects.mjs')
+  all = mergeTelegram(projects, await prepareTelegramPhotos())
+}
+writeFileSync('src/lib/site/projects.json', JSON.stringify(all, null, 1) + '\n')
+for (const p of all) console.log(`${p.slug}: ${p.works.length} works, ${p.story?.length ?? 0} story, ${p.gallery.length} photos, cover ${p.gallery[0]?.src}`)

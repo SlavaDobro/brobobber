@@ -5,6 +5,7 @@
   import ProjectCard from '$lib/site/ProjectCard.svelte'
   import Photo from '$lib/site/Photo.svelte'
   import Faq from '$lib/site/Faq.svelte'
+  import VideoReel from '$lib/site/VideoReel.svelte'
   import { projects } from '$lib/site/data.js'
 
   const workshop = ['/images/photos/home/16', '/images/photos/home/11', '/images/photos/48nardogray/04', '/images/photos/rocket/03']
@@ -29,6 +30,8 @@
     <ul class="strip">
       {#each workshop as photo}<li><Photo base={photo} alt="" sizes="(max-width: 700px) 50vw, 25vw" /></li>{/each}
     </ul>
+    <h3 class="h3 reel-title">Как это выглядит в работе</h3>
+    <VideoReel />
   </div>
 </section>
 
@@ -46,6 +49,7 @@
 <style>
   .cta { justify-self: start; }
   .head { margin-bottom: 32px; }
+  .reel-title { margin: 48px 0 20px; }
   .strip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
   .strip li { aspect-ratio: 3 / 4; overflow: hidden; border-radius: 4px; }
   .strip :global(img) { width: 100%; height: 100%; object-fit: cover; }
