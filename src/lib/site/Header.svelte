@@ -91,7 +91,7 @@
   .logo-word { font-family: var(--display); font-weight: 700; font-stretch: 75%; font-size: 26px; letter-spacing: .02em; }
   .logo-place { font-size: 12px; color: var(--concrete); }
   .nav { display: flex; gap: 4px; margin: 0 auto; }
-  .nav a { display: inline-flex; align-items: center; gap: 4px; padding: 10px 12px; font-size: 15px; color: #ece8dfcc; border-radius: 4px; transition: color .2s; }
+  .nav a { display: inline-flex; align-items: center; gap: 4px; padding: 10px 12px; white-space: nowrap; font-size: 15px; color: #ece8dfcc; border-radius: 4px; transition: color .2s; }
   .nav a:hover, .nav a.active { color: var(--paper); }
   .nav a.active { box-shadow: inset 0 -2px 0 var(--brass); border-radius: 0; }
   .has-menu { position: relative; }
@@ -113,7 +113,7 @@
   .sheet-contacts a:not(.btn) { display: flex; justify-content: space-between; font-size: 20px; }
   .sheet-contacts span { color: var(--concrete); font-size: 15px; }
 
-  @media (max-width: 1180px) {
+  @media (max-width: 1320px) {
     .nav { display: none; }
     .burger { display: grid; }
     .actions { margin-left: auto; }
