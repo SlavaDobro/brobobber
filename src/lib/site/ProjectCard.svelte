@@ -7,6 +7,11 @@
   let { project, sizes = '(max-width: 700px) 85vw, 30vw' } = $props()
   let cover = $derived(project.gallery[0])
   let style = $derived(styles.find(s => s.slug === project.style))
+  // Channel projects told as a story have no work list: show the year instead of "0 работ".
+  let tags = $derived([
+    project.works.length ? `${project.works.length} ${plural(project.works.length, ['работа', 'работы', 'работ'])}` : project.year ? `${project.year} год` : '',
+    style?.name.toLowerCase() ?? '',
+  ].filter(Boolean).join(', '))
 </script>
 
 <a class="card" href={`${base}/proekty/${project.slug}`}>
@@ -15,7 +20,7 @@
   </span>
   <span class="meta">
     <span class="name">{project.name}</span>
-    <span class="tags">{project.works.length} {plural(project.works.length, ['работа', 'работы', 'работ'])}{style ? ', ' + style.name.toLowerCase() : ''}</span>
+    <span class="tags">{tags}</span>
   </span>
 </a>
 

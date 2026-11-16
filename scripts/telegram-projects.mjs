@@ -35,11 +35,14 @@ export const extraPhotos = {
   'suzuki-boulevard-m109r': [179],
 }
 
+/** Channel posts whose photos illustrate service pages (see `gallery` in src/lib/site/data.js). */
+export const servicePosts = [585, 350, 541, 591, 384]
+
 const posts = () => new Map(JSON.parse(readFileSync(path.join(source, 'posts.json'), 'utf8')).map(p => [p.id, p]))
 
 /** Converts the photos of every listed post; returns { [postId]: [{ src, w, h }] }. */
 export async function prepareTelegramPhotos() {
-  const ids = [...telegramProjects.flatMap(p => p.posts), ...Object.values(extraPhotos).flat()]
+  const ids = [...telegramProjects.flatMap(p => p.posts), ...Object.values(extraPhotos).flat(), ...servicePosts]
   const result = {}
   for (const id of ids) {
     const dir = path.join(source, String(id))

@@ -31,7 +31,7 @@ export const nav = [
   { href: '/kontakty', label: 'Контакты' },
 ]
 
-/** @typedef {{ slug: string, name: string, short: string, lead: string, points: string[], photo: string, spot?: [number, number], projects?: string[], video?: string }} Service */
+/** @typedef {{ slug: string, name: string, short: string, lead: string, points: string[], photo: string, spot?: [number, number], projects?: string[], video?: string, gallery?: string[] }} Service */
 /** Hotspot positions `spot` are percentages on the V-Rod side photo (public/images/vrod/right.png). */
 /** @type {Service[]} */
 export const services = [
@@ -54,11 +54,11 @@ export const services = [
   { slug: 'sideniya', name: 'Создание и модификация сидений', short: 'Индивидуальный пошив под посадку и стиль.',
     lead: 'Шьём сиденья под рост, посадку и стиль мотоцикла, в том числе пассажирские и складные.',
     points: ['Индивидуальная форма сиденья', 'Перетяжка премиальными материалами', 'Пассажирские и складные варианты', 'Подогрев сиденья'],
-    photo: '/images/photos/v-rod/04', spot: [28, 34], video: 'tg-559-1', projects: ['harley-davidson-v-rod', 'triumph-rocket-3r'] },
+    photo: '/images/photos/tg-350/01', spot: [28, 34], video: 'tg-559-1', gallery: ['/images/photos/tg-350/02', '/images/photos/tg-350/03', '/images/photos/tg-541/01', '/images/photos/tg-591/02'], projects: ['harley-davidson-v-rod', 'triumph-rocket-3r'] },
   { slug: 'nakladki-na-bak', name: 'Накладки на бак Harley-Davidson', short: 'Металлические накладки с гравировкой.',
     lead: 'Делаем накладки на бак Harley-Davidson: форма, металл и гравировка под ваш мотоцикл.',
     points: ['Изготовление по форме бака', 'Гравировка надписи или рисунка', 'Установка без доработки бака'],
-    photo: '/images/photos/home/26', spot: [59, 30], video: 'tg-384-1' },
+    photo: '/images/photos/tg-384/01', spot: [59, 30], video: 'tg-384-1', gallery: ['/images/photos/tg-384/02', '/images/photos/tg-384/03', '/images/photos/tg-384/04', '/images/photos/home/26'] },
   { slug: 'elektronika', name: 'Электроника и освещение', short: 'LED-оптика, сигнализация, проводка.',
     lead: 'Ставим современный свет и электронику и аккуратно переделываем проводку под новые детали.',
     points: ['Установка LED-оптики и светового оборудования', 'Модернизация электроники: сигнализация, GPS-навигация', 'Приборные панели и поворотники', 'Прокладка и обновление проводки'],
@@ -86,7 +86,7 @@ export const services = [
   { slug: 'motoevakuator', name: 'Мотоэвакуатор', short: 'Перевозка мотоцикла по Москве и в другие города.',
     lead: 'Перевезём мотоцикл после поломки, покупки или в мастерскую. Грузим и крепим так, чтобы байк доехал без царапин.',
     points: ['Помощь при поломке в дороге', 'Доставка в мастерскую и обратно', 'Перевозка после покупки', 'Перевозка в другой город'],
-    photo: '/images/site/service-evakuator' },
+    photo: '/images/photos/tg-585/02', gallery: ['/images/photos/tg-585/03', '/images/photos/tg-585/04', '/images/photos/tg-585/01', '/images/photos/tg-585/05'] },
 ]
 
 /** @typedef {{ slug: string, name: string, lead: string, traits: [string, string][], image: string }} Style */

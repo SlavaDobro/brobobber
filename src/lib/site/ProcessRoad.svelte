@@ -19,6 +19,8 @@
       let index = 0
       items.forEach((item, i) => { if (item.getBoundingClientRect().top < mid) index = i })
       reached = index
+      // The laid line ends exactly at the dot of the stage reached.
+      if (!still) { const dot = items[index]; progress = Math.min(1, (dot.getBoundingClientRect().top - rect.top + 14) / rect.height) }
     }
     update()
     window.addEventListener('scroll', update, { passive: true })

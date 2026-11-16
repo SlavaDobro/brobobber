@@ -6,6 +6,7 @@
   import { services, faq } from '$lib/site/data.js'
   import { Check } from '@lucide/svelte'
   import videos from '$lib/site/videos.json'
+  import Photo from '$lib/site/Photo.svelte'
 
   let { data } = $props()
   let service = $derived(data.service)
@@ -36,6 +37,17 @@
     </ul>
   </div>
 </section>
+
+{#if service.gallery?.length}
+  <section class="section">
+    <div class="wrap">
+      <h2 class="h2 gallery-title">Из мастерской</h2>
+      <ul class="service-gallery">
+        {#each service.gallery as photo}<li><Photo base={photo} alt={service.name} sizes="(max-width: 700px) 50vw, 25vw" /></li>{/each}
+      </ul>
+    </div>
+  </section>
+{/if}
 
 {#if clip}
   <section class="section">
@@ -93,6 +105,11 @@
   .points { display: grid; gap: 4px; }
   .points li { display: flex; gap: 14px; padding: 16px 0; border-bottom: 1px solid var(--rule); font-size: 18px; }
   .points :global(svg) { color: var(--brass); flex: none; margin-top: 4px; }
+  .gallery-title { margin-bottom: 28px; }
+  .service-gallery { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+  .service-gallery li { aspect-ratio: 3 / 4; overflow: hidden; border-radius: 4px; }
+  .service-gallery :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  @media (max-width: 760px) { .service-gallery { grid-template-columns: 1fr 1fr; } }
   .clip { align-items: center; }
   .clip-copy { display: grid; gap: 16px; justify-items: start; }
   .clip-video { width: min(100%, 340px); aspect-ratio: 9 / 16; border-radius: 6px; background: var(--asphalt-2); object-fit: cover; }

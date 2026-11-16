@@ -19,6 +19,10 @@
     project.works.length ? `${project.works.length} ${plural(project.works.length, ['работа', 'работы', 'работ'])} по проекту` : '',
     project.year ? `${project.year} год` : '',
   ].filter(Boolean).join('. ') + '.')
+  // Search snippet: the work list when there is one, otherwise the opening of the story.
+  let description = $derived(project.works.length
+    ? `${project.name}: ${project.works.length} ${plural(project.works.length, ['работа', 'работы', 'работ'])} в мастерской Brobobber. ${project.works.slice(0, 3).join('. ')}.`
+    : `${project.name} — проект мастерской Brobobber. ${(project.story ?? [])[0] ?? ''}`.slice(0, 300))
   let clip = $derived(project.post ? videos.find(v => v.post === project.post) : undefined)
 
   /** @type {HTMLDialogElement} */ let viewer
@@ -33,7 +37,7 @@
 
 <svelte:head>
   <title>{project.name} — проект Brobobber</title>
-  <meta name="description" content={`${project.name}: ${project.works.length} ${plural(project.works.length, ['работа', 'работы', 'работ'])} в мастерской Brobobber. ${project.works.slice(0, 3).join('. ')}.`} />
+  <meta name="description" content={description} />
 </svelte:head>
 
 <section class="project-hero">
