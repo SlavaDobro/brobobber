@@ -1,11 +1,13 @@
 <script>
   import { base } from '$app/paths'
   import { nav, contacts, services } from './data.js'
+  import Logo from './Logo.svelte'
 </script>
 
 <footer class="footer">
   <div class="wrap top">
     <div class="brand">
+      <a class="badge" href="{base}/" aria-label="Brobobber, на главную"><Logo size={132} word={false} /></a>
       <a class="word" href="{base}/">Brobobber</a>
       <p class="muted">Кастом-ателье мотоциклов. Строим, тюнингуем и обслуживаем.</p>
     </div>
@@ -39,6 +41,7 @@
   .footer { border-top: 1px solid var(--rule); padding: 56px 0 28px; background: #171816; }
   .top { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1.2fr; gap: 32px; }
   .word { font-family: var(--display); font-weight: 700; font-stretch: 75%; font-size: 40px; line-height: 1; }
+  .badge { justify-self: start; margin-bottom: 8px; }
   .brand { display: grid; gap: 12px; align-content: start; }
   .brand p { max-width: 30ch; font-size: 15px; }
   h2 { font-size: 13px; font-weight: 500; color: var(--concrete); margin-bottom: 12px; }

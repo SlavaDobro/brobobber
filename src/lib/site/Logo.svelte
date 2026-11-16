@@ -1,42 +1,82 @@
 <script>
-  // Brobobber mark: a tachometer. On load the needle revs into the red zone and settles at idle;
-  // hovering (or tapping) the logo revs it again. With reduced motion the needle just sits at idle.
-  /** @type {{ size?: number, word?: boolean, rev?: unknown, class?: string }} */
-  let { size = 40, word = true, rev = 0, class: className = '' } = $props()
+  // Brobobber Custom Club badge: the club's crossed open-end wrenches, set inside a rear
+  // sprocket and locked by a hex nut. On load (and on `rev` changes, hover or tap) the wrenches
+  // give the nut one turn, the sprocket rolls a tooth, and the wrenches swing back.
+  // From 80 px the ring carries "BROBOBBER CUSTOM CLUB · MOSCOW"; smaller it shows rivets.
+  /** @type {{ size?: number, word?: boolean, rev?: unknown, ring?: boolean, class?: string }} */
+  let { size = 40, word = true, rev = 0, ring, class: className = '' } = $props()
+  let full = $derived(ring ?? size >= 80)
+  const uid = $props.id()
 
-  // The dial spans 240°: from -120° (0 rpm) to +120° (9k); 7k–9k is the red zone.
-  const start = -120, end = 120, idle = -78, redline = start + (end - start) * 7 / 9
-  const ticks = Array.from({ length: 10 }, (_, i) => {
-    const a = (start + (end - start) * i / 9) * Math.PI / 180
-    const r1 = 18.5, r2 = i % 3 === 0 ? 13.5 : 15.5
-    return { x1: 24 + r1 * Math.sin(a), y1: 24 - r1 * Math.cos(a), x2: 24 + r2 * Math.sin(a), y2: 24 - r2 * Math.cos(a), red: i >= 7, major: i % 3 === 0 }
-  })
-  /** SVG arc path on radius r between two angles (degrees, 0 = up). */
-  const arc = (r, a, b) => {
-    const p = d => [24 + r * Math.sin(d * Math.PI / 180), 24 - r * Math.cos(d * Math.PI / 180)]
-    const [x1, y1] = p(a), [x2, y2] = p(b)
-    return `M${x1.toFixed(2)} ${y1.toFixed(2)} A${r} ${r} 0 ${b - a > 180 ? 1 : 0} 1 ${x2.toFixed(2)} ${y2.toFixed(2)}`
-  }
+  const f = (/** @type {number} */ n) => +n.toFixed(2)
+  /** @param {number} r @param {number} deg 0 = up, clockwise */
+  const pt = (r, deg) => [f(r * Math.sin(deg * Math.PI / 180)), f(-r * Math.cos(deg * Math.PI / 180))]
 
-  /** @type {SVGGElement} */ let needle
-  let revving = false
+  // Rear sprocket: 30 trapezoid teeth around a 54 root circle, tips at 59.
+  const teeth = 30, pitch = 360 / teeth
+  const sprocket = Array.from({ length: teeth }, (_, i) => {
+    const a = i * pitch
+    return [pt(54, a - pitch * .5), pt(54.6, a - pitch * .3), pt(59, a - pitch * .17), pt(59, a + pitch * .17), pt(54.6, a + pitch * .3)]
+      .map(([x, y], j) => `${i === 0 && j === 0 ? 'M' : 'L'}${x} ${y}`).join('')
+  }).join('') + 'Z'
 
-  /** One rev: sweep to the red zone, bounce off the limiter, drop back to idle. */
+  // Open-end wrench along x: shaft half-height h, heads of radius R at ±c, jaw half-width w.
+  const c = 31, R = 8.6, h = 3.1, w = 3.3
+  const a = f(Math.sqrt(R * R - h * h)), b = f(Math.sqrt(R * R - w * w))
+  const wrench = [
+    `M${-c + a} ${-h} L${c - a} ${-h}`,
+    `A${R} ${R} 0 0 1 ${c + b} ${-w} L${c} ${-w} A${w} ${w} 0 0 0 ${c} ${w} L${c + b} ${w}`,
+    `A${R} ${R} 0 0 1 ${c - a} ${h} L${-c + a} ${h}`,
+    `A${R} ${R} 0 0 1 ${-c - b} ${w} L${-c} ${w} A${w} ${w} 0 0 0 ${-c} ${-w} L${-c - b} ${-w}`,
+    `A${R} ${R} 0 0 1 ${-c + a} ${-h} Z`,
+  ].join(' ')
+
+  const nut = Array.from({ length: 6 }, (_, i) => pt(13.4, 30 + i * 60).join(' ')).join(' ')
+  const rivets = Array.from({ length: 12 }, (_, i) => pt(46.5, i * 30 + 15))
+  // Text arcs: the top one runs clockwise over the top, the bottom one left to right under it,
+  // so both read upright inside the same band (43.5–50).
+  const top = `M${pt(43.6, -112).join(' ')} A43.6 43.6 0 1 1 ${pt(43.6, 112).join(' ')}`
+  const stars = [pt(46.8, -122), pt(46.8, 122)]
+  const bottom = `M${pt(50, -128).join(' ')} A50 50 0 0 0 ${pt(50, 128).join(' ')}`
+
+  /** @type {SVGGElement} */ let tools
+  /** @type {SVGGElement} */ let bolt
+  /** @type {SVGGElement} */ let gear
+  let turning = false
+
+  /** One turn: wrenches and nut rotate 60° together (the hex looks the same after), the sprocket
+   *  rolls one tooth, then the wrenches swing back to the cross. */
   function blip() {
-    if (revving || !needle || matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    revving = true
-    const animation = needle.animate([
-      { transform: `rotate(${idle}deg)` },
-      { transform: `rotate(${redline + 14}deg)`, offset: .38, easing: 'cubic-bezier(.3, 0, .2, 1)' },
-      { transform: `rotate(${redline + 6}deg)`, offset: .48 },
-      { transform: `rotate(${redline + 13}deg)`, offset: .56 },
-      { transform: `rotate(${idle - 4}deg)`, offset: .9, easing: 'cubic-bezier(.5, 0, .3, 1)' },
-      { transform: `rotate(${idle}deg)` },
-    ], { duration: 1500 })
-    animation.finished.finally(() => { revving = false })
+    if (turning || !tools || matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    turning = true
+    const timing = { duration: 1300, easing: 'linear' }
+    const run = [
+      tools.animate([
+        { transform: 'rotate(0deg)' },
+        { transform: 'rotate(-8deg)', offset: .14, easing: 'cubic-bezier(.4, 0, .2, 1)' },
+        { transform: 'rotate(66deg)', offset: .5, easing: 'cubic-bezier(.5, 0, .5, 1)' },
+        { transform: 'rotate(60deg)', offset: .58, easing: 'cubic-bezier(.6, 0, .2, 1)' },
+        { transform: 'rotate(-4deg)', offset: .9 },
+        { transform: 'rotate(0deg)' },
+      ], timing),
+      bolt.animate([
+        { transform: 'rotate(0deg)' },
+        { transform: 'rotate(-8deg)', offset: .14, easing: 'cubic-bezier(.4, 0, .2, 1)' },
+        { transform: 'rotate(60deg)', offset: .5 },
+        { transform: 'rotate(60deg)' },
+      ], timing),
+      gear.animate([
+        { transform: 'rotate(0deg)', offset: .14, easing: 'cubic-bezier(.4, 0, .2, 1)' },
+        { transform: `rotate(${pitch}deg)`, offset: .52 },
+        { transform: `rotate(${pitch}deg)` },
+      ], timing),
+    ]
+    // A hidden tab may never finish the animations; release the lock on a timer as well.
+    Promise.race([Promise.all(run.map(r => r.finished)), new Promise(r => setTimeout(r, 1500))])
+      .catch(() => {}).finally(() => { run.forEach(r => r.cancel()); turning = false })
   }
 
-  // Rev once when the logo appears, and whenever the parent bumps `rev` (e.g. on page change).
+  // Turn once when the logo appears, and whenever the parent bumps `rev` (e.g. on page change).
   $effect(() => {
     rev
     const t = setTimeout(blip, 250)
@@ -44,17 +84,33 @@
   })
 </script>
 
-<span class={'logo-mark ' + className} role="img" aria-label="Brobobber" onpointerenter={blip}>
-  <svg viewBox="0 0 48 48" width={size} height={size} aria-hidden="true">
-    <circle cx="24" cy="24" r="22.5" class="rim" />
-    <path d={arc(18.5, start, redline)} class="scale" />
-    <path d={arc(18.5, redline, end)} class="red" />
-    {#each ticks as t}<line x1={t.x1} y1={t.y1} x2={t.x2} y2={t.y2} class:red-tick={t.red} class:major={t.major} />{/each}
-    <text x="24" y="37.5" class="bb">BB</text>
-    <g class="needle" bind:this={needle} style={`transform: rotate(${idle}deg)`}>
-      <path d="M24 26.5 L22.9 24 L24 7.5 L25.1 24 Z" />
+<span class={'logo-mark ' + className} role="img" aria-label="Brobobber Custom Club" onpointerenter={blip}>
+  <svg viewBox="-60 -60 120 120" width={size} height={size} aria-hidden="true">
+    <g class="spin" bind:this={gear}><path d={sprocket} class="sprocket" /></g>
+    <circle r="52.4" class="band" />
+    <circle r="41.4" class="field" />
+    {#if full}
+      <path id={`${uid}-t`} d={top} fill="none" />
+      <path id={`${uid}-b`} d={bottom} fill="none" />
+      <text class="ring-text"><textPath href={`#${uid}-t`} startOffset="50%">BROBOBBER CUSTOM CLUB</textPath></text>
+      <text class="ring-text city"><textPath href={`#${uid}-b`} startOffset="50%">MOSCOW</textPath></text>
+      {#each stars as [x, y]}<circle cx={x} cy={y} r="1.6" class="star" />{/each}
+    {:else}
+      {#each rivets as [x, y]}<circle cx={x} cy={y} r="2" class="rivet" />{/each}
+    {/if}
+    <g class="spin" bind:this={tools}>
+      {#each [45, -45] as turn}
+        <g transform={`rotate(${turn})`}>
+          <path d={wrench} class="wrench" />
+          <path d={`M${-c + R + 2} 0 H${c - R - 2}`} class="groove" />
+        </g>
+      {/each}
     </g>
-    <circle cx="24" cy="24" r="3.2" class="hub" />
+    <g class="spin" bind:this={bolt}>
+      <polygon points={nut} class="nut" />
+      <circle r="10.2" class="chamfer" />
+    </g>
+    <text class="mono" y="4.1">BB</text>
   </svg>
   {#if word}<span class="word">Brobobber</span>{/if}
 </span>
@@ -62,15 +118,19 @@
 <style>
   .logo-mark { display: inline-flex; align-items: center; gap: 10px; line-height: 1; cursor: default; }
   svg { flex: none; overflow: visible; }
-  .rim { fill: #1c1d1b; stroke: var(--paper); stroke-width: 1.6; }
-  .scale { fill: none; stroke: var(--paper); stroke-width: 1.4; stroke-linecap: round; opacity: .55; }
-  .red { fill: none; stroke: var(--signal); stroke-width: 3.2; stroke-linecap: round; }
-  line { stroke: var(--paper); stroke-width: 1.2; stroke-linecap: round; opacity: .7; }
-  line.major { stroke-width: 2; opacity: 1; }
-  line.red-tick { stroke: var(--signal); opacity: 1; }
-  .bb { fill: var(--brass); font-family: var(--display); font-weight: 700; font-stretch: 75%; font-size: 9px; text-anchor: middle; letter-spacing: .3px; }
-  .needle { transform-origin: 24px 24px; transform-box: view-box; }
-  .needle path { fill: var(--brass); }
-  .hub { fill: var(--paper); stroke: #1c1d1b; stroke-width: 1.4; }
+  /* The viewBox is centred on 0 0, so that is the pivot for every turning part. */
+  .spin { transform-box: view-box; transform-origin: 0 0; }
+  .sprocket { fill: var(--paper); }
+  .band { fill: #1c1d1b; stroke: var(--brass); stroke-width: 1.6; }
+  .field { fill: #252623; stroke: var(--brass); stroke-width: 1.2; }
+  .rivet { fill: var(--brass); }
+  .star { fill: var(--signal); }
+  .ring-text { fill: var(--paper); font-family: var(--display); font-weight: 700; font-stretch: 75%; font-size: 8.6px; letter-spacing: 1.15px; text-anchor: middle; }
+  .ring-text.city { fill: var(--signal); letter-spacing: 2.4px; }
+  .wrench { fill: var(--paper); stroke: #1c1d1b; stroke-width: 1.6; stroke-linejoin: round; paint-order: stroke; }
+  .groove { stroke: #1c1d1b; stroke-width: 1.1; stroke-linecap: round; opacity: .28; }
+  .nut { fill: var(--brass); stroke: #1c1d1b; stroke-width: 1.8; stroke-linejoin: round; paint-order: stroke; }
+  .chamfer { fill: none; stroke: #1c1d1b; stroke-width: 1; opacity: .45; }
+  .mono { fill: #1c1d1b; font-family: var(--display); font-weight: 800; font-stretch: 75%; font-size: 11.5px; text-anchor: middle; letter-spacing: -.2px; }
   .word { font-family: var(--display); font-weight: 700; font-stretch: 75%; font-size: 26px; letter-spacing: .02em; color: var(--paper); }
 </style>
