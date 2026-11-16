@@ -1,12 +1,19 @@
 <script>
+  // Top bar on wide screens. On phones and tablets: a slim top bar that hides while scrolling down,
+  // a "dashboard" bar under the thumb, and a full-screen menu that rises like the workshop door.
+  // The menu and the dashboard live outside <header>: a backdrop-filter on the header would
+  // otherwise become their containing block and squash them.
   import { base } from '$app/paths'
   import { page } from '$app/state'
-  import { Menu, X, ChevronDown, Phone } from '@lucide/svelte'
+  import { Menu, X, ChevronDown, Phone, LayoutGrid, Wrench, Send } from '@lucide/svelte'
+  import Logo from './Logo.svelte'
   import { nav, services, styles, contacts } from './data.js'
 
   let open = $state(false)
   let submenu = $state('')
   let scrolled = $state(false)
+  let hidden = $state(false)
+  let callSheet = $state(false)
 
   // The site may live in a subfolder (GitHub Pages): compare paths without it.
   let path = $derived(page.url.pathname.slice(base.length) || '/')
@@ -14,13 +21,20 @@
   const active = href => path === href || path.startsWith(href + '/')
 
   $effect(() => {
-    page.url.pathname
+    path
     open = false
     submenu = ''
+    callSheet = false
   })
 
   $effect(() => {
-    const onScroll = () => { scrolled = window.scrollY > 24 }
+    let last = window.scrollY
+    const onScroll = () => {
+      const y = window.scrollY
+      scrolled = y > 24
+      // Hide the top bar while reading down, bring it back on the first move up.
+      if (Math.abs(y - last) > 6) { hidden = y > last && y > 160; last = y }
+    }
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
@@ -28,13 +42,18 @@
 
   $effect(() => {
     document.documentElement.style.overflow = open ? 'hidden' : ''
+    if (!open) return
+    /** @param {KeyboardEvent} e */
+    const onKey = e => { if (e.key === 'Escape') open = false }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
   })
 </script>
 
-<header class="header" class:scrolled class:open>
+<header class="header" class:scrolled class:hidden={hidden && !open}>
   <div class="bar wrap">
     <a class="logo" href="{base}/" aria-label="Brobobber, на главную">
-      <span class="logo-word">Brobobber</span>
+      <Logo size={38} rev={path} />
       <span class="logo-place">{contacts.addressShort}</span>
     </a>
 
@@ -62,34 +81,62 @@
     <div class="actions">
       <a class="phone" href={contacts.phones[0].href}><Phone size={15} />{contacts.phones[0].phone}</a>
       <a class="btn btn-signal cta" href="#zayavka">Обсудить проект</a>
-      <button class="burger" aria-label={open ? 'Закрыть меню' : 'Открыть меню'} aria-expanded={open} onclick={() => open = !open}>
-        {#if open}<X size={24} />{:else}<Menu size={24} />{/if}
-      </button>
     </div>
   </div>
-
-  {#if open}
-    <div class="sheet">
-      <nav class="sheet-nav wrap" aria-label="Меню">
-        <a href="{base}/" class:active={path === '/'}>Главная</a>
-        {#each nav as item}<a href={base + item.href} class:active={active(item.href)}>{item.label}</a>{/each}
-        <a href="{base}/konfigurator">Конфигуратор V-Rod</a>
-      </nav>
-      <div class="sheet-contacts wrap">
-        {#each contacts.phones as person}<a href={person.href}>{person.phone}<span>{person.name}</span></a>{/each}
-        <a class="btn btn-signal" href="#zayavka" onclick={() => open = false}>Обсудить проект</a>
-      </div>
-    </div>
-  {/if}
 </header>
 
+<!-- Phone dashboard: the four things people do on a workshop site, under the thumb. -->
+<nav class="dash" aria-label="Быстрые действия">
+  <a href="{base}/proekty" class:active={active('/proekty')}><LayoutGrid size={20} /><span>Проекты</span></a>
+  <a href="{base}/uslugi" class:active={active('/uslugi')}><Wrench size={20} /><span>Услуги</span></a>
+  <button class="call" aria-label="Позвонить или написать мастеру" aria-expanded={callSheet} onclick={() => callSheet = !callSheet}>
+    <span class="call-ring"><Phone size={22} /></span>
+  </button>
+  <a href="#zayavka" onclick={() => callSheet = false}><Send size={20} /><span>Заявка</span></a>
+  <button class:active={open} aria-label={open ? 'Закрыть меню' : 'Открыть меню'} aria-expanded={open} onclick={() => { open = !open; callSheet = false }}>
+    {#if open}<X size={20} />{:else}<Menu size={20} />{/if}<span>Меню</span>
+  </button>
+</nav>
+
+{#if callSheet}
+  <div class="call-sheet" role="dialog" aria-label="Связаться с мастером">
+    {#each contacts.phones as person}
+      <div class="person">
+        <strong>{person.name}</strong>
+        <a class="btn btn-signal" href={person.href}><Phone size={17} />{person.phone}</a>
+        <a class="btn btn-line" href={`https://t.me/${person.telegram}`} target="_blank" rel="noopener"><Send size={17} />Telegram</a>
+      </div>
+    {/each}
+  </div>
+  <button class="scrim" aria-label="Закрыть" onclick={() => callSheet = false}></button>
+{/if}
+
+{#if open}
+  <div class="sheet" role="dialog" aria-modal="true" aria-label="Меню">
+    <div class="sheet-top wrap">
+      <Logo size={52} word={false} rev={1} />
+      <p class="muted">{contacts.address}</p>
+    </div>
+    <nav class="sheet-nav wrap" aria-label="Меню">
+      <a href="{base}/" class:active={path === '/'} style="--i:0"><span>01</span>Главная</a>
+      {#each nav as item, i}
+        <a href={base + item.href} class:active={active(item.href)} style={`--i:${i + 1}`}><span>{String(i + 2).padStart(2, '0')}</span>{item.label}</a>
+      {/each}
+      <a href="{base}/konfigurator" style={`--i:${nav.length + 1}`}><span>{String(nav.length + 2).padStart(2, '0')}</span>Конфигуратор V-Rod</a>
+    </nav>
+    <div class="sheet-foot wrap">
+      <a class="btn btn-signal" href="#zayavka" onclick={() => open = false}>Обсудить проект</a>
+      <a class="btn btn-line" href={contacts.channel.href} target="_blank" rel="noopener"><Send size={17} />Канал</a>
+    </div>
+  </div>
+{/if}
+
 <style>
-  .header { position: fixed; inset: 0 0 auto; z-index: 50; transition: background-color .3s, border-color .3s; border-bottom: 1px solid transparent; }
-  .header.scrolled, .header.open { background: #1c1d1bf2; backdrop-filter: blur(10px); border-color: var(--rule); }
+  .header { position: fixed; inset: 0 0 auto; z-index: 50; transition: background-color .3s, border-color .3s, transform .35s var(--ease); border-bottom: 1px solid transparent; }
+  .header.scrolled { background: #1c1d1bf2; backdrop-filter: blur(10px); border-color: var(--rule); }
   .bar { height: var(--header); display: flex; align-items: center; gap: 28px; }
-  .logo { display: grid; line-height: 1; gap: 4px; flex: none; }
-  .logo-word { font-family: var(--display); font-weight: 700; font-stretch: 75%; font-size: 26px; letter-spacing: .02em; }
-  .logo-place { font-size: 12px; color: var(--concrete); }
+  .logo { display: grid; grid-template-columns: auto; line-height: 1; gap: 4px; flex: none; }
+  .logo-place { font-size: 12px; color: var(--concrete); padding-left: 48px; margin-top: -10px; }
   .nav { display: flex; gap: 4px; margin: 0 auto; }
   .nav a { display: inline-flex; align-items: center; gap: 4px; padding: 10px 12px; white-space: nowrap; font-size: 15px; color: #ece8dfcc; border-radius: 4px; transition: color .2s; }
   .nav a:hover, .nav a.active { color: var(--paper); }
@@ -103,23 +150,49 @@
   .phone { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-variant-numeric: tabular-nums; color: var(--paper); }
   .phone :global(svg) { color: var(--brass); }
   .cta { height: 44px; padding: 0 18px; }
-  .burger { display: none; width: 44px; height: 44px; place-items: center; }
-  .sheet { position: fixed; inset: var(--header) 0 0; background: var(--asphalt); display: flex; flex-direction: column; justify-content: space-between; padding: 24px 0 32px; overflow-y: auto; animation: drop .35s var(--ease); }
-  @keyframes drop { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
-  .sheet-nav { display: grid; }
-  .sheet-nav a { font-family: var(--display); font-stretch: 80%; font-weight: 600; font-size: 34px; padding: 6px 0; border-bottom: 1px solid var(--rule); }
-  .sheet-nav a.active { color: var(--brass); }
-  .sheet-contacts { display: grid; gap: 12px; margin-top: 28px; }
-  .sheet-contacts a:not(.btn) { display: flex; justify-content: space-between; font-size: 20px; }
-  .sheet-contacts span { color: var(--concrete); font-size: 15px; }
+
+  /* Dashboard bar, call sheet and menu: phones and tablets only */
+  .dash, .call-sheet, .scrim, .sheet { display: none; }
 
   @media (max-width: 1320px) {
     .nav { display: none; }
-    .burger { display: grid; }
     .actions { margin-left: auto; }
+    .header.hidden { transform: translateY(-100%); }
+
+    .dash { display: grid; grid-template-columns: repeat(5, 1fr); align-items: end; position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+      padding: 6px 8px calc(6px + env(safe-area-inset-bottom)); background: #1c1d1bf2; backdrop-filter: blur(12px); border-top: 1px solid var(--rule); }
+    .dash a, .dash button { display: grid; justify-items: center; gap: 3px; padding: 6px 0; font-size: 11px; color: var(--concrete); min-height: 50px; }
+    .dash .active { color: var(--brass); }
+    .dash .call { position: relative; padding: 0; }
+    .call-ring { width: 58px; height: 58px; margin-top: -26px; display: grid; place-items: center; border-radius: 50%; background: var(--signal); color: #fff;
+      box-shadow: 0 0 0 5px var(--asphalt), 0 8px 24px -6px #d23f2a99; transition: transform .2s; }
+    .call:active .call-ring { transform: scale(.94); }
+    .call[aria-expanded='true'] .call-ring { background: var(--paper); color: var(--asphalt); }
+
+    .scrim { display: block; position: fixed; inset: 0; z-index: 58; background: #0008; }
+    .call-sheet { display: grid; gap: 12px; position: fixed; left: 12px; right: 12px; bottom: calc(86px + env(safe-area-inset-bottom)); z-index: 59; padding: 16px;
+      background: var(--asphalt-2); border: 1px solid var(--rule); border-radius: 10px; animation: rise .3s var(--ease); }
+    .person { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .person strong { grid-column: 1 / -1; font-family: var(--display); font-stretch: 88%; font-size: 18px; }
+    .person .btn { height: 48px; padding: 0 12px; font-size: 14px; }
+
+    .sheet { display: flex; flex-direction: column; position: fixed; inset: 0; z-index: 55; background: var(--asphalt);
+      padding: calc(24px + env(safe-area-inset-top)) 0 calc(96px + env(safe-area-inset-bottom)); overflow-y: auto; animation: door .5s var(--ease); }
+    .sheet-top { display: flex; align-items: center; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid var(--rule); }
+    .sheet-top p { font-size: 13px; max-width: 30ch; }
+    .sheet-nav { display: grid; margin-top: 8px; }
+    .sheet-nav a { display: flex; align-items: baseline; gap: 14px; padding: 10px 0; font-family: var(--display); font-stretch: 78%; font-weight: 650;
+      font-size: clamp(32px, 9vw, 46px); line-height: 1.05; border-bottom: 1px solid var(--rule); animation: slat .45s calc(.08s + var(--i) * .04s) var(--ease) both; }
+    .sheet-nav a span { font-size: 13px; color: var(--brass); font-stretch: 100%; font-weight: 500; }
+    .sheet-nav a.active { color: var(--brass); }
+    .sheet-foot { display: flex; gap: 10px; margin-top: auto; padding-top: 24px; }
+    .sheet-foot .btn { flex: 1; }
+    @keyframes door { from { clip-path: inset(100% 0 0 0); } to { clip-path: inset(0 0 0 0); } }
+    @keyframes slat { from { opacity: 0; transform: translateY(14px); } }
+    @keyframes rise { from { opacity: 0; transform: translateY(12px); } }
   }
   @media (max-width: 640px) {
     .phone, .cta { display: none; }
-    .logo-word { font-size: 24px; }
+    .logo-place { display: none; }
   }
 </style>

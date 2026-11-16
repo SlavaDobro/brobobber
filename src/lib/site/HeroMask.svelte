@@ -50,21 +50,27 @@
       const p = progress
       const grow = 1 + Math.pow(p, 2.2) * 26
       ctx.clearRect(0, 0, width, height)
-      // 1. The picture, clipped to the letters.
+      // 1. The letters first (all lines), then the picture drawn only inside them ('source-in').
+      // Masking with 'destination-in' per line would keep only the overlap of the lines.
       ctx.save()
-      drawMedia(1.12 - p * .12)
-      ctx.globalCompositeOperation = 'destination-in'
-      const size = Math.min(width * .2, height * .42)
+      // On a tall phone screen the word stands in three big lines (BRO / BOB / BER) above the text block.
+      const portrait = height > width * 1.2
+      const lines = portrait ? word.match(/.{1,3}/g) ?? [word] : [word]
+      const size = portrait ? Math.min(width * .4, height * .16) : Math.min(width * .2, height * .42)
       ctx.font = `700 ${size}px "Tektur Variable"`
       // @ts-ignore: fontStretch is supported by Chromium and Firefox canvas
       ctx.fontStretch = 'condensed'
       ctx.textAlign = 'center'
       ctx.textBaseline = 'middle'
-      // On tall phone screens the text block takes the lower half: keep the word above it.
-      ctx.translate(width / 2, height * (height > width * 1.2 ? .3 : .46))
+      ctx.translate(width / 2, height * (portrait ? .3 : .46))
       ctx.scale(grow, grow)
       ctx.fillStyle = '#000'
-      ctx.fillText(word, 0, 0)
+      const lead = size * .86
+      lines.forEach((line, i) => ctx.fillText(line, 0, (i - (lines.length - 1) / 2) * lead))
+      ctx.restore()
+      ctx.save()
+      ctx.globalCompositeOperation = 'source-in'
+      drawMedia(1.12 - p * .12)
       ctx.restore()
       // 2. The whole picture fades in as the letters open up.
       const reveal = Math.min(1, Math.max(0, (p - .45) / .4))
@@ -78,15 +84,20 @@
     const onScroll = () => { measure(); request() }
     const io = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; if (visible) request() })
 
-    Promise.all([document.fonts.load('700 100px "Tektur Variable"'), image.decode().catch(() => {})]).then(() => {
-      ready = true; resize(); measure(); request()
+    const onResize = () => { if (ready) { resize(); onScroll() } }
+    // Draw as soon as the font is there, and again when the photo arrives (it may load later).
+    // The first frames are drawn directly, not via requestAnimationFrame: in a background tab
+    // animation frames are paused and the hero would stay empty until the visitor scrolls.
+    image.addEventListener('load', () => { if (ready) frame() })
+    document.fonts.load('700 100px "Tektur Variable"').catch(() => {}).then(() => {
+      ready = true; resize(); measure(); frame()
     })
     io.observe(section)
-    window.addEventListener('resize', onScroll)
+    window.addEventListener('resize', onResize)
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => {
       cancelAnimationFrame(raf); io.disconnect()
-      window.removeEventListener('resize', onScroll)
+      window.removeEventListener('resize', onResize)
       window.removeEventListener('scroll', onScroll)
     }
   })
@@ -119,4 +130,15 @@
   .hint::after { content: ''; display: block; width: 1px; height: 48px; margin: 12px auto 0; background: linear-gradient(var(--brass), transparent); animation: drip 1.8s ease-in-out infinite; }
   @keyframes drip { 0%, 100% { transform: scaleY(.3); transform-origin: top; } 50% { transform: scaleY(1); } }
   .still .hint { display: none; }
+  /* Phones: the dashboard bar takes the bottom of the screen, the copy sits above it. */
+  @media (max-width: 1320px) {
+    .stage { height: calc(100svh - 64px - env(safe-area-inset-bottom)); }
+  }
+  @media (max-width: 640px) {
+    .hint { display: none; }
+    .copy { padding-bottom: 24px; }
+    .copy :global(.lead) { font-size: 16px; }
+    .copy :global(.hero-actions) { display: grid; grid-template-columns: 1fr 1fr; }
+    .copy :global(.hero-actions .btn) { padding: 0 10px; height: 50px; }
+  }
 </style>

@@ -26,7 +26,7 @@
   </ol>
 
   <div class="drawing">
-    <img src="{base}/images/vrod/right.png" alt="Мотоцикл с отмеченными узлами, к которым относятся услуги" width="1536" height="1024" loading="lazy" decoding="async" />
+    <img src="{base}/images/vrod/right-site.webp" srcset="{base}/images/vrod/right-site-800.webp 800w, {base}/images/vrod/right-site.webp 1536w" sizes="(max-width: 960px) 100vw, 70vw" alt="Мотоцикл с отмеченными узлами, к которым относятся услуги" width="1536" height="1024" loading="lazy" decoding="async" />
     {#each spotted as service, i}
       <button class="spot" class:active={active === i} style={`left:${service.spot?.[0]}%;top:${service.spot?.[1]}%`}
         aria-label={service.name} onmouseenter={() => active = i} onfocus={() => active = i} onclick={() => active = i}>
@@ -44,6 +44,15 @@
       </div>
     {/key}
   </div>
+
+  <!-- Phones: no hover, so the chosen service shows as a card under the bike. -->
+  {#key active}
+    <div class="tap-card" aria-live="polite">
+      <span class="tap-num">{String(active + 1).padStart(2, '0')}</span>
+      <div><strong>{current.name}</strong><p>{current.short}</p></div>
+      <a class="btn btn-line" href={`${base}/uslugi/${current.slug}`}>Подробнее</a>
+    </div>
+  {/key}
 
   <ul class="extra" aria-label="Другие услуги">
     {#each rest as service}<li><a href={`${base}/uslugi/${service.slug}`}>{service.name}</a></li>{/each}
@@ -78,8 +87,15 @@
   .card a { justify-self: start; font-size: 14px; }
   @keyframes draw { from { transform: scaleY(0); } }
   @keyframes show { from { opacity: 0; transform: translateY(6px); } }
+  .tap-card { display: none; }
   @media (max-width: 960px) {
-    .bike-map { grid-template-columns: 1fr; grid-template-areas: 'drawing' 'list' 'extra'; }
+    .tap-card { grid-area: tap; display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; align-items: start; padding: 16px; background: var(--asphalt-2); border: 1px solid var(--rule); border-left: 2px solid var(--brass); border-radius: 6px; animation: show .3s var(--ease) both; }
+    .tap-card strong { font-family: var(--display); font-stretch: 88%; font-size: 19px; }
+    .tap-card p { font-size: 14px; color: var(--concrete); margin-top: 2px; }
+    .tap-num { font-family: var(--display); color: var(--brass); font-size: 22px; line-height: 1.1; }
+    .tap-card .btn { grid-column: 1 / -1; height: 44px; }
+    .spot { width: 40px; height: 40px; margin: -20px 0 0 -20px; }
+    .bike-map { grid-template-columns: 1fr; grid-template-areas: 'drawing' 'tap' 'list' 'extra'; }
     .callout { display: none; }
   }
 </style>

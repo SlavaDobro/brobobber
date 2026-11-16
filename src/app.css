@@ -80,3 +80,8 @@ body::after {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
+
+/* Phones and tablets: room for the dashboard bar at the bottom. */
+@media (max-width: 1320px) {
+  body:has(.dash) { padding-bottom: calc(64px + env(safe-area-inset-bottom)); }
+}
