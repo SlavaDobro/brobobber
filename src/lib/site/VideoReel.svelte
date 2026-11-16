@@ -2,12 +2,19 @@
   // Short vertical videos from the workshop's Telegram channel. Nothing is downloaded until the
   // visitor presses play (only the poster loads); one video plays at a time.
   import { base } from '$app/paths'
-  import { Play } from '@lucide/svelte'
+  import { Play, ChevronLeft, ChevronRight } from '@lucide/svelte'
   import videos from './videos.json'
+  import { dragScroll } from './drag-scroll.js'
 
   /** @type {{ limit?: number }} */
   let { limit = videos.length } = $props()
   let playing = $state('')
+  /** @type {HTMLElement} */ let reel
+  let atStart = $state(true), atEnd = $state(false)
+  const edges = () => { atStart = reel.scrollLeft < 8; atEnd = reel.scrollLeft + reel.clientWidth > reel.scrollWidth - 8 }
+  $effect(() => { edges(); const ro = new ResizeObserver(edges); ro.observe(reel); return () => ro.disconnect() })
+  /** @param {number} dir */
+  const scrollBy = dir => reel.scrollBy({ left: dir * reel.clientWidth * .7, behavior: 'smooth' })
 
   /** @param {string} id */
   function play(id) {
@@ -15,7 +22,7 @@
   }
 </script>
 
-<ul class="reel">
+<ul class="reel shelf" bind:this={reel} use:dragScroll onscroll={edges}>
   {#each videos.slice(0, limit) as video (video.id)}
     <li>
       <figure>
@@ -35,6 +42,10 @@
     </li>
   {/each}
 </ul>
+<div class="controls">
+  <button aria-label="Предыдущие ролики" disabled={atStart} onclick={() => scrollBy(-1)}><ChevronLeft size={20} /></button>
+  <button aria-label="Следующие ролики" disabled={atEnd} onclick={() => scrollBy(1)}><ChevronRight size={20} /></button>
+</div>
 
 <style>
   .reel { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-bottom: 4px; }
@@ -47,5 +58,9 @@
   .play { position: absolute; left: 50%; top: 50%; width: 58px; height: 58px; margin: -29px 0 0 -29px; display: grid; place-items: center; border-radius: 50%; background: #1c1d1bcc; border: 1px solid var(--brass); color: var(--brass); backdrop-filter: blur(4px); transition: transform .25s var(--ease); }
   .poster:hover .play { transform: scale(1.1); }
   .duration { position: absolute; right: 10px; bottom: 10px; padding: 2px 7px; border-radius: 3px; background: #000a; font-size: 12px; font-variant-numeric: tabular-nums; }
+  .controls { display: flex; gap: 8px; margin-top: 20px; }
+  .controls button { width: 46px; height: 46px; display: grid; place-items: center; border: 1px solid var(--rule); border-radius: 50%; transition: opacity .2s, border-color .2s, color .2s; }
+  .controls button:hover:not(:disabled) { border-color: var(--brass); color: var(--brass); }
+  .controls button:disabled { opacity: .35; cursor: default; }
   figcaption { font-size: 14px; color: var(--concrete); line-height: 1.4; }
 </style>

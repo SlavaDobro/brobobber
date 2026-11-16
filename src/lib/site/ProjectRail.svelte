@@ -1,6 +1,7 @@
 <script>
   // Projects as an endless carousel: the row drifts on its own like a conveyor in the workshop,
-  // stops under the cursor, a finger or keyboard focus, and can be dragged.
+  // stops under the cursor, a finger or keyboard focus, and can be dragged with the mouse or a
+  // finger; a quick throw keeps it rolling and slowing down before the drift picks up again.
   // The list is rendered twice so the loop has no seam; the copy is hidden from assistive tech.
   import ProjectCard from './ProjectCard.svelte'
 
@@ -17,6 +18,7 @@
   let dragging = $state(false)
   let still = $state(false) // reduced motion: no drift, dragging still works
   let moved = 0
+  let fling = 0 // px per second left over from a throw, decays in the tick
 
   let drifting = $derived(!still && !hover && !focusInside && !dragging)
 
@@ -38,7 +40,11 @@
     const tick = (/** @type {number} */ now) => {
       const dt = Math.min(64, now - last) / 1000
       last = now
-      if (drifting && visible && !document.hidden) {
+      if (fling && !dragging) {
+        offset = wrap(offset + fling * dt)
+        fling *= Math.exp(-dt * 3.2)
+        if (Math.abs(fling) < 8) fling = 0
+      } else if (drifting && visible && !document.hidden) {
         offset = wrap(offset + speed * dt)
       }
       raf = requestAnimationFrame(tick)
@@ -53,9 +59,22 @@
     if (e.button !== 0) return
     dragging = true
     moved = 0
+    fling = 0
     const startX = e.clientX, from = offset
-    const move = (/** @type {PointerEvent} */ ev) => { moved = Math.abs(ev.clientX - startX); offset = wrap(from - (ev.clientX - startX)) }
-    const up = () => {
+    // Recent positions give the release speed for the throw.
+    /** @type {{ x: number, t: number }[]} */ let trail = [{ x: e.clientX, t: e.timeStamp }]
+    const move = (/** @type {PointerEvent} */ ev) => {
+      moved = Math.max(moved, Math.abs(ev.clientX - startX))
+      offset = wrap(from - (ev.clientX - startX))
+      trail.push({ x: ev.clientX, t: ev.timeStamp })
+      trail = trail.filter(p => ev.timeStamp - p.t < 100)
+    }
+    const up = (/** @type {PointerEvent} */ ev) => {
+      const first = trail[0], dt = (ev.timeStamp - first.t) / 1000
+      if (ev.type === 'pointerup' && dt > 0 && ev.timeStamp - trail[trail.length - 1].t < 60) {
+        fling = Math.max(-2600, Math.min(2600, -(ev.clientX - first.x) / dt))
+        if (Math.abs(fling) < 60) fling = 0
+      }
       dragging = false
       window.removeEventListener('pointermove', move)
       window.removeEventListener('pointerup', up)
@@ -80,7 +99,7 @@
   <div class="viewport" bind:this={viewport}
     onpointerenter={e => { if (e.pointerType === 'mouse') hover = true }} onpointerleave={() => hover = false}
     onfocusin={() => focusInside = true} onfocusout={() => focusInside = false}
-    onpointerdown={down} onclickcapture={click}>
+    onpointerdown={down} onclickcapture={click} ondragstart={e => e.preventDefault()}>
     <ul class="track" class:dragging bind:this={track} style={`transform: translate3d(${-offset}px, 0, 0)`}>
       {#each projects as project}<li><ProjectCard {project} /></li>{/each}
       {#each projects as project}<li aria-hidden="true" inert><ProjectCard {project} /></li>{/each}
@@ -97,6 +116,9 @@
   .track { display: flex; gap: clamp(16px, 2vw, 28px); padding: 0 var(--gutter); will-change: transform; }
   .track li { flex: none; width: clamp(240px, 23vw, 330px); }
   .track :global(img) { pointer-events: none; -webkit-user-drag: none; }
+  /* Cards are links: without this the browser starts dragging the link and steals the mouse. */
+  .track :global(a) { -webkit-user-drag: none; cursor: grab; }
+  .track.dragging :global(a) { cursor: grabbing; }
   @media (max-width: 640px) {
     .track li { width: 72vw; }
   }

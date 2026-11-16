@@ -1,6 +1,7 @@
 <script>
   import { ChevronLeft, ChevronRight } from '@lucide/svelte'
   import { reviews } from './data.js'
+  import { dragScroll } from './drag-scroll.js'
 
   /** @type {HTMLElement} */ let row
   /** @param {number} dir */
@@ -8,7 +9,7 @@
 </script>
 
 <div class="reviews">
-  <ul class="row" bind:this={row}>
+  <ul class="row shelf" bind:this={row} use:dragScroll>
     {#each reviews as review}
       <li>
         <blockquote>
