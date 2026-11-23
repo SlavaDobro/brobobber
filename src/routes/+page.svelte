@@ -1,6 +1,6 @@
 <script>
   import { base } from '$app/paths'
-  import HeroMask from '$lib/site/HeroMask.svelte'
+  import HeroDoor from '$lib/site/HeroDoor.svelte'
   import ProjectRail from '$lib/site/ProjectRail.svelte'
   import ServiceBike from '$lib/site/ServiceBike.svelte'
   import ProcessRoad from '$lib/site/ProcessRoad.svelte'
@@ -19,7 +19,7 @@
   <meta name="description" content="Кастомизация, тюнинг и обслуживание мотоциклов: Harley-Davidson, Triumph, Yamaha, BMW и другие. Мастерская в Москве, Марьино, Кнутовская, 14." />
 </svelte:head>
 
-<HeroMask photo="/images/photos/home/04">
+<HeroDoor photo="/images/photos/scrambler/04" alt="Два мотоцикла мастерской Brobobber на закате у воды" focus="27% 58%">
   <div class="hero-copy">
     <h1 class="hero-title">Кастом-ателье мотоциклов в Москве</h1>
     <p class="lead">Строим, тюнингуем и обслуживаем мотоциклы. Harley-Davidson, Triumph, Yamaha, BMW — и любой байк, который вы привезёте.</p>
@@ -28,7 +28,7 @@
       <a class="btn btn-line" href="{base}/proekty">Смотреть проекты</a>
     </div>
   </div>
-</HeroMask>
+</HeroDoor>
 
 <section class="section manifesto">
   <div class="wrap">
