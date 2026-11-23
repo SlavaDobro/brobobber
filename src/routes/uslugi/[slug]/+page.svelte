@@ -3,10 +3,10 @@
   import PageHero from '$lib/site/PageHero.svelte'
   import ProjectCard from '$lib/site/ProjectCard.svelte'
   import Faq from '$lib/site/Faq.svelte'
-  import { services, faq } from '$lib/site/data.js'
+  import { services, faq, cardStyle } from '$lib/site/data.js'
   import { Check } from '@lucide/svelte'
   import videos from '$lib/site/videos.json'
-  import Photo from '$lib/site/Photo.svelte'
+  import PhotoWall from '$lib/site/PhotoWall.svelte'
 
   let { data } = $props()
   let service = $derived(data.service)
@@ -42,9 +42,7 @@
   <section class="section">
     <div class="wrap">
       <h2 class="h2 gallery-title">Из мастерской</h2>
-      <ul class="service-gallery">
-        {#each service.gallery as photo}<li><Photo base={photo} alt={service.name} sizes="(max-width: 700px) 50vw, 25vw" /></li>{/each}
-      </ul>
+      <PhotoWall photos={service.gallery} alt={service.name} />
     </div>
   </section>
 {/if}
@@ -67,7 +65,7 @@
   <section class="section">
     <div class="wrap">
       <div class="section-head"><h2 class="h2">Работы по этой услуге</h2><a class="link-brass" href="{base}/proekty">Все проекты</a></div>
-      <ul class="projects">{#each data.related as project}<li><ProjectCard {project} /></li>{/each}</ul>
+      <ul class="justified fill">{#each data.related as project}<li style={cardStyle(project)}><ProjectCard {project} /></li>{/each}</ul>
     </div>
   </section>
 {/if}
@@ -106,14 +104,9 @@
   .points li { display: flex; gap: 14px; padding: 16px 0; border-bottom: 1px solid var(--rule); font-size: 18px; }
   .points :global(svg) { color: var(--brass); flex: none; margin-top: 4px; }
   .gallery-title { margin-bottom: 28px; }
-  .service-gallery { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
-  .service-gallery li { aspect-ratio: 3 / 4; overflow: hidden; border-radius: 4px; }
-  .service-gallery :global(img) { width: 100%; height: 100%; object-fit: cover; }
-  @media (max-width: 760px) { .service-gallery { grid-template-columns: 1fr 1fr; } }
   .clip { align-items: center; }
   .clip-copy { display: grid; gap: 16px; justify-items: start; }
   .clip-video { width: min(100%, 340px); aspect-ratio: 9 / 16; border-radius: 6px; background: var(--asphalt-2); object-fit: cover; }
-  .projects { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
   .estimate-copy { display: grid; gap: 16px; }
   .estimate { display: grid; gap: 10px; counter-reset: e; }
   .estimate li { display: flex; align-items: center; gap: 16px; padding: 16px 18px; background: var(--asphalt-2); border: 1px solid var(--rule); border-radius: 4px; font-size: 17px; }
@@ -123,6 +116,5 @@
   .others { display: flex; flex-wrap: wrap; gap: 10px; }
   .others a { display: inline-block; padding: 9px 16px; border: 1px solid var(--rule); border-radius: 100px; color: var(--concrete); }
   .others a:hover { color: var(--paper); border-color: var(--concrete); }
-  @media (max-width: 900px) { .two { grid-template-columns: 1fr; } .projects { grid-template-columns: 1fr 1fr; } }
-  @media (max-width: 560px) { .projects { grid-template-columns: 1fr; } }
+  @media (max-width: 900px) { .two { grid-template-columns: 1fr; } }
 </style>

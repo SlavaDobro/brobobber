@@ -4,16 +4,25 @@
   import Photo from '$lib/site/Photo.svelte'
   import Odometer from '$lib/site/Odometer.svelte'
   import ProjectCard from '$lib/site/ProjectCard.svelte'
-  import { styles, photoSrc, plural } from '$lib/site/data.js'
+  import { styles, photoSrc, plural, cardStyle } from '$lib/site/data.js'
   import videos from '$lib/site/videos.json'
 
   let { data } = $props()
   let project = $derived(data.project)
   let style = $derived(styles.find(s => s.slug === project.style))
-  let cover = $derived(project.gallery[0])
-  let lowRes = $derived(!!cover && cover.w < 1200 && project.gallery.length >= 3)
-  let rest = $derived(project.gallery.slice(lowRes ? 3 : 1))
-  let restStart = $derived(lowRes ? 3 : 1)
+  // The opening row: as many photos as it takes to fill the width, each one whole.
+  let opening = $derived.by(() => {
+    const row = []
+    let sum = 0
+    for (const photo of project.gallery) {
+      row.push(photo)
+      sum += photo.w / photo.h
+      if (sum >= 2.1 || row.length === 3) break
+    }
+    return { row, sum }
+  })
+  let restStart = $derived(opening.row.length)
+  let rest = $derived(project.gallery.slice(restStart))
   let meta = $derived([
     project.brand + (style ? `, ${style.name.toLowerCase()}` : ''),
     project.works.length ? `${project.works.length} ${plural(project.works.length, ['работа', 'работы', 'работ'])} по проекту` : '',
@@ -46,19 +55,14 @@
     <h1 class="h1">{project.name}</h1>
     <p class="meta">{meta}</p>
   </div>
-  {#if cover && lowRes}
-    <!-- Channel photos are 800 px: three side by side stay sharp where one full-width would blur. -->
-    <div class="cover-row">
-      {#each project.gallery.slice(0, 3) as photo, i}
-        <button onclick={() => open(i)} aria-label={`Фото ${i + 1} на весь экран`}>
-          <Photo base={photo.src} alt={i === 0 ? project.name : ''} sizes="34vw" eager w={photo.w} h={photo.h} />
+  {#if opening.row.length}
+    <div class="cover-row" style={`--sum:${opening.sum}`}>
+      {#each opening.row as photo, i}
+        <button style={`--a:${photo.w / photo.h}`} onclick={() => open(i)} aria-label={`Фото ${i + 1} на весь экран`}>
+          <Photo base={photo.src} alt={i === 0 ? project.name : ''} sizes="50vw" eager w={photo.w} h={photo.h} />
         </button>
       {/each}
     </div>
-  {:else if cover}
-    <button class="cover" onclick={() => open(0)} aria-label="Открыть фото на весь экран">
-      <Photo base={cover.src} alt={project.name} sizes="100vw" eager w={cover.w} h={cover.h} />
-    </button>
   {/if}
 </section>
 
@@ -124,7 +128,7 @@
       <h2 class="h2">Ещё проекты</h2>
       <a class="next" href={`${base}/proekty/${data.next.slug}`}>Следующий: {data.next.name}<ArrowRight size={18} /></a>
     </div>
-    <ul class="more">{#each data.more as item}<li><ProjectCard project={item} /></li>{/each}</ul>
+    <ul class="justified fill">{#each data.more as item}<li style={cardStyle(item)}><ProjectCard project={item} /></li>{/each}</ul>
   </div>
 </section>
 
@@ -145,10 +149,10 @@
   .crumbs a:hover { color: var(--paper); }
   .h1 { max-width: 22ch; text-wrap: balance; }
   .meta { color: var(--concrete); font-size: 17px; }
-  .cover { display: block; width: 100%; height: min(82vh, 860px); overflow: hidden; cursor: zoom-in; }
-  .cover :global(img) { width: 100%; height: 100%; object-fit: cover; animation: rollup 1.2s .1s var(--ease) both; }
-  .cover-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; height: min(64vh, 620px); }
-  .cover-row button { overflow: hidden; cursor: zoom-in; }
+  /* Justified row: the height is what lets all the photos fit the width at their own proportions. */
+  .cover-row { display: flex; justify-content: center; gap: 6px; padding-inline: var(--gutter);
+    height: min(80vh, calc((var(--page-w, 100vw) - 2 * var(--gutter) - 12px) / var(--sum))); }
+  .cover-row button { flex: none; height: 100%; aspect-ratio: var(--a); overflow: hidden; border-radius: 4px; cursor: zoom-in; }
   .cover-row :global(img) { width: 100%; height: 100%; object-fit: cover; animation: rollup 1.2s var(--ease) both; }
   .cover-row button:nth-child(2) :global(img) { animation-delay: .12s; }
   .cover-row button:nth-child(3) :global(img) { animation-delay: .24s; }
@@ -171,7 +175,6 @@
   .gallery :global(img) { width: 100%; height: auto; transition: transform .6s var(--ease); }
   .gallery button:hover :global(img) { transform: scale(1.04); }
   .next { display: inline-flex; align-items: center; gap: 8px; color: var(--brass); }
-  .more { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
   .viewer { width: 100vw; height: 100vh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: #0f100ef2; color: var(--paper); }
   .viewer::backdrop { background: transparent; }
   .viewer[open] { display: grid; place-items: center; }
@@ -184,10 +187,10 @@
   @media (max-width: 860px) {
     .two { grid-template-columns: 1fr; }
     .sticky { position: static; }
-    .grid3, .more { grid-template-columns: 1fr; }
-    .cover { height: 60vh; }
-    .cover-row { grid-template-columns: 1fr 1fr; height: auto; }
-    .cover-row button { aspect-ratio: 4 / 5; }
-    .cover-row button:first-child { grid-column: 1 / -1; aspect-ratio: 1; }
+    .grid3 { grid-template-columns: 1fr; }
+    /* Phones: the first photo across the width, the others share one row at equal height. */
+    .cover-row { flex-wrap: wrap; height: auto; }
+    .cover-row button { flex: var(--a) 1 0; min-width: 0; height: auto; }
+    .cover-row button:first-child { flex-basis: 100%; }
   }
 </style>

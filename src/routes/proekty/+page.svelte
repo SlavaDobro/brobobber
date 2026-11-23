@@ -5,7 +5,7 @@
   import ProjectCard from '$lib/site/ProjectCard.svelte'
   import ProcessRoad from '$lib/site/ProcessRoad.svelte'
   import Faq from '$lib/site/Faq.svelte'
-  import { projects, styles } from '$lib/site/data.js'
+  import { projects, styles, cardStyle } from '$lib/site/data.js'
 
   const brands = [...new Set(projects.map(p => p.brand))]
   const usedStyles = styles.filter(s => projects.some(p => p.style === s.slug))
@@ -40,9 +40,9 @@
     </div>
 
     {#if shown.length}
-      <ul class="grid">
+      <ul class="justified">
         {#each shown as project (project.slug)}
-          <li animate:flip={{ duration: 400 }} in:fade={{ duration: 250 }}><ProjectCard {project} sizes="(max-width: 700px) 100vw, 33vw" /></li>
+          <li style={cardStyle(project)} animate:flip={{ duration: 400 }} in:fade={{ duration: 250 }}><ProjectCard {project} /></li>
         {/each}
       </ul>
     {:else}
@@ -71,10 +71,9 @@
   .group button:hover { color: var(--paper); border-color: var(--concrete); }
   .group button.on { background: var(--paper); color: var(--asphalt); border-color: var(--paper); }
   .found { font-size: 14px; color: var(--concrete); }
-  .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 44px 24px; }
   .empty { color: var(--concrete); }
   .head { margin-bottom: 40px; }
   .two { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 40px; }
-  @media (max-width: 960px) { .grid { grid-template-columns: 1fr 1fr; } .two { grid-template-columns: 1fr; } }
-  @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } .label { width: 100%; } }
+  @media (max-width: 960px) { .two { grid-template-columns: 1fr; } }
+  @media (max-width: 600px) { .label { width: 100%; } }
 </style>

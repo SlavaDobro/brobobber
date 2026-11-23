@@ -9,9 +9,16 @@
   import Photo from '$lib/site/Photo.svelte'
   import VideoReel from '$lib/site/VideoReel.svelte'
   import PhotoSlides from '$lib/site/PhotoSlides.svelte'
-  import { projects, advantages, contacts } from '$lib/site/data.js'
+  import { projects, advantages, contacts, photoAspect } from '$lib/site/data.js'
 
-  const showcase = ['harley-davidson-v-rod', 'harley-davidson-scrambler', 'yamaha-v-max-1700', 'triumph-rocket-3r', 'harley-davidson-heritage-114', 'harley-davidson-48-nardo-gray', 'bmw-k100']
+  // Wide shots where the whole motorcycle is in frame.
+  const showcase = [
+    { slug: 'harley-davidson-v-rod', photo: '/images/photos/v-rod/01' },
+    { slug: 'harley-davidson-scrambler', photo: '/images/photos/scrambler/01' },
+    { slug: 'yamaha-v-max-1700', photo: '/images/photos/vmax/04' },
+    { slug: 'harley-davidson-heritage-114', photo: '/images/photos/hd114/01' },
+    { slug: 'harley-davidson-48-nardo-gray', photo: '/images/photos/48nardogray/07' },
+  ]
 </script>
 
 <svelte:head>
@@ -34,7 +41,7 @@
   <div class="wrap">
     <div class="manifesto-top">
       <p class="statement">Место, где мотоциклы <span class="brass">превращаются в шедевры</span>. Каждый проект — под характер владельца.</p>
-      <PhotoSlides slugs={showcase} />
+      <PhotoSlides items={showcase} />
     </div>
     <ul class="advantages">
       {#each advantages as item}
@@ -54,7 +61,7 @@
 
 <section class="section about">
   <div class="wrap grid">
-    <div class="about-photo">
+    <div class="about-photo" style={`--a:${photoAspect('/images/photos/home/24')}`}>
       <Photo base="/images/photos/home/24" alt="Мастера Brobobber в мастерской" sizes="(max-width: 900px) 100vw, 45vw" />
     </div>
     <div class="about-copy">
@@ -138,7 +145,7 @@
   .advantages { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; margin-top: clamp(40px, 6vw, 80px); padding-top: 28px; border-top: 1px solid var(--rule); }
   .advantages li { display: grid; gap: 10px; align-content: start; }
   .about .grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(28px, 6vw, 96px); align-items: center; }
-  .about-photo { aspect-ratio: 4 / 5; overflow: hidden; border-radius: 4px; }
+  .about-photo { aspect-ratio: var(--a); width: min(100%, calc(82svh * var(--a))); justify-self: center; overflow: hidden; border-radius: 4px; }
   .about-photo :global(img) { width: 100%; height: 100%; object-fit: cover; }
   .about-copy { display: grid; gap: 22px; justify-items: start; }
   .sale-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: end; }

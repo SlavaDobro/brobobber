@@ -28,6 +28,14 @@ export function scaled(image, width) {
   return draw(current, width, Math.round(width * ratio))
 }
 
+/** A tiny soft copy (`<base>-blur.webp`) that fills the frame around a photo shown whole.
+ *  @param {any} image @param {string} base */
+export function writeBlur(image, base) {
+  const small = draw(image, 16, Math.max(4, Math.round(16 * image.height / image.width)))
+  const soft = draw(small, 48, Math.max(8, Math.round(48 * image.height / image.width)))
+  writeFileSync(`${base}-blur.webp`, soft.toBuffer('image/webp', 60))
+}
+
 /** Writes `<base>-1600.webp` and `<base>-800.webp`; returns the real widths [large, small].
  *  @param {any} image @param {string} base @param {number} [q] override, for quality tests */
 export function writePhoto(image, base, q) {

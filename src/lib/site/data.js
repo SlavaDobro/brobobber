@@ -103,7 +103,7 @@ const styleCredits = {
 /** @type {Style[]} */
 export const styles = [
   { slug: 'bobber', name: 'Боббер', lead: 'Всё лишнее срезано: короткие крылья, одиночное седло, толстые шины и низкая посадка.',
-    traits: [['Посадка', 'Низкая, ноги впереди или по центру'], ['Рама', 'Стоковая или с хардтейлом'], ['Крылья', 'Укороченные, заднее над самой шиной'], ['Детали', 'Одиночное седло, минимум хрома']], image: '/images/photos/48nardogray/03' },
+    traits: [['Посадка', 'Низкая, ноги впереди или по центру'], ['Рама', 'Стоковая или с хардтейлом'], ['Крылья', 'Укороченные, заднее над самой шиной'], ['Детали', 'Одиночное седло, минимум хрома']], image: '/images/photos/48nardogray/07' },
   { slug: 'chopper', name: 'Чоппер', lead: 'Длинная вилка с большим вылетом, высокий руль и узкое переднее колесо.',
     traits: [['Посадка', 'Откинутая, руки высоко'], ['Рама', 'Удлинённая, с увеличенным углом наклона'], ['Крылья', 'Минимальные или без переднего'], ['Детали', 'Ape-hanger руль, спинка, бак «капля»']], image: '/images/photos/styles/chopper', credit: styleCredits.chopper },
   { slug: 'kafe-reyser', name: 'Кафе-рейсер', lead: 'Длинный бак, короткое горбатое седло и низкий руль: посадка как на гоночном мотоцикле 60-х.',
@@ -177,8 +177,14 @@ export const plural = (n, forms) => {
 /** Responsive photo sources for a stored photo path (without size suffix), inside the site's base folder. @param {string} stem */
 export const photoSrc = stem => {
   const p = base + stem
-  if (!stem.startsWith('/images/photos/')) return { src: `${p}.webp`, srcset: `${p}-800.webp 800w, ${p}.webp 1536w` }
+  if (!stem.startsWith('/images/photos/')) return { src: `${p}.webp`, srcset: `${p}-800.webp 800w, ${p}.webp 1536w`, blur: '' }
   // Real file widths: a wrong number here makes the browser pick a smaller file on sharp screens.
   const [large, small] = /** @type {Record<string, number[]>} */ (photoWidths)[stem.slice('/images/photos/'.length)] ?? [1600, 800]
-  return { src: `${p}-1600.webp`, srcset: large > small ? `${p}-800.webp ${small}w, ${p}-1600.webp ${large}w` : `${p}-1600.webp ${large}w` }
+  return { src: `${p}-1600.webp`, srcset: large > small ? `${p}-800.webp ${small}w, ${p}-1600.webp ${large}w` : `${p}-1600.webp ${large}w`, blur: `${p}-blur.webp` }
 }
+
+/** Inline style giving a project card the proportions of its cover. @param {{ gallery: { src: string }[] }} project */
+export const cardStyle = project => `--a:${project.gallery[0] ? photoAspect(project.gallery[0].src) : .75}`
+
+/** Width / height of a stored photo. @param {string} stem */
+export const photoAspect = stem => /** @type {Record<string, number[]>} */ (photoWidths)[stem.replace('/images/photos/', '')]?.[2] ?? 1.5

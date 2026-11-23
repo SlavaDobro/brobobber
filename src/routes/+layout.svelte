@@ -27,6 +27,28 @@
     return () => observer.disconnect()
   })
 
+  // Brand and model names stay on one line: "Harley-/Davidson" must not break at the hyphen.
+  $effect(() => {
+    const names = /\b(Harley|V|DR)-(Davidson|Rod|Max|Z400)/g
+    /** @param {Node} root */
+    const glue = root => {
+      if (root.nodeType === Node.TEXT_NODE) {
+        const fixed = root.nodeValue?.replace(names, '$1-\u2060$2')
+        if (fixed !== undefined && fixed !== root.nodeValue) root.nodeValue = fixed
+        return
+      }
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT)
+      while (walker.nextNode()) glue(walker.currentNode)
+    }
+    glue(document.body)
+    const observer = new MutationObserver(records => records.forEach(r => {
+      if (r.type === 'characterData') glue(r.target)
+      else r.addedNodes.forEach(glue)
+    }))
+    observer.observe(document.body, { subtree: true, childList: true, characterData: true })
+    return () => observer.disconnect()
+  })
+
   onNavigate(navigation => {
     const from = navigation.from?.url.pathname, to = navigation.to?.url.pathname
     if (!to || from === to || matchMedia('(prefers-reduced-motion: reduce)').matches) return

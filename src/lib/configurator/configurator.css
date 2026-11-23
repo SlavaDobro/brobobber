@@ -62,7 +62,7 @@
   .rail-step.active .rail-number { background: var(--tape); border-color: var(--tape); color: var(--ink); transform: rotate(-3deg); }
   .rail-text { display: grid; gap: 1px; min-width: 0; }
   .rail-text strong { font-family: var(--display); font-stretch: 90%; font-weight: 600; font-size: 17px; }
-  .rail-text span { font-size: 13px; color: var(--ink-soft); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .rail-text span { font-size: 13px; line-height: 1.25; color: var(--ink-soft); }
   .rail-step.active .rail-text span { color: var(--ink); }
   .rail-reset { margin-top: auto; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-soft); padding: 10px 8px; text-align: left; }
   .rail-reset:hover { color: var(--ink); }
@@ -235,7 +235,7 @@
     .rail-steps { display: flex; gap: 4px; overflow-x: auto; padding: 8px 12px; scrollbar-width: none; }
     .rail-steps li { flex: none; }
     .rail-step { grid-template-columns: 26px auto; padding: 8px 10px; }
-    .rail-text span { max-width: 140px; }
+    .rail-text span { white-space: nowrap; }
     .rail-reset { display: none; }
     .stage-column { order: 1; }
     .bay { min-height: min(78vw, 560px); }

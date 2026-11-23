@@ -4,6 +4,7 @@
   // finger; a quick throw keeps it rolling and slowing down before the drift picks up again.
   // The list is rendered twice so the loop has no seam; the copy is hidden from assistive tech.
   import ProjectCard from './ProjectCard.svelte'
+  import { cardStyle } from './data.js'
 
   /** @type {{ projects: import('./data.js').Project[], children?: import('svelte').Snippet }} */
   let { projects, children } = $props()
@@ -106,8 +107,8 @@
     onfocusin={() => focusInside = true} onfocusout={() => focusInside = false}
     onpointerdown={down} onclickcapture={click} ondragstart={e => e.preventDefault()}>
     <ul class="track" class:dragging bind:this={track} style={`transform: translate3d(${-shift}px, 0, 0)`}>
-      {#each projects as project}<li><ProjectCard {project} /></li>{/each}
-      {#each projects as project}<li aria-hidden="true" inert><ProjectCard {project} /></li>{/each}
+      {#each projects as project}<li style={cardStyle(project)}><ProjectCard {project} /></li>{/each}
+      {#each projects as project}<li style={cardStyle(project)} aria-hidden="true" inert><ProjectCard {project} /></li>{/each}
     </ul>
   </div>
 
@@ -118,13 +119,10 @@
   .head { margin-bottom: clamp(24px, 4vw, 44px); }
   .viewport { cursor: grab; touch-action: pan-y; user-select: none; }
   .viewport:active { cursor: grabbing; }
-  .track { display: flex; gap: clamp(16px, 2vw, 28px); padding: 0 var(--gutter); will-change: transform; }
-  .track li { flex: none; width: clamp(240px, 23vw, 330px); }
+  .track { --rail-h: clamp(300px, 29vw, 420px); display: flex; align-items: flex-start; gap: clamp(16px, 2vw, 28px); padding: 0 var(--gutter); will-change: transform; }
+  .track li { flex: none; width: min(86vw, calc(var(--rail-h) * var(--a))); }
   .track :global(img) { pointer-events: none; -webkit-user-drag: none; }
   /* Cards are links: without this the browser starts dragging the link and steals the mouse. */
   .track :global(a) { -webkit-user-drag: none; cursor: grab; }
   .track.dragging :global(a) { cursor: grabbing; }
-  @media (max-width: 640px) {
-    .track li { width: 72vw; }
-  }
 </style>

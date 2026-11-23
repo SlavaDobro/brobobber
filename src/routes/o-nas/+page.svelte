@@ -6,7 +6,7 @@
   import ProcessRoad from '$lib/site/ProcessRoad.svelte'
   import Reviews from '$lib/site/Reviews.svelte'
   import ServiceIndex from '$lib/site/ServiceIndex.svelte'
-  import { advantages, projects, contacts } from '$lib/site/data.js'
+  import { advantages, projects, contacts, photoAspect } from '$lib/site/data.js'
 </script>
 
 <svelte:head>
@@ -18,7 +18,7 @@
 
 <section class="section">
   <div class="wrap duo">
-    <div class="pic"><Photo base="/images/photos/home/24" alt="Мастера Brobobber" sizes="(max-width: 900px) 100vw, 40vw" /></div>
+    <div class="pic" style={`--a:${photoAspect('/images/photos/home/24')}`}><Photo base="/images/photos/home/24" alt="Мастера Brobobber" sizes="(max-width: 900px) 100vw, 40vw" /></div>
     <div class="copy">
       <h2 class="h2">Кто в мастерской</h2>
       <p class="lead">На связи с вами {contacts.phones[0].name}: здесь обсуждаем идею, смету и сроки, сюда же вы приезжаете на обслуживание.</p>
@@ -51,7 +51,7 @@
 
 <section class="section">
   <div class="wrap duo reverse">
-    <div class="pic"><Photo base="/images/photos/home/26" alt="Гравированная накладка на бак" sizes="(max-width: 900px) 100vw, 40vw" /></div>
+    <div class="pic" style={`--a:${photoAspect('/images/photos/home/26')}`}><Photo base="/images/photos/home/26" alt="Гравированная накладка на бак" sizes="(max-width: 900px) 100vw, 40vw" /></div>
     <div class="copy">
       <h2 class="h2">Наша философия</h2>
       <p class="lead">Мотоцикл — отражение характера владельца. Поэтому мы не тиражируем решения: каждую деталь подбираем, проектируем или делаем под конкретный байк.</p>
@@ -78,7 +78,7 @@
 <style>
   .duo { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(28px, 6vw, 96px); align-items: center; }
   .duo.reverse .pic { order: 2; }
-  .pic { aspect-ratio: 4 / 5; overflow: hidden; border-radius: 4px; }
+  .pic { aspect-ratio: var(--a); width: min(100%, calc(82svh * var(--a))); justify-self: center; overflow: hidden; border-radius: 4px; }
   .pic :global(img) { width: 100%; height: 100%; object-fit: cover; }
   .copy { display: grid; gap: 22px; }
   .people { display: grid; gap: 14px; }

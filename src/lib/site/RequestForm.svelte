@@ -93,7 +93,6 @@
   .request { padding: clamp(72px, 9vw, 128px) 0; background: var(--asphalt-2); border-top: 1px solid var(--rule); }
   .grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(32px, 6vw, 96px); align-items: start; }
   .intro { display: grid; gap: 20px; }
-  .intro .h2 { max-width: 10ch; }
   .intro p { max-width: 40ch; }
   .people { display: grid; gap: 14px; margin-top: 8px; }
   .people li { display: grid; gap: 2px; }

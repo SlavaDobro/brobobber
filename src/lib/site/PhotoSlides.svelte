@@ -5,12 +5,12 @@
   import Photo from './Photo.svelte'
   import { photoSrc, projects } from './data.js'
 
-  /** @type {{ slugs: string[], interval?: number }} */
-  let { slugs, interval = 3800 } = $props()
+  /** @type {{ items: { slug: string, photo: string }[], interval?: number }} */
+  let { items, interval = 3800 } = $props()
 
-  let slides = $derived(slugs.flatMap(slug => {
+  let slides = $derived(items.flatMap(({ slug, photo }) => {
     const project = projects.find(p => p.slug === slug)
-    return project?.gallery[0] ? [{ slug, name: project.name, stem: project.gallery[0].src, photo: photoSrc(project.gallery[0].src) }] : []
+    return project ? [{ slug, name: project.name, stem: photo, photo: photoSrc(photo) }] : []
   }))
   let index = $state(0)
   let previous = $state(-1)
@@ -41,14 +41,14 @@
   {/if}
   {#key index}
     <a class="slide" href={`${base}/proekty/${current.slug}`} aria-label={`Проект: ${current.name}`}>
-      <Photo base={current.stem} alt={current.name} sizes="(max-width: 760px) 100vw, 50vw" eager={index !== 0} />
+      <Photo base={current.stem} alt={current.name} sizes="(max-width: 760px) 100vw, 50vw" eager={index !== 0} cover />
       <span class="name">{current.name}</span>
     </a>
   {/key}
 </div>
 
 <style>
-  .slides { position: relative; aspect-ratio: 5 / 4; overflow: hidden; border-radius: 4px; background: var(--asphalt-2); }
+  .slides { position: relative; aspect-ratio: 1.36; overflow: hidden; border-radius: 4px; background: var(--asphalt-2); }
   .under, .slide, .slide :global(img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   .slide { display: block; animation: door .95s var(--ease) both; }
   .slide :global(img) { animation: settle 4.6s var(--ease) both; }

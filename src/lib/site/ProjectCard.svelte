@@ -26,7 +26,7 @@
 
 <style>
   .card { display: grid; gap: 14px; color: var(--paper); }
-  .frame { display: block; aspect-ratio: 4 / 5; overflow: hidden; border-radius: 4px; background: var(--asphalt-2); }
+  .frame { display: block; aspect-ratio: var(--a, 3 / 4); overflow: hidden; border-radius: 4px; background: var(--asphalt-2); }
   .frame :global(img) { width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ease); }
   .card:hover .frame :global(img) { transform: scale(1.05); }
   .meta { display: grid; gap: 2px; }

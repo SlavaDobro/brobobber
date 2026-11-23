@@ -2,6 +2,7 @@
   import { base } from '$app/paths'
   // Inner page opening: title on the left, the picture rolls up like the workshop door.
   import Photo from './Photo.svelte'
+  import { photoAspect } from './data.js'
 
   /** @type {{ title: string, lead?: string, photo?: string, alt?: string, crumbs?: { href: string, label: string }[], children?: import('svelte').Snippet }} */
   let { title, lead = '', photo = '', alt = '', crumbs = [], children } = $props()
@@ -20,7 +21,7 @@
       {@render children?.()}
     </div>
     {#if photo}
-      <div class="picture">
+      <div class="picture" style={`--a:${photoAspect(photo)}`}>
         <Photo base={photo} {alt} sizes="(max-width: 900px) 100vw, 50vw" eager />
       </div>
     {/if}
@@ -34,11 +35,9 @@
   .copy { display: grid; gap: 24px; align-content: end; }
   .crumbs { display: flex; flex-wrap: wrap; gap: 8px; font-size: 14px; color: var(--concrete); }
   .crumbs a:hover { color: var(--paper); }
-  .h1 { max-width: 14ch; }
-  .no-photo .h1 { max-width: 18ch; }
-  .picture { aspect-ratio: 4 / 3; overflow: hidden; border-radius: 4px; animation: rollup 1.1s .15s var(--ease) both; }
+  .picture { aspect-ratio: var(--a); width: min(100%, calc(74svh * var(--a))); justify-self: end; overflow: hidden; border-radius: 4px; animation: rollup 1.1s .15s var(--ease) both; }
   .picture :global(img) { width: 100%; height: 100%; object-fit: cover; animation: settle 1.6s .15s var(--ease) both; }
   @keyframes rollup { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
   @keyframes settle { from { transform: scale(1.12); } }
-  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } .picture { order: -1; } }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } .picture { order: -1; justify-self: center; } }
 </style>

@@ -5,7 +5,7 @@
   import ServiceBike from '$lib/site/ServiceBike.svelte'
   import ProjectCard from '$lib/site/ProjectCard.svelte'
   import PhotoCredit from '$lib/site/PhotoCredit.svelte'
-  import { styles, projects } from '$lib/site/data.js'
+  import { styles, projects, cardStyle, photoAspect } from '$lib/site/data.js'
 </script>
 
 <svelte:head>
@@ -17,9 +17,9 @@
 
 <section class="section">
   <div class="wrap">
-    <ul class="styles">
+    <ul class="styles justified fill">
       {#each styles as style, i}
-        <li>
+        <li style={`--a:${photoAspect(style.image)}`}>
           <a class="style" href={`${base}/motocikly/${style.slug}`}>
             <span class="pic"><Photo base={style.image} alt={style.name} sizes="(max-width: 700px) 100vw, 50vw" /></span>
             <span class="row"><span class="name">{style.name}</span><span class="count">{projects.filter(p => p.style === style.slug).length || ''}</span></span>
@@ -42,15 +42,15 @@
 <section class="section">
   <div class="wrap">
     <div class="section-head"><h2 class="h2">Наши проекты</h2><a class="link-brass" href="{base}/proekty">Все проекты</a></div>
-    <ul class="projects">{#each projects.slice(0, 4) as project}<li><ProjectCard {project} /></li>{/each}</ul>
+    <ul class="justified fill">{#each projects.slice(0, 4) as project}<li style={cardStyle(project)}><ProjectCard {project} /></li>{/each}</ul>
   </div>
 </section>
 
 <style>
-  .styles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px 28px; }
+  .styles { --h: clamp(220px, 27vw, 389px); gap: 44px 22px; }
   .style { display: grid; gap: 10px; }
   .credit-line { margin-top: 8px; }
-  .pic { aspect-ratio: 3 / 2; overflow: hidden; border-radius: 4px; }
+  .pic { display: block; aspect-ratio: var(--a); overflow: hidden; border-radius: 4px; }
   .pic :global(img) { width: 100%; height: 100%; object-fit: cover; transition: transform .9s var(--ease); }
   .style:hover .pic :global(img) { transform: scale(1.04); }
   .row { display: flex; justify-content: space-between; align-items: baseline; }
@@ -58,7 +58,4 @@
   .style:hover .name { color: var(--brass); }
   .count { font-family: var(--display); color: var(--brass); }
   .lead-s { color: var(--concrete); max-width: 52ch; }
-  .projects { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
-  @media (max-width: 960px) { .projects { grid-template-columns: 1fr 1fr; } }
-  @media (max-width: 700px) { .styles { grid-template-columns: 1fr; } }
 </style>

@@ -62,6 +62,8 @@ input, textarea, select { font: inherit; color: inherit; }
 .h1 { font-family: var(--display); font-weight: 650; font-stretch: 78%; font-size: clamp(40px, 6vw, 84px); line-height: .98; }
 .h2 { font-family: var(--display); font-weight: 600; font-stretch: 80%; font-size: clamp(32px, 4.2vw, 60px); line-height: 1.02; }
 .h3 { font-family: var(--display); font-weight: 600; font-stretch: 88%; font-size: clamp(21px, 2vw, 28px); line-height: 1.15; }
+h1, h2, h3 { text-wrap: balance; overflow-wrap: break-word; }
+p, li, dd, figcaption { text-wrap: pretty; }
 .lead { font-size: clamp(17px, 1.5vw, 21px); line-height: 1.5; color: var(--paper); max-width: 46ch; }
 .muted { color: var(--concrete); }
 .section { padding: clamp(72px, 10vw, 140px) 0; }
@@ -70,6 +72,12 @@ input, textarea, select { font: inherit; color: inherit; }
 .section.tight { padding: clamp(44px, 5.5vw, 76px) 0; }
 .section-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: clamp(28px, 4vw, 52px); flex-wrap: wrap; }
 .section-head p { max-width: 44ch; color: var(--concrete); }
+
+/* Justified rows of cards: every photo keeps its own proportions, a row shares one height.
+   `fill` stretches short lists across the width, within a limit so one card never gets huge. */
+.justified { --h: clamp(230px, 26vw, 380px); display: flex; flex-wrap: wrap; align-items: flex-start; gap: 32px 16px; }
+.justified:not(.fill)::after { content: ''; flex: 999 1 0; }
+.justified > li { flex: var(--a) 1 calc(var(--a) * var(--h)); min-width: 0; max-width: min(100%, calc(var(--a) * var(--h) * 1.65)); }
 
 /* Buttons: one red action per screen, everything else is an outline. */
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; height: 52px; padding: 0 24px; border-radius: 4px; font-weight: 600; font-size: 15px; transition: background-color .2s, color .2s, border-color .2s; white-space: nowrap; }

@@ -5,7 +5,7 @@
   import ProjectCard from '$lib/site/ProjectCard.svelte'
   import Faq from '$lib/site/Faq.svelte'
   import PhotoCredit from '$lib/site/PhotoCredit.svelte'
-  import { styles, projects } from '$lib/site/data.js'
+  import { styles, projects, cardStyle } from '$lib/site/data.js'
 
   let { data } = $props()
   let style = $derived(data.style)
@@ -42,7 +42,7 @@
       {#if !data.own.length}<p>Проектов именно в этом стиле на сайте пока нет — вот что мы строили недавно.</p>{/if}
       <a class="link-brass" href="{base}/proekty">Все проекты</a>
     </div>
-    <ul class="projects">{#each shown as project}<li><ProjectCard {project} /></li>{/each}</ul>
+    <ul class="justified fill">{#each shown as project}<li style={cardStyle(project)}><ProjectCard {project} /></li>{/each}</ul>
   </div>
 </section>
 
@@ -75,7 +75,6 @@
   .traits div + div { padding-left: 24px; border-left: 1px solid var(--rule); }
   dt { font-family: var(--display); font-stretch: 88%; color: var(--brass); font-size: 15px; }
   dd { font-size: 19px; line-height: 1.4; }
-  .projects { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
   .two { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 40px; }
   .others-title { margin-bottom: 16px; }
   .others { display: flex; flex-wrap: wrap; gap: 10px; }
@@ -84,8 +83,7 @@
   @media (max-width: 900px) {
     .traits { grid-template-columns: 1fr 1fr; }
     .traits div:nth-child(3) { padding-left: 0; border-left: 0; }
-    .projects { grid-template-columns: 1fr 1fr; }
     .two { grid-template-columns: 1fr; }
   }
-  @media (max-width: 560px) { .traits { grid-template-columns: 1fr; } .traits div + div { padding-left: 0; border-left: 0; } .projects { grid-template-columns: 1fr; } }
+  @media (max-width: 560px) { .traits { grid-template-columns: 1fr; } .traits div + div { padding-left: 0; border-left: 0; } }
 </style>
