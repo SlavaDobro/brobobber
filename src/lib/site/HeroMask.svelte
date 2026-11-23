@@ -48,6 +48,8 @@
       const mh = m instanceof HTMLVideoElement ? m.videoHeight : m.naturalHeight
       if (!mw) return
       const scale = Math.max(width / mw, height / mh) * zoom
+      ctx.imageSmoothingEnabled = true
+      ctx.imageSmoothingQuality = 'high'
       ctx.drawImage(m, (width - mw * scale) / 2, (height - mh * scale) * .55, mw * scale, mh * scale)
     }
     const frame = () => {

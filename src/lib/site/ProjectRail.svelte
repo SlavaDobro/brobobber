@@ -21,6 +21,11 @@
   let fling = 0 // px per second left over from a throw, decays in the tick
 
   let drifting = $derived(!still && !hover && !focusInside && !dragging)
+  // Whole device pixels: at fractional positions the moving photos are resampled and shimmer.
+  let shift = $derived.by(() => {
+    const ratio = typeof devicePixelRatio === 'number' ? devicePixelRatio : 1
+    return Math.round(offset * ratio) / ratio
+  })
 
   const wrap = (/** @type {number} */ x) => loop ? ((x % loop) + loop) % loop : x
 
@@ -100,7 +105,7 @@
     onpointerenter={e => { if (e.pointerType === 'mouse') hover = true }} onpointerleave={() => hover = false}
     onfocusin={() => focusInside = true} onfocusout={() => focusInside = false}
     onpointerdown={down} onclickcapture={click} ondragstart={e => e.preventDefault()}>
-    <ul class="track" class:dragging bind:this={track} style={`transform: translate3d(${-offset}px, 0, 0)`}>
+    <ul class="track" class:dragging bind:this={track} style={`transform: translate3d(${-shift}px, 0, 0)`}>
       {#each projects as project}<li><ProjectCard {project} /></li>{/each}
       {#each projects as project}<li aria-hidden="true" inert><ProjectCard {project} /></li>{/each}
     </ul>

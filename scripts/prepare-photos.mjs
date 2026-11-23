@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 // Turns the imported old-site photos (.local/old-site/<page>/NN.jpg) into web images:
-//   public/images/photos/<page>/NN-1600.webp and NN-800.webp  (longest edge, quality 78)
+//   public/images/photos/<page>/NN-1600.webp and NN-800.webp  (see photo-output.mjs)
 // and writes src/lib/site/photos.json with sizes, plus contact sheets in .local/qa/photos/.
 // Usage: node scripts/prepare-photos.mjs
 import { createCanvas, loadImage } from '@napi-rs/canvas'
 import { readdirSync, mkdirSync, writeFileSync, existsSync, statSync } from 'node:fs'
 import path from 'node:path'
+import { writePhoto } from './photo-output.mjs'
 
 const source = '.local/old-site'
 const target = 'public/images/photos'
@@ -22,14 +23,7 @@ for (const page of readdirSync(source).filter(d => statSync(path.join(source, d)
     try { image = await loadImage(path.join(source, page, file)) } catch { console.warn(`skip unreadable ${page}/${file}`); continue }
     const { width, height } = image
     if (width < 500 || height < 400) continue // logos, icons, tiny decorations
-    for (const size of [1600, 800]) {
-      const out = path.join(target, page, `${id}-${size}.webp`)
-      if (existsSync(out)) continue
-      const scale = Math.min(1, size / Math.max(width, height))
-      const canvas = createCanvas(Math.round(width * scale), Math.round(height * scale))
-      canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height)
-      writeFileSync(out, canvas.toBuffer('image/webp', 78))
-    }
+    if (!existsSync(path.join(target, page, `${id}-1600.webp`))) writePhoto(image, path.join(target, page, id))
     manifest[page].push({ id, w: width, h: height })
     thumbs.push({ id, image })
   }

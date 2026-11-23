@@ -1,9 +1,10 @@
 // Projects and photos from the client's Telegram channel (imported by scripts/import-telegram.mjs).
 // prepareTelegramPhotos() converts post photos to WebP; mergeTelegram() adds new projects and
 // extra photos to existing ones. Both are called from scripts/build-projects.mjs.
-import { createCanvas, loadImage } from '@napi-rs/canvas'
-import { readFileSync, readdirSync, existsSync, mkdirSync, writeFileSync } from 'node:fs'
+import { loadImage } from '@napi-rs/canvas'
+import { readFileSync, readdirSync, existsSync, mkdirSync } from 'node:fs'
 import path from 'node:path'
+import { writePhoto } from './photo-output.mjs'
 
 const source = '.local/telegram'
 const target = 'public/images/photos'
@@ -54,14 +55,7 @@ export async function prepareTelegramPhotos() {
     for (const file of files) {
       const stem = file.replace('.jpg', '').replace('p', '').padStart(2, '0')
       const image = await loadImage(path.join(dir, file))
-      for (const size of [1600, 800]) {
-        const dest = path.join(out, `${stem}-${size}.webp`)
-        if (existsSync(dest)) continue
-        const scale = Math.min(1, size / Math.max(image.width, image.height))
-        const canvas = createCanvas(Math.round(image.width * scale), Math.round(image.height * scale))
-        canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height)
-        writeFileSync(dest, canvas.toBuffer('image/webp', 80))
-      }
+      if (!existsSync(path.join(out, `${stem}-1600.webp`))) writePhoto(image, path.join(out, stem))
       result[id].push({ src: `/images/photos/tg-${id}/${stem}`, w: image.width, h: image.height })
     }
   }

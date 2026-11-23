@@ -43,12 +43,6 @@ input, textarea, select { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--brass); outline-offset: 3px; }
 ::selection { background: var(--brass); color: var(--asphalt); }
 
-/* Film grain over the whole page: photos from phones and generated images read as one set. */
-body::after {
-  content: ''; position: fixed; inset: 0; z-index: 90; pointer-events: none; opacity: .07; mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
 .wrap { width: 100%; max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
 /* A horizontal row inside .wrap that runs to both screen edges while its first card stays on the
    text column: rows of cards no longer end in a hard cut at the container edge. */
@@ -85,9 +79,6 @@ body::after {
 .btn-line:hover { border-color: var(--paper); background: #ece8df10; }
 .link-brass { color: var(--brass); border-bottom: 1px solid var(--brass-soft); padding-bottom: 2px; transition: border-color .2s; }
 .link-brass:hover { border-color: var(--brass); }
-
-/* Photos: phone shots of different light are graded towards one look. */
-.photo { filter: saturate(.86) contrast(1.06); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }

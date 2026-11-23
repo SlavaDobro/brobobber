@@ -2,6 +2,7 @@
 // where the old site had no text, the copy is a plain description of the service, without promises.
 import { base } from '$app/paths'
 import projectsData from './projects.json'
+import photoWidths from './photo-widths.json'
 
 export const contacts = {
   phones: [
@@ -176,7 +177,8 @@ export const plural = (n, forms) => {
 /** Responsive photo sources for a stored photo path (without size suffix), inside the site's base folder. @param {string} stem */
 export const photoSrc = stem => {
   const p = base + stem
-  return stem.startsWith('/images/photos/')
-    ? { src: `${p}-1600.webp`, srcset: `${p}-800.webp 800w, ${p}-1600.webp 1600w` }
-    : { src: `${p}.webp`, srcset: `${p}-800.webp 800w, ${p}.webp 1536w` }
+  if (!stem.startsWith('/images/photos/')) return { src: `${p}.webp`, srcset: `${p}-800.webp 800w, ${p}.webp 1536w` }
+  // Real file widths: a wrong number here makes the browser pick a smaller file on sharp screens.
+  const [large, small] = /** @type {Record<string, number[]>} */ (photoWidths)[stem.slice('/images/photos/'.length)] ?? [1600, 800]
+  return { src: `${p}-1600.webp`, srcset: large > small ? `${p}-800.webp ${small}w, ${p}-1600.webp ${large}w` : `${p}-1600.webp ${large}w` }
 }
