@@ -1,6 +1,6 @@
 <script>
   // Address and route. The map loads only on request: no third-party requests until the visitor asks.
-  import { MapPin, Navigation } from '@lucide/svelte'
+  import { MapPin, Navigation, Clock } from '@lucide/svelte'
   import { contacts, mapLinks } from './data.js'
 
   let showMap = $state(false)
@@ -11,7 +11,8 @@
     <div class="info">
       <h2 class="h3" id="map-title">Как доехать</h2>
       <p class="address"><MapPin size={18} />{contacts.address}</p>
-      <p class="muted">{contacts.hours}. Мотоцикл можно привезти своим ходом или на нашем мотоэвакуаторе.</p>
+      <p class="address hours"><Clock size={18} />{contacts.hours}</p>
+      <p class="muted">Мотоцикл можно привезти своим ходом или на нашем мотоэвакуаторе.</p>
       <div class="links">
         <a class="btn btn-line" href={mapLinks.yandex} target="_blank" rel="noopener"><Navigation size={17} />Яндекс Карты</a>
         <a class="btn btn-line" href={mapLinks.google} target="_blank" rel="noopener">Google Maps</a>
@@ -38,6 +39,7 @@
   .info { display: grid; gap: 16px; }
   .address { display: flex; gap: 10px; font-size: 19px; line-height: 1.4; }
   .address :global(svg) { color: var(--brass); margin-top: 3px; }
+  .hours { font-size: 17px; }
   .links { display: flex; gap: 10px; flex-wrap: wrap; }
   .channel { font-size: 15px; color: var(--concrete); }
   .frame { aspect-ratio: 16 / 10; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; background:

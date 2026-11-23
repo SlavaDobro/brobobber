@@ -1,7 +1,7 @@
 <script>
   import PageHero from '$lib/site/PageHero.svelte'
   import MapBlock from '$lib/site/MapBlock.svelte'
-  import { Phone, Mail, Send, MapPin } from '@lucide/svelte'
+  import { Phone, Mail, Send, MapPin, Clock } from '@lucide/svelte'
   import { contacts } from '$lib/site/data.js'
 </script>
 
@@ -22,14 +22,20 @@
       </article>
     {/each}
     <article class="card">
-      <h2 class="h3">Почта и канал</h2>
+      <h2 class="h3">Почта</h2>
       <a class="big" href={`mailto:${contacts.email}`}><Mail size={20} />{contacts.email}</a>
-      <a class="link-brass" href={contacts.channel.href} target="_blank" rel="noopener"><Send size={15} /> {contacts.channel.handle}</a>
+      <p class="muted">Для заявок, фото мотоцикла и вопросов по проекту.</p>
+    </article>
+    <article class="card channel">
+      <h2 class="h3">Telegram-канал Brobobber</h2>
+      <a class="big" href={contacts.channel.href} target="_blank" rel="noopener"><Send size={20} />{contacts.channel.handle}</a>
+      <p class="muted">Новые проекты, ролики из мастерской и мотоциклы в наличии.</p>
     </article>
     <article class="card">
       <h2 class="h3">Адрес</h2>
       <p class="addr"><MapPin size={20} />{contacts.address}</p>
-      <p class="muted">Индекс {contacts.postal}. {contacts.hours}.</p>
+      <p class="hours"><Clock size={18} />{contacts.hours}</p>
+      <p class="muted">Индекс {contacts.postal}</p>
     </article>
   </div>
 </section>
@@ -43,5 +49,8 @@
   .big :global(svg), .addr :global(svg) { color: var(--brass); flex: none; }
   .link-brass { display: inline-flex; align-items: center; gap: 6px; justify-self: start; }
   .addr { display: flex; gap: 12px; font-size: 19px; }
+  .hours { display: flex; align-items: center; gap: 12px; font-size: 16px; }
+  .hours :global(svg) { color: var(--brass); flex: none; }
+  .channel { border-color: var(--brass); }
   @media (max-width: 760px) { .cards { grid-template-columns: 1fr; } }
 </style>

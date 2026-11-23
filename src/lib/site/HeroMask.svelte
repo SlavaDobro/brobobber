@@ -8,6 +8,7 @@
   let { photo, video, word = 'BROBOBBER', children } = $props()
 
   /** @type {HTMLElement} */ let section
+  /** @type {HTMLElement} */ let copyEl
   /** @type {HTMLCanvasElement | undefined} */ let canvas = $state()
   /** @type {HTMLVideoElement | undefined} */ let videoEl = $state()
   let progress = $state(0)
@@ -21,7 +22,7 @@
     if (!ctx) return
     const image = new Image()
     image.src = photoSrc(photo).src
-    let raf = 0, visible = true, width = 0, height = 0, ready = false
+    let raf = 0, visible = true, width = 0, height = 0, ready = false, room = 0, center = 0
     const media = () => (videoEl && videoEl.readyState >= 2 ? videoEl : image)
 
     const resize = () => {
@@ -29,6 +30,11 @@
       width = cnv.clientWidth; height = cnv.clientHeight
       cnv.width = Math.round(width * dpr); cnv.height = Math.round(height * dpr)
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+      // The word lives in the free space between the top bar and the text, so they never overlap.
+      const top = (/** @type {HTMLElement | null} */ (document.querySelector('.header'))?.offsetHeight ?? 72) + 6
+      const bottom = copyEl.offsetTop - 14
+      room = Math.max(72, bottom - top)
+      center = top + room / 2
     }
     const measure = () => {
       const rect = section.getBoundingClientRect()
@@ -56,13 +62,22 @@
       // On a tall phone screen the word stands in three big lines (BRO / BOB / BER) above the text block.
       const portrait = height > width * 1.2
       const lines = portrait ? word.match(/.{1,3}/g) ?? [word] : [word]
-      const size = portrait ? Math.min(width * .4, height * .16) : Math.min(width * .2, height * .42)
+      let size = portrait ? Math.min(width * .4, room / 2.55) : Math.min(width * .235, room / .82)
       ctx.font = `700 ${size}px "Tektur Variable"`
       // @ts-ignore: fontStretch is supported by Chromium and Firefox canvas
       ctx.fontStretch = 'condensed'
+      // Keep the word off the screen edges whatever the width of the font turns out to be.
+      const widest = Math.max(...lines.map(line => ctx.measureText(line).width))
+      if (widest > width * .92) {
+        size *= width * .92 / widest
+        ctx.font = `700 ${size}px "Tektur Variable"`
+        // Setting the font resets the stretch.
+        // @ts-ignore: fontStretch is supported by Chromium and Firefox canvas
+        ctx.fontStretch = 'condensed'
+      }
       ctx.textAlign = 'center'
       ctx.textBaseline = 'middle'
-      ctx.translate(width / 2, height * (portrait ? .3 : .46))
+      ctx.translate(width / 2, center)
       ctx.scale(grow, grow)
       ctx.fillStyle = '#000'
       const lead = size * .86
@@ -84,7 +99,11 @@
     const onScroll = () => { measure(); request() }
     const io = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; if (visible) request() })
 
-    const onResize = () => { if (ready) { resize(); onScroll() } }
+    // Resizing clears the canvas, so the frame is redrawn at once. The text block is watched too:
+    // when the body font arrives its height changes, and the word must move out of its way.
+    const onResize = () => { if (ready) { resize(); measure(); frame() } }
+    const copyWatch = new ResizeObserver(onResize)
+    copyWatch.observe(copyEl)
     // Draw as soon as the font is there, and again when the photo arrives (it may load later).
     // The first frames are drawn directly, not via requestAnimationFrame: in a background tab
     // animation frames are paused and the hero would stay empty until the visitor scrolls.
@@ -96,7 +115,7 @@
     window.addEventListener('resize', onResize)
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => {
-      cancelAnimationFrame(raf); io.disconnect()
+      cancelAnimationFrame(raf); io.disconnect(); copyWatch.disconnect()
       window.removeEventListener('resize', onResize)
       window.removeEventListener('scroll', onScroll)
     }
@@ -111,7 +130,7 @@
       <canvas bind:this={canvas} aria-hidden="true"></canvas>
       {#if video}<video bind:this={videoEl} src={video} muted loop playsinline autoplay preload="auto" aria-hidden="true"></video>{/if}
     {/if}
-    <div class="copy">{@render children?.()}</div>
+    <div class="copy" bind:this={copyEl}>{@render children?.()}</div>
     <span class="hint" aria-hidden="true">Прокрутите вниз</span>
   </div>
 </section>

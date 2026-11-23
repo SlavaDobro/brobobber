@@ -4,6 +4,7 @@
   import ServiceBike from '$lib/site/ServiceBike.svelte'
   import ProjectCard from '$lib/site/ProjectCard.svelte'
   import Faq from '$lib/site/Faq.svelte'
+  import PhotoCredit from '$lib/site/PhotoCredit.svelte'
   import { styles, projects } from '$lib/site/data.js'
 
   let { data } = $props()
@@ -20,6 +21,7 @@
 <PageHero title={style.name} lead={style.lead} photo={style.image} alt={`Мотоцикл в стиле ${style.name.toLowerCase()}`}
   crumbs={[{ href: '/', label: 'Главная' }, { href: '/motocikly', label: 'Мотоциклы' }]}>
   <a class="btn btn-signal cta" href="#zayavka">Обсудить проект</a>
+  {#if style.credit}<PhotoCredit credit={style.credit} />{/if}
 </PageHero>
 
 <section class="section">

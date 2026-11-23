@@ -5,6 +5,7 @@
   import ProjectRail from '$lib/site/ProjectRail.svelte'
   import ProcessRoad from '$lib/site/ProcessRoad.svelte'
   import Reviews from '$lib/site/Reviews.svelte'
+  import ServiceIndex from '$lib/site/ServiceIndex.svelte'
   import { advantages, projects, contacts } from '$lib/site/data.js'
 </script>
 
@@ -20,13 +21,20 @@
     <div class="pic"><Photo base="/images/photos/home/24" alt="Мастера Brobobber" sizes="(max-width: 900px) 100vw, 40vw" /></div>
     <div class="copy">
       <h2 class="h2">Кто в мастерской</h2>
-      <p class="lead">Проекты ведут мастера ателье {contacts.phones.map(p => p.name).join(' и ')}. С ними вы обсуждаете идею, смету и сроки — и к ним же приезжаете на обслуживание.</p>
+      <p class="lead">На связи с вами {contacts.phones[0].name}: здесь обсуждаем идею, смету и сроки, сюда же вы приезжаете на обслуживание.</p>
       <ul class="people">
         {#each contacts.phones as person}
           <li><strong>{person.name}</strong><a href={person.href}>{person.phone}</a><a class="link-brass" href={`https://t.me/${person.telegram}`} target="_blank" rel="noopener">Написать в Telegram</a></li>
         {/each}
       </ul>
     </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head"><h2 class="h2">Услуги мастерской</h2><p>От замены лампочки до мотоцикла, собранного с нуля.</p></div>
+    <ServiceIndex />
   </div>
 </section>
 
@@ -56,14 +64,14 @@
   <div class="section-head"><h2 class="h2">Что мы построили</h2><a class="link-brass" href="{base}/proekty">Все проекты</a></div>
 </ProjectRail>
 
-<section class="section">
+<section class="section tight">
   <div class="wrap">
     <h2 class="h2 head">Процесс создания кастома</h2>
     <ProcessRoad compact />
   </div>
 </section>
 
-<section class="section">
+<section class="section tight">
   <div class="wrap"><h2 class="h2 head">Отзывы</h2><Reviews /></div>
 </section>
 
@@ -76,7 +84,7 @@
   .people { display: grid; gap: 14px; }
   .people li { display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: baseline; padding: 14px 0; border-top: 1px solid var(--rule); }
   .people strong { font-family: var(--display); font-stretch: 88%; font-size: 22px; min-width: 110px; }
-  .head { margin-bottom: 40px; }
+  .head { margin-bottom: 32px; }
   .usp { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; }
   .usp li { display: grid; gap: 12px; align-content: start; padding-top: 20px; border-top: 2px solid var(--brass); }
   .n { font-family: var(--display); color: var(--brass); }

@@ -6,15 +6,15 @@ import projectsData from './projects.json'
 export const contacts = {
   phones: [
     { name: 'Алексей', phone: '+7 925 485-26-61', href: 'tel:+79254852661', telegram: 'OguRechiks' },
-    { name: 'Михаил', phone: '+7 926 147-51-67', href: 'tel:+79261475167', telegram: 'snkkl' },
   ],
   email: 'brobobber@mail.ru',
   channel: { name: 'Telegram-канал', href: 'https://t.me/BROBOBBERru', handle: '@BROBOBBERru' },
   address: 'Москва, поселение Филимонковское, посёлок Марьино, Кнутовская улица, 14',
   addressShort: 'Москва, Марьино, Кнутовская, 14',
   postal: '108815',
-  // Working hours were not published; the line tells visitors how to check them.
-  hours: 'Время визита согласуйте по телефону',
+  // The client has not given the working hours yet: replace both lines when they are known.
+  hours: 'Часы работы уточняйте по телефону',
+  hoursShort: 'Часы работы — по телефону',
 }
 export const mapLinks = {
   yandex: 'https://yandex.ru/maps/?text=' + encodeURIComponent(`${contacts.postal}, ${contacts.address}`),
@@ -89,25 +89,34 @@ export const services = [
     photo: '/images/photos/tg-585/02', gallery: ['/images/photos/tg-585/03', '/images/photos/tg-585/04', '/images/photos/tg-585/01', '/images/photos/tg-585/05'] },
 ]
 
-/** @typedef {{ slug: string, name: string, lead: string, traits: [string, string][], image: string }} Style */
+// The workshop has no projects of its own in these four styles: open-licence photos from
+// Wikimedia Commons show the style, each with its author and licence on the page.
+const styleCredits = {
+  chopper: { author: 'Chris Phutully', page: 'https://commons.wikimedia.org/wiki/File:1941_Harley-Davidson_Knucklehead_%22Chopper%22_Custom_(2013_Racv_Motorclassica)_(10491974294).jpg', license: 'CC BY 2.0', licenseUrl: 'https://creativecommons.org/licenses/by/2.0/' },
+  begger: { author: 'Lightburst', page: 'https://commons.wikimedia.org/wiki/File:2019_Harley-Davidson_CVO_Road_Glide_in_Red_Pepper_%26_Magnetic_Grey_With_Black_Hole.jpg', license: 'CC BY-SA 4.0', licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/' },
+  klab: { author: 'Maggi1109', page: 'https://commons.wikimedia.org/wiki/File:Harley_Davidson_FXRS.jpg', license: 'CC BY-SA 4.0', licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/' },
+  chikano: { author: 'CALChux', page: 'https://commons.wikimedia.org/wiki/File:2004_Harley-Davidson_Road_King_%E2%80%9CLa_Vida_Loca%E2%80%9D_(54381384690).jpg', license: 'CC BY 2.0', licenseUrl: 'https://creativecommons.org/licenses/by/2.0/' },
+}
+
+/** @typedef {{ slug: string, name: string, lead: string, traits: [string, string][], image: string, credit?: { author: string, page: string, license: string, licenseUrl: string } }} Style */
 /** @type {Style[]} */
 export const styles = [
   { slug: 'bobber', name: 'Боббер', lead: 'Всё лишнее срезано: короткие крылья, одиночное седло, толстые шины и низкая посадка.',
-    traits: [['Посадка', 'Низкая, ноги впереди или по центру'], ['Рама', 'Стоковая или с хардтейлом'], ['Крылья', 'Укороченные, заднее над самой шиной'], ['Детали', 'Одиночное седло, минимум хрома']], image: '/images/site/style-bobber' },
+    traits: [['Посадка', 'Низкая, ноги впереди или по центру'], ['Рама', 'Стоковая или с хардтейлом'], ['Крылья', 'Укороченные, заднее над самой шиной'], ['Детали', 'Одиночное седло, минимум хрома']], image: '/images/photos/48nardogray/03' },
   { slug: 'chopper', name: 'Чоппер', lead: 'Длинная вилка с большим вылетом, высокий руль и узкое переднее колесо.',
-    traits: [['Посадка', 'Откинутая, руки высоко'], ['Рама', 'Удлинённая, с увеличенным углом наклона'], ['Крылья', 'Минимальные или без переднего'], ['Детали', 'Ape-hanger руль, спинка, бак «капля»']], image: '/images/site/style-chopper' },
+    traits: [['Посадка', 'Откинутая, руки высоко'], ['Рама', 'Удлинённая, с увеличенным углом наклона'], ['Крылья', 'Минимальные или без переднего'], ['Детали', 'Ape-hanger руль, спинка, бак «капля»']], image: '/images/photos/styles/chopper', credit: styleCredits.chopper },
   { slug: 'kafe-reyser', name: 'Кафе-рейсер', lead: 'Длинный бак, короткое горбатое седло и низкий руль: посадка как на гоночном мотоцикле 60-х.',
-    traits: [['Посадка', 'Спортивная, с наклоном вперёд'], ['Рама', 'Укороченный подрамник под одиночное седло'], ['Крылья', 'Короткие'], ['Детали', 'Клипоны, задние подножки, обтекатель фары']], image: '/images/site/style-kafe-reyser' },
+    traits: [['Посадка', 'Спортивная, с наклоном вперёд'], ['Рама', 'Укороченный подрамник под одиночное седло'], ['Крылья', 'Короткие'], ['Детали', 'Клипоны, задние подножки, обтекатель фары']], image: '/images/photos/tg-89/02' },
   { slug: 'skrembler', name: 'Скрэмблер', lead: 'Городской мотоцикл, готовый к грунтовке: высокий выхлоп, внедорожные шины и широкий руль.',
-    traits: [['Посадка', 'Прямая, высокая'], ['Рама', 'С защитой и увеличенным клиренсом'], ['Крылья', 'Короткие, приподнятые'], ['Детали', 'Шины с шипами, плоское седло, сетка на фаре']], image: '/images/site/style-skrembler' },
+    traits: [['Посадка', 'Прямая, высокая'], ['Рама', 'С защитой и увеличенным клиренсом'], ['Крылья', 'Короткие, приподнятые'], ['Детали', 'Шины с шипами, плоское седло, сетка на фаре']], image: '/images/photos/scrambler/01' },
   { slug: 'begger', name: 'Бэггер', lead: 'Большой туринговый мотоцикл с кофрами, опущенными почти до земли, и обтекателем.',
-    traits: [['Посадка', 'Комфортная туринговая'], ['Рама', 'Заниженная задняя часть'], ['Крылья', 'Длинные, переднее под колесо 21–23"'], ['Детали', 'Кофры, обтекатель «батвинг», акустика']], image: '/images/site/style-begger' },
+    traits: [['Посадка', 'Комфортная туринговая'], ['Рама', 'Заниженная задняя часть'], ['Крылья', 'Длинные, переднее под колесо 21–23"'], ['Детали', 'Кофры, обтекатель «батвинг», акустика']], image: '/images/photos/styles/begger', credit: styleCredits.begger },
   { slug: 'maskl', name: 'Маскл', lead: 'Мощный круизер с широченной задней шиной и агрессивными формами. Сюда относятся V-Rod, V-Max, M109R.',
-    traits: [['Посадка', 'Низкая, длинная база'], ['Рама', 'Расширенный маятник под колесо 240–300 мм'], ['Крылья', 'Короткие, по форме колеса'], ['Детали', 'Драг-руль, мощный выхлоп, крупные радиаторы']], image: '/images/site/style-maskl' },
+    traits: [['Посадка', 'Низкая, длинная база'], ['Рама', 'Расширенный маятник под колесо 240–300 мм'], ['Крылья', 'Короткие, по форме колеса'], ['Детали', 'Драг-руль, мощный выхлоп, крупные радиаторы']], image: '/images/photos/vmax/04' },
   { slug: 'klab-stayl', name: 'Клаб-стайл', lead: 'Стиль американских мото-клубов: обтекатель фары, высокий T-руль и длинноходная подвеска.',
-    traits: [['Посадка', 'Прямая, агрессивная'], ['Рама', 'Стоковая, подвеска с увеличенным ходом'], ['Крылья', 'Минимальные'], ['Детали', 'Обтекатель с тёмным визором, T-бар руль']], image: '/images/site/style-klab-stayl' },
+    traits: [['Посадка', 'Прямая, агрессивная'], ['Рама', 'Стоковая, подвеска с увеличенным ходом'], ['Крылья', 'Минимальные'], ['Детали', 'Обтекатель с тёмным визором, T-бар руль']], image: '/images/photos/styles/klab-stayl', credit: styleCredits.klab },
   { slug: 'chikano', name: 'Чикано', lead: 'Низкий и длинный мотоцикл с глубокой «конфетной» покраской, золотым пинстрайпом и белыми боковинами шин.',
-    traits: [['Посадка', 'Низкая, вальяжная'], ['Рама', 'Заниженная'], ['Крылья', 'Широкие, длинные'], ['Детали', 'Candy-покраска, гравировка, хромированные спицы']], image: '/images/site/style-chikano' },
+    traits: [['Посадка', 'Низкая, вальяжная'], ['Рама', 'Заниженная'], ['Крылья', 'Широкие, длинные'], ['Детали', 'Candy-покраска, гравировка, хромированные спицы']], image: '/images/photos/styles/chikano', credit: styleCredits.chikano },
 ]
 
 export const process = [

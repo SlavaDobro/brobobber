@@ -8,7 +8,10 @@
   import Faq from '$lib/site/Faq.svelte'
   import Photo from '$lib/site/Photo.svelte'
   import VideoReel from '$lib/site/VideoReel.svelte'
-  import { projects, advantages, contacts, plural } from '$lib/site/data.js'
+  import PhotoSlides from '$lib/site/PhotoSlides.svelte'
+  import { projects, advantages, contacts } from '$lib/site/data.js'
+
+  const showcase = ['harley-davidson-v-rod', 'harley-davidson-scrambler', 'yamaha-v-max-1700', 'triumph-rocket-3r', 'harley-davidson-heritage-114', 'harley-davidson-48-nardo-gray', 'bmw-k100']
 </script>
 
 <svelte:head>
@@ -29,7 +32,10 @@
 
 <section class="section manifesto">
   <div class="wrap">
-    <p class="statement">Место, где мотоциклы <span class="brass">превращаются в шедевры</span>. Каждый проект — под характер владельца.</p>
+    <div class="manifesto-top">
+      <p class="statement">Место, где мотоциклы <span class="brass">превращаются в шедевры</span>. Каждый проект — под характер владельца.</p>
+      <PhotoSlides slugs={showcase} />
+    </div>
     <ul class="advantages">
       {#each advantages as item}
         <li><h2 class="h3">{item.title}</h2><p class="muted">{item.text}</p></li>
@@ -41,7 +47,7 @@
 <ProjectRail {projects}>
   <div class="section-head">
     <h2 class="h2">Наши проекты</h2>
-    <p>{projects.length} {plural(projects.length, ['мотоцикл', 'мотоцикла', 'мотоциклов'])}, которые прошли через мастерскую, — от свежих сборок 2026 года до архивных. Внутри каждого история, список работ и фото.</p>
+    <p>Мотоциклы, которые прошли через мастерскую, — от свежих сборок 2026 года до архивных. Внутри каждого история, список работ и фото.</p>
     <a class="link-brass" href="{base}/proekty">Все проекты</a>
   </div>
 </ProjectRail>
@@ -54,7 +60,7 @@
     <div class="about-copy">
       <h2 class="h2">Мастерская на Кнутовской</h2>
       <p class="lead">Brobobber объединяет техническое мастерство и стильный дизайн. Детали проектируем в 3D и вытачиваем на станках с ЧПУ, красим сами, шьём сиденья сами.</p>
-      <p class="muted">На связи с вами мастера ателье — {contacts.phones.map(p => p.name).join(' и ')}. Они ведут проект от первого разговора до передачи мотоцикла и потом обслуживают его.</p>
+      <p class="muted">На связи с вами {contacts.phones[0].name}. Ведём проект от первого разговора до передачи мотоцикла, а потом обслуживаем его.</p>
       <a class="btn btn-line" href="{base}/o-nas">О мастерской</a>
     </div>
   </div>
@@ -64,14 +70,14 @@
   <div class="wrap">
     <div class="section-head">
       <h2 class="h2">Что делаем</h2>
-      <p>Выберите отметку на мотоцикле — покажем, какие узлы мы дорабатываем. У каждой услуги — своя страница.</p>
+      <p>Выберите отметку на мотоцикле — покажем, какие узлы мы дорабатываем.</p>
       <a class="link-brass" href="{base}/konfigurator">Соберите свой V-Rod в конфигураторе</a>
     </div>
     <ServiceBike />
   </div>
 </section>
 
-<section class="section">
+<section class="section tight">
   <div class="wrap">
     <div class="section-head">
       <h2 class="h2">Как создаётся кастом</h2>
@@ -81,7 +87,7 @@
   </div>
 </section>
 
-<section class="section">
+<section class="section tight">
   <div class="wrap">
     <div class="section-head">
       <h2 class="h2">Отзывы</h2>
@@ -126,7 +132,8 @@
   .hero-copy { display: grid; gap: 20px; max-width: 640px; }
   .hero-title { font-family: var(--display); font-weight: 600; font-stretch: 85%; font-size: clamp(26px, 3vw, 40px); line-height: 1.08; }
   .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
-  .statement { font-family: var(--display); font-weight: 600; font-stretch: 78%; font-size: clamp(34px, 5.2vw, 76px); line-height: 1.02; max-width: 18ch; }
+  .manifesto-top { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 5vw, 80px); align-items: center; }
+  .statement { font-family: var(--display); font-weight: 600; font-stretch: 78%; font-size: clamp(32px, 4.5vw, 68px); line-height: 1.03; max-width: 18ch; }
   .brass { color: var(--brass); }
   .advantages { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; margin-top: clamp(40px, 6vw, 80px); padding-top: 28px; border-top: 1px solid var(--rule); }
   .advantages li { display: grid; gap: 10px; align-content: start; }
@@ -137,6 +144,7 @@
   .sale-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: end; }
   .sale-actions { display: grid; gap: 18px; justify-items: start; }
   .faq-grid { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 40px; align-items: start; }
+  @media (max-width: 760px) { .manifesto-top { grid-template-columns: 1fr; } }
   @media (max-width: 960px) {
     .advantages { grid-template-columns: 1fr 1fr; }
     .about .grid, .sale-grid, .faq-grid { grid-template-columns: 1fr; }

@@ -62,27 +62,28 @@
 <style>
   .road { display: grid; grid-template-columns: minmax(220px, 4fr) minmax(0, 7fr); gap: clamp(24px, 6vw, 96px); }
   .odo { position: sticky; top: calc(var(--header) + 40px); align-self: start; display: grid; gap: 14px; }
-  .counter { display: flex; align-items: baseline; font-family: var(--display); font-stretch: 75%; font-weight: 650; font-size: clamp(96px, 13vw, 200px); line-height: 1; font-variant-numeric: tabular-nums; }
+  .counter { display: flex; align-items: baseline; font-family: var(--display); font-stretch: 75%; font-weight: 650; font-size: clamp(76px, 9.5vw, 144px); line-height: 1; font-variant-numeric: tabular-nums; }
   .drum { display: inline-block; height: 1em; overflow: hidden; }
   .strip { display: flex; flex-direction: column; transform: translateY(calc(var(--to) * -1em)); transition: transform .9s var(--ease) var(--delay); }
   .strip span { height: 1em; }
   .of { font-size: .22em; color: var(--concrete); margin-left: .3em; font-stretch: 90%; }
-  .now { font-family: var(--display); font-stretch: 88%; font-size: 22px; color: var(--brass); }
+  .now { font-family: var(--display); font-stretch: 88%; font-size: 20px; color: var(--brass); }
   .track { position: relative; padding-left: 48px; }
   .line { position: absolute; left: 0; top: 8px; bottom: 8px; width: 24px; height: calc(100% - 16px); overflow: visible; }
   .base { stroke: var(--rule); stroke-width: 2; vector-effect: non-scaling-stroke; stroke-dasharray: 6 8; }
   .laid { stroke: var(--brass); stroke-width: 3; vector-effect: non-scaling-stroke; stroke-dasharray: 1 1; fill: none; }
-  ol { display: grid; gap: clamp(28px, 5vh, 56px); }
-  li { position: relative; display: grid; gap: 8px; opacity: .45; transition: opacity .4s; }
+  ol { display: grid; gap: clamp(14px, 2.2vh, 24px); }
+  li { position: relative; display: grid; gap: 3px; opacity: .45; transition: opacity .4s; }
   li.passed { opacity: 1; }
-  .dot { position: absolute; left: -42px; top: 8px; width: 13px; height: 13px; border-radius: 50%; background: var(--asphalt); border: 2px solid var(--rule); transition: border-color .3s, background-color .3s; }
+  .dot { position: absolute; left: -42px; top: 6px; width: 13px; height: 13px; border-radius: 50%; background: var(--asphalt); border: 2px solid var(--rule); transition: border-color .3s, background-color .3s; }
   li.passed .dot { border-color: var(--brass); background: var(--brass); }
   .n { font-size: .6em; color: var(--brass); margin-right: 12px; vertical-align: .2em; }
-  li p { color: var(--concrete); max-width: 52ch; }
-  .compact ol { gap: 28px; }
+  li .h3 { font-size: clamp(19px, 1.65vw, 24px); }
+  li p { color: var(--concrete); max-width: 62ch; font-size: 15px; line-height: 1.45; }
+  .compact ol { gap: 14px; }
   @media (max-width: 860px) {
     .road { grid-template-columns: 1fr; }
     .odo { position: static; }
-    .counter { font-size: 96px; }
+    .counter { font-size: 72px; }
   }
 </style>

@@ -2,7 +2,11 @@
   import { base } from '$app/paths'
   // Services as a drawing: points on the motorcycle's parts. Hovering a point or a list item
   // draws a leader line from the part to a callout with the service.
+  import { ArrowRight, GraduationCap, PackagePlus, Truck } from '@lucide/svelte'
   import { services } from './data.js'
+
+  /** @type {Record<string, typeof Truck>} */
+  const icons = { kursy: GraduationCap, dopolnitelnye: PackagePlus, motoevakuator: Truck }
 
   const spotted = services.filter(s => s.spot)
   const rest = services.filter(s => !s.spot)
@@ -55,19 +59,36 @@
   {/key}
 
   <ul class="extra" aria-label="Другие услуги">
-    {#each rest as service}<li><a href={`${base}/uslugi/${service.slug}`}>{service.name}</a></li>{/each}
+    {#each rest as service}
+      {@const Icon = icons[service.slug] ?? ArrowRight}
+      <li>
+        <a href={`${base}/uslugi/${service.slug}`}>
+          <span class="extra-icon"><Icon size={21} /></span>
+          <span class="extra-text"><strong>{service.name}</strong><small>{service.short}</small></span>
+          <ArrowRight class="extra-arrow" size={18} />
+        </a>
+      </li>
+    {/each}
   </ul>
 </div>
 
 <style>
-  .bike-map { display: grid; grid-template-columns: minmax(200px, 260px) minmax(0, 1fr); grid-template-areas: 'list drawing' 'extra drawing'; gap: 12px 48px; align-items: start; }
+  .bike-map { display: grid; grid-template-columns: minmax(200px, 260px) minmax(0, 1fr); grid-template-areas: 'list drawing' 'extra extra'; gap: 12px 48px; align-items: start; }
   .list { grid-area: list; display: grid; gap: 2px; counter-reset: s; }
   .list a { display: flex; gap: 12px; align-items: baseline; padding: 9px 0; border-bottom: 1px solid var(--rule); color: var(--concrete); transition: color .2s; }
   .list a.active, .list a:hover { color: var(--paper); }
   .num { font-family: var(--display); font-stretch: 85%; font-size: 13px; color: var(--brass); font-variant-numeric: tabular-nums; }
-  .extra { grid-area: extra; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
-  .extra a { display: inline-block; padding: 7px 12px; border: 1px solid var(--rule); border-radius: 100px; font-size: 14px; color: var(--concrete); }
-  .extra a:hover { color: var(--paper); border-color: var(--concrete); }
+  .extra { grid-area: extra; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; margin-top: 22px; }
+  .extra a { display: grid; grid-template-columns: 46px minmax(0, 1fr) 18px; gap: 14px; align-items: center; height: 100%; padding: 15px 16px; background: var(--asphalt-2); border: 1px solid var(--brass); border-radius: 6px; color: var(--paper); transition: background-color .22s, color .22s, transform .22s var(--ease); }
+  .extra-icon { width: 46px; height: 46px; display: grid; place-items: center; border-radius: 50%; background: var(--brass); color: var(--asphalt); transition: background-color .22s, color .22s; }
+  .extra-text { display: grid; gap: 2px; min-width: 0; }
+  .extra-text strong { font-family: var(--display); font-stretch: 88%; font-weight: 600; font-size: 18px; line-height: 1.15; }
+  .extra-text small { font-size: 13px; line-height: 1.3; color: var(--concrete); transition: color .22s; }
+  .extra a :global(.extra-arrow) { color: var(--brass); transition: color .22s, transform .22s var(--ease); }
+  .extra a:hover { background: var(--brass); color: var(--asphalt); transform: translateY(-2px); }
+  .extra a:hover .extra-icon { background: var(--asphalt); color: var(--brass); }
+  .extra a:hover .extra-text small { color: #1c1d1bcc; }
+  .extra a:hover :global(.extra-arrow) { color: var(--asphalt); transform: translateX(3px); }
   .drawing { grid-area: drawing; position: relative; align-self: center;
     background: radial-gradient(ellipse 55% 45% at 50% 55%, #ece8df12, transparent 70%); }
   .drawing img { width: 100%; height: auto; filter: drop-shadow(0 30px 40px #0009); }

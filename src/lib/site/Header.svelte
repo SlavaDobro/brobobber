@@ -5,7 +5,7 @@
   // otherwise become their containing block and squash them.
   import { base } from '$app/paths'
   import { page } from '$app/state'
-  import { Menu, X, ChevronDown, Phone, LayoutGrid, Wrench, Send } from '@lucide/svelte'
+  import { Menu, X, ChevronDown, Phone, LayoutGrid, Wrench, Send, Clock } from '@lucide/svelte'
   import Logo from './Logo.svelte'
   import { nav, services, styles, contacts } from './data.js'
 
@@ -79,7 +79,10 @@
     </nav>
 
     <div class="actions">
-      <a class="phone" href={contacts.phones[0].href}><Phone size={15} />{contacts.phones[0].phone}</a>
+      <div class="reach">
+        <a class="phone" href={contacts.phones[0].href}><Phone size={15} />{contacts.phones[0].phone}</a>
+        <span class="hours"><Clock size={12} />{contacts.hoursShort}</span>
+      </div>
       <a class="btn btn-signal cta" href="#zayavka">Обсудить проект</a>
     </div>
   </div>
@@ -107,6 +110,7 @@
         <a class="btn btn-line" href={`https://t.me/${person.telegram}`} target="_blank" rel="noopener"><Send size={17} />Telegram</a>
       </div>
     {/each}
+    <p class="hours"><Clock size={13} />{contacts.hours}</p>
   </div>
   <button class="scrim" aria-label="Закрыть" onclick={() => callSheet = false}></button>
 {/if}
@@ -115,7 +119,7 @@
   <div class="sheet" role="dialog" aria-modal="true" aria-label="Меню">
     <div class="sheet-top wrap">
       <Logo size={52} word={false} rev={1} />
-      <p class="muted">{contacts.address}</p>
+      <p class="muted">{contacts.address}<br />{contacts.hours}</p>
     </div>
     <nav class="sheet-nav wrap" aria-label="Меню">
       <a href="{base}/" class:active={path === '/'} style="--i:0"><span>01</span>Главная</a>
@@ -147,6 +151,9 @@
   .dropdown a { padding: 9px 12px; font-size: 14px; border-radius: 4px; }
   .dropdown a:hover { background: var(--asphalt-3); }
   .actions { display: flex; align-items: center; gap: 18px; flex: none; }
+  .reach { display: grid; justify-items: end; gap: 2px; }
+  .hours { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; line-height: 1.2; color: var(--concrete); white-space: nowrap; }
+  .hours :global(svg) { color: var(--brass); flex: none; }
   .phone { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-variant-numeric: tabular-nums; color: var(--paper); }
   .phone :global(svg) { color: var(--brass); }
   .cta { height: 44px; padding: 0 18px; }
@@ -194,5 +201,7 @@
   @media (max-width: 640px) {
     .phone, .cta { display: none; }
     .logo-place { display: none; }
+    .actions { min-width: 0; }
+    .reach .hours { max-width: 128px; font-size: 11px; white-space: normal; text-align: right; }
   }
 </style>

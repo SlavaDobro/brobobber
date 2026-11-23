@@ -17,6 +17,16 @@
   let path = $derived(page.url.pathname.slice(base.length) || '/')
   let bare = $derived(path.startsWith('/konfigurator'))
 
+  // Page width without the scrollbar (100vw includes it): full-width rows use it to stay on screen.
+  $effect(() => {
+    const root = document.documentElement
+    const measure = () => root.style.setProperty('--page-w', `${root.clientWidth}px`)
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(root)
+    return () => observer.disconnect()
+  })
+
   onNavigate(navigation => {
     const from = navigation.from?.url.pathname, to = navigation.to?.url.pathname
     if (!to || from === to || matchMedia('(prefers-reduced-motion: reduce)').matches) return

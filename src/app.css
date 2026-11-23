@@ -53,8 +53,8 @@ body::after {
 /* A horizontal row inside .wrap that runs to both screen edges while its first card stays on the
    text column: rows of cards no longer end in a hard cut at the container edge. */
 .shelf {
-  --inset: max(var(--gutter), calc(50vw - var(--max) / 2 + var(--gutter)));
-  margin-inline: calc(50% - 50vw); padding-inline: var(--inset); scroll-padding-inline: var(--inset);
+  --inset: max(var(--gutter), calc(var(--page-w, 100vw) / 2 - var(--max) / 2 + var(--gutter)));
+  margin-inline: calc(50% - var(--page-w, 100vw) / 2); padding-inline: var(--inset); scroll-padding-inline: var(--inset);
   cursor: grab; user-select: none;
 }
 .shelf.is-dragging { cursor: grabbing; }
@@ -72,6 +72,8 @@ body::after {
 .muted { color: var(--concrete); }
 .section { padding: clamp(72px, 10vw, 140px) 0; }
 .section + .section { border-top: 1px solid var(--rule); }
+/* Reviews and the process: lower blocks, so they read as one screen. */
+.section.tight { padding: clamp(44px, 5.5vw, 76px) 0; }
 .section-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: clamp(28px, 4vw, 52px); flex-wrap: wrap; }
 .section-head p { max-width: 44ch; color: var(--concrete); }
 
