@@ -54,7 +54,6 @@
 <ProjectRail {projects}>
   <div class="section-head">
     <h2 class="h2">Наши проекты</h2>
-    <p>Мотоциклы, которые прошли через мастерскую, — от свежих сборок 2026 года до архивных. Внутри каждого история, список работ и фото.</p>
     <a class="link-brass" href="{base}/proekty">Все проекты</a>
   </div>
 </ProjectRail>

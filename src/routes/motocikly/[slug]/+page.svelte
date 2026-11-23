@@ -48,7 +48,7 @@
 
 <section class="section">
   <div class="wrap">
-    <div class="section-head"><h2 class="h2">Что можно доработать</h2><p>Отметки на мотоцикле ведут на страницы услуг.</p></div>
+    <div class="section-head"><h2 class="h2">Что можно доработать</h2></div>
     <ServiceBike />
   </div>
 </section>
