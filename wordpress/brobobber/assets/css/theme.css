@@ -1,0 +1,39 @@
+/* WordPress-specific additions on top of the generated site.css. */
+
+/* Door between pages: already down when the new page starts painting. */
+.bb-door-down .sh-door { visibility: visible; transform: none; }
+
+/* The top bar slides away while reading down, at every width. */
+.hd-header.hd-hidden { transform: translateY(-100%); }
+
+/* WordPress admin bar for logged-in editors. */
+.admin-bar .hd-header { top: 32px; }
+.admin-bar .hd-sheet { top: 32px; }
+@media (max-width: 782px) {
+  .admin-bar .hd-header, .admin-bar .hd-sheet { top: 46px; }
+  #wpadminbar { position: fixed; }
+}
+
+/* Project story comes from the editor as plain paragraphs. */
+.pj-story > p:first-of-type { font-size: clamp(20px, 1.8vw, 24px); color: var(--paper); }
+
+/* Policy and other editor pages. */
+.pl-text h2 { font-family: var(--display); font-stretch: 90%; font-size: 21px; margin-top: 20px; color: var(--paper); }
+.pl-text a { color: var(--brass); text-decoration: underline; }
+.pl-text ul, .pl-text ol { padding-left: 1.4em; list-style: revert; }
+
+/* The honeypot of the form stays out of sight. */
+.bb-trap { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.rq-form { position: relative; }
+.rq-form.is-sending button[type='submit'] { opacity: .6; pointer-events: none; }
+
+/* Filter of the projects list. */
+.pa-list > li[hidden] { display: none; }
+
+/* Slides are stacked; the new one rises over the previous. */
+.ps-slide[hidden] { display: none; }
+
+/* Clips opened in the reel keep the same frame as the poster. */
+.vr-reel video.is-playing { width: 100%; aspect-ratio: 9 / 16; }
+
+.hd-call-sheet .hd-hours { display: inline-flex; }

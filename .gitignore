@@ -26,3 +26,6 @@ dist-ssr
 # SvelteKit
 build
 .svelte-kit
+
+# WordPress packages and local media pack
+wordpress/dist

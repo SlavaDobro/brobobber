@@ -1,0 +1,26 @@
+.bbc-box { max-width: 1040px; }
+.bbc-settings .bbc-box { margin-top: 16px; padding: 8px 20px 12px; background: #fff; border: 1px solid #dcdcde; }
+.bbc-box h2 { margin: 24px 0 8px; padding-bottom: 6px; border-bottom: 1px solid #dcdcde; font-size: 16px; }
+.bbc-field { margin: 14px 0; }
+.bbc-label { display: block; margin-bottom: 5px; font-weight: 600; }
+.bbc-field input[type='text'], .bbc-field input[type='url'], .bbc-field input[type='email'], .bbc-field input[type='number'], .bbc-field textarea, .bbc-field select { width: 100%; max-width: 100%; }
+.bbc-number input { max-width: 140px; }
+.bbc-thumbs { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 10px; min-height: 8px; }
+.bbc-thumbs li { position: relative; width: 96px; height: 96px; margin: 0; cursor: move; background: #f0f0f1; }
+.bbc-thumbs img { display: block; width: 96px; height: 96px; object-fit: cover; }
+.bbc-remove, .bbc-remove-row { width: 22px; height: 22px; padding: 0; line-height: 20px; border: 0; border-radius: 50%; background: #1d2327; color: #fff; cursor: pointer; }
+.bbc-remove { position: absolute; top: 3px; right: 3px; }
+.bbc-remove-row { flex: none; margin-top: 22px; background: #b32d2e; }
+.bbc-media { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.bbc-preview img { display: block; width: 72px; height: 72px; object-fit: cover; }
+.bbc-file { font-family: monospace; font-size: 12px; }
+.bbc-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px; margin-bottom: 6px; background: #f6f7f7; border: 1px solid #dcdcde; }
+.bbc-handle { flex: none; margin-top: 24px; color: #8c8f94; cursor: move; letter-spacing: -2px; }
+.bbc-cell { flex: 1 1 0; min-width: 0; }
+.bbc-cell > span { display: block; margin-bottom: 3px; font-size: 12px; color: #50575e; }
+.bbc-cell input[type='text'], .bbc-cell input[type='url'], .bbc-cell textarea, .bbc-cell select { width: 100%; }
+.bbc-cell-textarea { flex: 3 1 0; }
+.bbc-cell-image, .bbc-cell-video { flex: 0 0 auto; }
+.bbc-checks { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 4px 16px; max-height: 240px; overflow: auto; padding: 8px; background: #f6f7f7; border: 1px solid #dcdcde; }
+.bbc-import progress { display: block; width: 100%; height: 14px; margin: 14px 0 6px; }
+.bbc-ok { color: #00701a; font-weight: 600; }
