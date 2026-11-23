@@ -19,7 +19,7 @@
   <meta name="description" content="Кастомизация, тюнинг и обслуживание мотоциклов: Harley-Davidson, Triumph, Yamaha, BMW и другие. Мастерская в Москве, Марьино, Кнутовская, 14." />
 </svelte:head>
 
-<HeroDoor photo="/images/photos/scrambler/04" alt="Два мотоцикла мастерской Brobobber на закате у воды" focus="27% 58%">
+<HeroDoor>
   <div class="hero-copy">
     <h1 class="hero-title">Кастом-ателье мотоциклов в Москве</h1>
     <p class="lead">Строим, тюнингуем и обслуживаем мотоциклы. Harley-Davidson, Triumph, Yamaha, BMW — и любой байк, который вы привезёте.</p>
