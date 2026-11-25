@@ -55,12 +55,12 @@
   .poster { background-size: cover; background-position: center; }
   .poster video { width: 100%; height: 100%; aspect-ratio: auto; border-radius: 0; transition: transform .6s var(--ease); pointer-events: none; }
   .poster:hover video { transform: scale(1.04); }
-  .play { position: absolute; left: 50%; top: 50%; width: 58px; height: 58px; margin: -29px 0 0 -29px; display: grid; place-items: center; border-radius: 50%; background: #1c1d1bcc; border: 1px solid var(--brass); color: var(--brass); backdrop-filter: blur(4px); transition: transform .25s var(--ease); }
+  .play { position: absolute; left: 50%; top: 50%; width: 58px; height: 58px; margin: -29px 0 0 -29px; display: grid; place-items: center; border-radius: 50%; background: #131313cc; border: 1px solid var(--steel); color: var(--steel); backdrop-filter: blur(4px); transition: transform .25s var(--ease); }
   .poster:hover .play { transform: scale(1.1); }
   .duration { position: absolute; right: 10px; bottom: 10px; padding: 2px 7px; border-radius: 3px; background: #000a; font-size: 12px; font-variant-numeric: tabular-nums; }
   .controls { display: flex; gap: 8px; margin-top: 20px; }
   .controls button { width: 46px; height: 46px; display: grid; place-items: center; border: 1px solid var(--rule); border-radius: 50%; transition: opacity .2s, border-color .2s, color .2s; }
-  .controls button:hover:not(:disabled) { border-color: var(--brass); color: var(--brass); }
+  .controls button:hover:not(:disabled) { border-color: var(--steel); color: var(--steel); }
   .controls button:disabled { opacity: .35; cursor: default; }
   figcaption { font-size: 14px; color: var(--concrete); line-height: 1.4; }
 </style>

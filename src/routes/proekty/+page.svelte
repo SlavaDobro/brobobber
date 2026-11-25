@@ -46,7 +46,7 @@
         {/each}
       </ul>
     {:else}
-      <p class="empty">В этом сочетании проектов нет. <button class="link-brass" onclick={() => { brand = ''; style = '' }}>Сбросить фильтры</button></p>
+      <p class="empty">В этом сочетании проектов нет. <button class="link-steel" onclick={() => { brand = ''; style = '' }}>Сбросить фильтры</button></p>
     {/if}
   </div>
 </section>

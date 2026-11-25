@@ -24,7 +24,7 @@
 
 <section class="section">
   <div class="wrap">
-    <div class="section-head"><h2 class="h2">Проекты мастерской</h2><a class="link-brass" href="{base}/proekty">Все проекты</a></div>
+    <div class="section-head"><h2 class="h2">Проекты мастерской</h2><a class="link-steel" href="{base}/proekty">Все проекты</a></div>
     <ProjectTiles slugs={works} />
   </div>
 </section>

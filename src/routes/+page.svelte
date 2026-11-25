@@ -40,21 +40,24 @@
 <section class="section manifesto">
   <div class="wrap">
     <div class="manifesto-top">
-      <p class="statement">Место, где мотоциклы <span class="brass">превращаются в шедевры</span>. Каждый проект — под характер владельца.</p>
+      <p class="statement">Место, где мотоциклы <span class="accent">превращаются в шедевры</span>. Каждый проект — под характер владельца.</p>
       <PhotoSlides items={showcase} />
     </div>
-    <ul class="advantages">
-      {#each advantages as item}
-        <li><h2 class="h3">{item.title}</h2><p class="muted">{item.text}</p></li>
-      {/each}
-    </ul>
+    <div class="why">
+      <h2 class="h2">Почему Brobobber</h2>
+      <ul class="advantages">
+        {#each advantages as item, i}
+          <li><span class="num">{String(i + 1).padStart(2, '0')}</span><h3 class="h3">{item.title}</h3><p class="muted">{item.text}</p></li>
+        {/each}
+      </ul>
+    </div>
   </div>
 </section>
 
 <ProjectRail {projects}>
   <div class="section-head">
     <h2 class="h2">Наши проекты</h2>
-    <a class="link-brass" href="{base}/proekty">Все проекты</a>
+    <a class="link-steel" href="{base}/proekty">Все проекты</a>
   </div>
 </ProjectRail>
 
@@ -64,8 +67,8 @@
       <Photo base="/images/photos/home/24" alt="Мастера Brobobber в мастерской" sizes="(max-width: 900px) 100vw, 45vw" />
     </div>
     <div class="about-copy">
-      <h2 class="h2">Мастерская на Кнутовской</h2>
-      <p class="lead">Brobobber объединяет техническое мастерство и стильный дизайн. Детали проектируем в 3D и вытачиваем на станках с ЧПУ, красим сами, шьём сиденья сами.</p>
+      <h2 class="h2">Кастом-мастерская в Москве</h2>
+      <p class="lead">Brobobber — мастерская кастомных мотоциклов в Москве, в Марьино (Новая Москва). Объединяем техническое мастерство и стильный дизайн. Детали проектируем в 3D и вытачиваем на станках с ЧПУ, красим сами, шьём сиденья сами.</p>
       <p class="muted">На связи с вами {contacts.phones[0].name}. Ведём проект от первого разговора до передачи мотоцикла, а потом обслуживаем его.</p>
       <a class="btn btn-line" href="{base}/o-nas">О мастерской</a>
     </div>
@@ -77,7 +80,7 @@
     <div class="section-head">
       <h2 class="h2">Что делаем</h2>
       <p>Выберите отметку на мотоцикле — покажем, какие узлы мы дорабатываем.</p>
-      <a class="link-brass" href="{base}/konfigurator">Соберите свой V-Rod в конфигураторе</a>
+      <a class="link-steel" href="{base}/konfigurator">Соберите свой V-Rod в конфигураторе</a>
     </div>
     <ServiceBike />
   </div>
@@ -87,7 +90,7 @@
   <div class="wrap">
     <div class="section-head">
       <h2 class="h2">Как создаётся кастом</h2>
-      <a class="link-brass" href="{base}/process">Подробнее о процессе</a>
+      <a class="link-steel" href="{base}/process">Подробнее о процессе</a>
     </div>
     <ProcessRoad />
   </div>
@@ -108,7 +111,7 @@
     <div class="section-head">
       <h2 class="h2">Жизнь мастерской</h2>
       <p>Короткие ролики из нашего Telegram-канала: новые проекты, детали и поездки.</p>
-      <a class="link-brass" href={contacts.channel.href} target="_blank" rel="noopener">Канал {contacts.channel.handle}</a>
+      <a class="link-steel" href={contacts.channel.href} target="_blank" rel="noopener">Канал {contacts.channel.handle}</a>
     </div>
     <VideoReel />
   </div>
@@ -118,11 +121,11 @@
   <div class="wrap sale-grid">
     <div>
       <h2 class="h2">Мотоциклы в наличии</h2>
-      <p class="lead">Иногда у нас появляются готовые перестроенные мотоциклы — их можно купить и сразу ехать.</p>
+      <p class="lead">Готовые проекты, которые можно купить и сразу ехать, и мотоциклы-доноры под будущий кастом.</p>
     </div>
     <div class="sale-actions">
-      <p class="muted">Что сейчас в наличии, публикуем в Telegram-канале. Или спросите мастера напрямую.</p>
-      <a class="btn btn-signal" href={contacts.channel.href} target="_blank" rel="noopener">Открыть канал {contacts.channel.handle}</a>
+      <p class="muted">Актуальный список с фото, ценой и описанием. Новые мотоциклы первыми появляются в Telegram-канале {contacts.channel.handle}.</p>
+      <a class="btn btn-signal" href="{base}/v-nalichii">Смотреть мотоциклы в наличии</a>
     </div>
   </div>
 </section>
@@ -136,13 +139,15 @@
 
 <style>
   .hero-copy { display: grid; gap: 20px; max-width: 640px; }
-  .hero-title { font-family: var(--display); font-weight: 600; font-stretch: 85%; font-size: clamp(26px, 3vw, 40px); line-height: 1.08; }
+  .hero-title { font-family: var(--display); font-weight: 600; font-stretch: 94%; font-size: clamp(26px, 3vw, 40px); line-height: 1.08; }
   .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
   .manifesto-top { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 5vw, 80px); align-items: center; }
-  .statement { font-family: var(--display); font-weight: 600; font-stretch: 78%; font-size: clamp(32px, 4.5vw, 68px); line-height: 1.03; max-width: 18ch; }
-  .brass { color: var(--brass); }
-  .advantages { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; margin-top: clamp(40px, 6vw, 80px); padding-top: 28px; border-top: 1px solid var(--rule); }
-  .advantages li { display: grid; gap: 10px; align-content: start; }
+  .statement { font-family: var(--display); font-weight: 600; font-stretch: 96%; font-size: clamp(32px, 4.5vw, 68px); line-height: 1.03; max-width: 18ch; }
+  .accent { color: var(--signal); }
+  .why { display: grid; gap: clamp(24px, 3vw, 40px); margin-top: clamp(40px, 6vw, 80px); padding-top: clamp(28px, 4vw, 48px); border-top: 1px solid var(--rule); }
+  .advantages { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(28px, 3vw, 44px) 28px; }
+  .advantages li { display: grid; gap: 10px; align-content: start; padding-top: 16px; border-top: 2px solid var(--rule); }
+  .advantages .num { font-family: var(--display); font-weight: 700; font-stretch: 112%; font-size: 13px; letter-spacing: .1em; color: var(--signal); }
   .about .grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(28px, 6vw, 96px); align-items: center; }
   .about-photo { aspect-ratio: var(--a); width: min(100%, calc(82svh * var(--a))); justify-self: center; overflow: hidden; border-radius: 4px; }
   .about-photo :global(img) { width: 100%; height: 100%; object-fit: cover; }

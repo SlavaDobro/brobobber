@@ -24,14 +24,14 @@
   .index { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(7, auto); grid-auto-flow: column; column-gap: clamp(24px, 4vw, 64px); }
   li { border-top: 1px solid var(--rule); }
   a { display: grid; grid-template-columns: 32px minmax(0, 1fr) 18px; gap: 10px; align-items: center; height: 100%; padding: 13px 0; transition: color .2s, padding .25s var(--ease); }
-  a :global(svg) { color: var(--brass); opacity: .55; transition: opacity .2s, transform .25s var(--ease); }
-  a:hover { color: var(--brass); padding-left: 6px; }
+  a :global(svg) { color: var(--steel); opacity: .55; transition: opacity .2s, transform .25s var(--ease); }
+  a:hover { color: var(--steel); padding-left: 6px; }
   a:hover :global(svg) { opacity: 1; transform: translateX(3px); }
-  .n { font-family: var(--display); font-stretch: 85%; font-size: 13px; color: var(--brass); font-variant-numeric: tabular-nums; }
+  .n { font-family: var(--display); font-stretch: 94%; font-size: 13px; color: var(--steel); font-variant-numeric: tabular-nums; }
   .text { display: grid; gap: 1px; }
-  strong { font-family: var(--display); font-stretch: 88%; font-weight: 600; font-size: 18px; line-height: 1.2; }
+  strong { font-family: var(--display); font-stretch: 96%; font-weight: 600; font-size: 18px; line-height: 1.2; }
   small { font-size: 14px; line-height: 1.35; color: var(--concrete); }
-  .all a { grid-template-columns: minmax(0, 1fr) 20px; margin-top: 8px; padding: 14px 16px; background: var(--brass); color: var(--asphalt); border-radius: 4px; height: calc(100% - 8px); }
+  .all a { grid-template-columns: minmax(0, 1fr) 20px; margin-top: 8px; padding: 14px 16px; background: var(--steel); color: var(--asphalt); border-radius: 4px; height: calc(100% - 8px); }
   .all a:hover { background: var(--paper); color: var(--asphalt); padding-left: 16px; }
   .all a :global(svg) { color: inherit; opacity: 1; }
   .all { border-top: 0; }

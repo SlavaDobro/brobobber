@@ -17,6 +17,6 @@
 <style>
   .error { padding: calc(var(--header) + 80px) 0 100px; }
   .wrap { display: grid; gap: 20px; justify-items: start; }
-  .code { font-family: var(--display); font-stretch: 75%; font-weight: 650; font-size: clamp(120px, 20vw, 260px); line-height: .9; color: var(--brass); }
+  .code { font-family: var(--display); font-stretch: 86%; font-weight: 650; font-size: clamp(120px, 20vw, 260px); line-height: .9; color: var(--steel); }
   .actions { display: flex; gap: 12px; flex-wrap: wrap; }
 </style>

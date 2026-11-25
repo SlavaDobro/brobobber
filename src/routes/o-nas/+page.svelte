@@ -24,7 +24,7 @@
       <p class="lead">На связи с вами {contacts.phones[0].name}: здесь обсуждаем идею, смету и сроки, сюда же вы приезжаете на обслуживание.</p>
       <ul class="people">
         {#each contacts.phones as person}
-          <li><strong>{person.name}</strong><a href={person.href}>{person.phone}</a><a class="link-brass" href={`https://t.me/${person.telegram}`} target="_blank" rel="noopener">Написать в Telegram</a></li>
+          <li><strong>{person.name}</strong><a href={person.href}>{person.phone}</a><a class="link-steel" href={`https://t.me/${person.telegram}`} target="_blank" rel="noopener">Написать в Telegram</a></li>
         {/each}
       </ul>
     </div>
@@ -61,7 +61,7 @@
 </section>
 
 <ProjectRail {projects}>
-  <div class="section-head"><h2 class="h2">Что мы построили</h2><a class="link-brass" href="{base}/proekty">Все проекты</a></div>
+  <div class="section-head"><h2 class="h2">Что мы построили</h2><a class="link-steel" href="{base}/proekty">Все проекты</a></div>
 </ProjectRail>
 
 <section class="section tight">
@@ -83,11 +83,11 @@
   .copy { display: grid; gap: 22px; }
   .people { display: grid; gap: 14px; }
   .people li { display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: baseline; padding: 14px 0; border-top: 1px solid var(--rule); }
-  .people strong { font-family: var(--display); font-stretch: 88%; font-size: 22px; min-width: 110px; }
+  .people strong { font-family: var(--display); font-stretch: 96%; font-size: 22px; min-width: 110px; }
   .head { margin-bottom: 32px; }
   .usp { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; }
-  .usp li { display: grid; gap: 12px; align-content: start; padding-top: 20px; border-top: 2px solid var(--brass); }
-  .n { font-family: var(--display); color: var(--brass); }
+  .usp li { display: grid; gap: 12px; align-content: start; padding-top: 20px; border-top: 2px solid var(--steel); }
+  .n { font-family: var(--display); color: var(--steel); }
   @media (max-width: 900px) { .duo { grid-template-columns: 1fr; } .duo.reverse .pic { order: 0; } .usp { grid-template-columns: 1fr 1fr; } }
   @media (max-width: 560px) { .usp { grid-template-columns: 1fr; } }
 </style>

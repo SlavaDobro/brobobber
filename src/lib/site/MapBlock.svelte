@@ -15,9 +15,10 @@
       <p class="muted">Мотоцикл можно привезти своим ходом или на нашем мотоэвакуаторе.</p>
       <div class="links">
         <a class="btn btn-line" href={mapLinks.yandex} target="_blank" rel="noopener"><Navigation size={17} />Яндекс Карты</a>
+        <a class="btn btn-line" href={mapLinks.dgis} target="_blank" rel="noopener">2ГИС</a>
         <a class="btn btn-line" href={mapLinks.google} target="_blank" rel="noopener">Google Maps</a>
       </div>
-      <p class="channel">Новые проекты и мотоциклы в наличии — в <a class="link-brass" href={contacts.channel.href} target="_blank" rel="noopener">Telegram-канале {contacts.channel.handle}</a></p>
+      <p class="channel">Новые проекты и мотоциклы в наличии — в <a class="link-steel" href={contacts.channel.href} target="_blank" rel="noopener">Telegram-канале {contacts.channel.handle}</a></p>
     </div>
     <div class="frame">
       {#if showMap}
@@ -38,7 +39,7 @@
   .grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(28px, 5vw, 80px); align-items: center; }
   .info { display: grid; gap: 16px; }
   .address { display: flex; gap: 10px; font-size: 19px; line-height: 1.4; }
-  .address :global(svg) { color: var(--brass); margin-top: 3px; }
+  .address :global(svg) { color: var(--steel); margin-top: 3px; }
   .hours { font-size: 17px; }
   .links { display: flex; gap: 10px; flex-wrap: wrap; }
   .channel { font-size: 15px; color: var(--concrete); }

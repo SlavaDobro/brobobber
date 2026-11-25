@@ -121,16 +121,16 @@
   /* The viewBox is centred on 0 0, so that is the pivot for every turning part. */
   .spin { transform-box: view-box; transform-origin: 0 0; }
   .sprocket { fill: var(--paper); }
-  .band { fill: #1c1d1b; stroke: var(--brass); stroke-width: 1.6; }
-  .field { fill: #252623; stroke: var(--brass); stroke-width: 1.2; }
-  .rivet { fill: var(--brass); }
+  .band { fill: #131313; stroke: var(--steel); stroke-width: 1.6; }
+  .field { fill: #1c1c1c; stroke: var(--steel); stroke-width: 1.2; }
+  .rivet { fill: var(--steel); }
   .star { fill: var(--signal); }
-  .ring-text { fill: var(--paper); font-family: var(--display); font-weight: 700; font-stretch: 75%; font-size: 8.6px; letter-spacing: 1.15px; text-anchor: middle; }
+  .ring-text { fill: var(--paper); font-family: var(--display); font-weight: 700; font-stretch: 86%; font-size: 8.6px; letter-spacing: 1.15px; text-anchor: middle; }
   .ring-text.city { fill: var(--signal); letter-spacing: 2.4px; }
-  .wrench { fill: var(--paper); stroke: #1c1d1b; stroke-width: 1.6; stroke-linejoin: round; paint-order: stroke; }
-  .groove { stroke: #1c1d1b; stroke-width: 1.1; stroke-linecap: round; opacity: .28; }
-  .nut { fill: var(--brass); stroke: #1c1d1b; stroke-width: 1.8; stroke-linejoin: round; paint-order: stroke; }
-  .chamfer { fill: none; stroke: #1c1d1b; stroke-width: 1; opacity: .45; }
-  .mono { fill: #1c1d1b; font-family: var(--display); font-weight: 800; font-stretch: 75%; font-size: 11.5px; text-anchor: middle; letter-spacing: -.2px; }
-  .word { font-family: var(--display); font-weight: 700; font-stretch: 75%; font-size: 26px; letter-spacing: .02em; color: var(--paper); }
+  .wrench { fill: var(--paper); stroke: #131313; stroke-width: 1.6; stroke-linejoin: round; paint-order: stroke; }
+  .groove { stroke: #131313; stroke-width: 1.1; stroke-linecap: round; opacity: .28; }
+  .nut { fill: var(--signal); stroke: #131313; stroke-width: 1.8; stroke-linejoin: round; paint-order: stroke; }
+  .chamfer { fill: none; stroke: #131313; stroke-width: 1; opacity: .45; }
+  .mono { fill: #131313; font-family: var(--display); font-weight: 800; font-stretch: 86%; font-size: 11.5px; text-anchor: middle; letter-spacing: -.2px; }
+  .word { font-family: var(--display); font-weight: 800; font-stretch: 118%; font-size: 21px; letter-spacing: .04em; text-transform: uppercase; color: var(--paper); }
 </style>

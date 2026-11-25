@@ -53,7 +53,7 @@
       <p class="muted">Расскажите, что за мотоцикл и что хочется изменить. Мастер перезвонит, уточнит детали и предложит, с чего начать.</p>
       <ul class="people">
         {#each contacts.phones as person}
-          <li><a href={person.href}>{person.phone}</a><span>{person.name}, <a class="link-brass" href={`https://t.me/${person.telegram}`} target="_blank" rel="noopener">Telegram</a></span></li>
+          <li><a href={person.href}>{person.phone}</a><span>{person.name}, <a class="link-steel" href={`https://t.me/${person.telegram}`} target="_blank" rel="noopener">Telegram</a></span></li>
         {/each}
       </ul>
     </div>
@@ -70,7 +70,7 @@
           </select>
         </label>
         <label class="full"><span>Что хотите сделать</span><textarea bind:value={message} rows="3"></textarea></label>
-        <label class="consent full"><input type="checkbox" bind:checked={agreed} /><span>Согласен на обработку персональных данных по <a class="link-brass" href="{base}/politika">политике конфиденциальности</a></span></label>
+        <label class="consent full"><input type="checkbox" bind:checked={agreed} /><span>Согласен на обработку персональных данных по <a class="link-steel" href="{base}/politika">политике конфиденциальности</a></span></label>
         {#if error}<p class="error full" role="alert">{error}</p>{/if}
         <button class="btn btn-signal full" type="submit">Подготовить заявку</button>
       </form>
@@ -83,7 +83,7 @@
           <button class="btn btn-line" onclick={sendTelegram}><Send size={18} />Написать в Telegram</button>
         </div>
         {#if copied}<p class="muted note"><Check size={15} />Текст заявки скопирован — вставьте его в чат.</p>{/if}
-        <button class="link-brass edit" onclick={() => ready = false}>Изменить заявку</button>
+        <button class="link-steel edit" onclick={() => ready = false}>Изменить заявку</button>
       </div>
     {/if}
   </div>
@@ -96,20 +96,20 @@
   .intro p { max-width: 40ch; }
   .people { display: grid; gap: 14px; margin-top: 8px; }
   .people li { display: grid; gap: 2px; }
-  .people li > a { font-family: var(--display); font-stretch: 90%; font-size: 24px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .people li > a { font-family: var(--display); font-stretch: 100%; font-size: 24px; font-weight: 600; font-variant-numeric: tabular-nums; }
   .people span { color: var(--concrete); font-size: 14px; }
   .form { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .full { grid-column: 1 / -1; }
   label { display: grid; gap: 6px; font-size: 14px; color: var(--concrete); }
   input:not([type='checkbox']), select, textarea { width: 100%; padding: 13px 14px; background: var(--asphalt); border: 1px solid var(--rule); border-radius: 4px; color: var(--paper); transition: border-color .2s; }
-  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--brass); }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--steel); }
   input[aria-invalid='true'] { border-color: var(--signal); }
   textarea { resize: vertical; }
   .consent { grid-template-columns: auto 1fr; align-items: start; gap: 10px; }
-  .consent input { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--brass); }
+  .consent input { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--steel); }
   .error { color: #f08a78; font-size: 14px; }
   .done { grid-template-columns: 1fr; gap: 18px; padding: 28px; border: 1px solid var(--rule); border-radius: 6px; background: var(--asphalt); }
-  .preview { margin: 0; white-space: pre-wrap; font: inherit; font-size: 15px; color: var(--concrete); padding: 16px; border-left: 2px solid var(--brass); background: var(--asphalt-2); }
+  .preview { margin: 0; white-space: pre-wrap; font: inherit; font-size: 15px; color: var(--concrete); padding: 16px; border-left: 2px solid var(--steel); background: var(--asphalt-2); }
   .send { display: flex; gap: 12px; flex-wrap: wrap; }
   .note { display: flex; align-items: center; gap: 8px; font-size: 14px; }
   .edit { justify-self: start; font-size: 14px; }

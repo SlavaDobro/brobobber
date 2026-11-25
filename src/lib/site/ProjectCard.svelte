@@ -30,7 +30,7 @@
   .frame :global(img) { width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ease); }
   .card:hover .frame :global(img) { transform: scale(1.05); }
   .meta { display: grid; gap: 2px; }
-  .name { font-family: var(--display); font-stretch: 88%; font-weight: 600; font-size: 20px; line-height: 1.2; }
+  .name { font-family: var(--display); font-stretch: 96%; font-weight: 600; font-size: 20px; line-height: 1.2; }
   .tags { font-size: 14px; color: var(--concrete); }
-  .card:hover .name { color: var(--brass); }
+  .card:hover .name { color: var(--steel); }
 </style>

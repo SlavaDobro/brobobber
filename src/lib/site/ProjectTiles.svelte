@@ -31,6 +31,6 @@
   a :global(img) { width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ease); }
   a:hover :global(img) { transform: scale(1.04); }
   a::after { content: ''; position: absolute; inset: 55% 0 0; background: linear-gradient(transparent, #0f100ee0); pointer-events: none; }
-  span { position: absolute; z-index: 1; left: 12px; right: 12px; bottom: 10px; font-family: var(--display); font-stretch: 88%; font-weight: 600; font-size: clamp(15px, 1.25vw, 19px); line-height: 1.15; color: var(--paper); }
-  a:hover span { color: var(--brass); }
+  span { position: absolute; z-index: 1; left: 12px; right: 12px; bottom: 10px; font-family: var(--display); font-stretch: 96%; font-weight: 600; font-size: clamp(15px, 1.25vw, 19px); line-height: 1.15; color: var(--paper); }
+  a:hover span { color: var(--steel); }
 </style>

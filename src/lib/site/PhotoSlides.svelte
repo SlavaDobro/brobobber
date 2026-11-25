@@ -37,7 +37,7 @@
 
 <div class="slides" bind:this={root}>
   {#if previous >= 0}
-    <img class="under" src={slides[previous].photo.src} alt="" aria-hidden="true" />
+    <img class="photo under" src={slides[previous].photo.src} alt="" aria-hidden="true" />
   {/if}
   {#key index}
     <a class="slide" href={`${base}/proekty/${current.slug}`} aria-label={`Проект: ${current.name}`}>
@@ -53,9 +53,9 @@
   .slide { display: block; animation: door .95s var(--ease) both; }
   .slide :global(img) { animation: settle 4.6s var(--ease) both; }
   .slide::after { content: ''; position: absolute; inset: 55% 0 0; background: linear-gradient(transparent, #0f100ecc); pointer-events: none; }
-  .name { position: absolute; z-index: 1; left: 18px; right: 18px; bottom: 16px; padding-left: 12px; border-left: 2px solid var(--brass);
-    font-family: var(--display); font-stretch: 88%; font-weight: 600; font-size: clamp(17px, 1.6vw, 22px); line-height: 1.15; color: var(--paper); }
-  .slide:hover .name { color: var(--brass); }
+  .name { position: absolute; z-index: 1; left: 18px; right: 18px; bottom: 16px; padding-left: 12px; border-left: 2px solid var(--steel);
+    font-family: var(--display); font-stretch: 96%; font-weight: 600; font-size: clamp(17px, 1.6vw, 22px); line-height: 1.15; color: var(--paper); }
+  .slide:hover .name { color: var(--steel); }
   @keyframes door { from { clip-path: inset(100% 0 0 0); } to { clip-path: inset(0 0 0 0); } }
   @keyframes settle { from { transform: scale(1.08); } to { transform: scale(1); } }
   @media (prefers-reduced-motion: reduce) { .slide, .slide :global(img) { animation: none; } }

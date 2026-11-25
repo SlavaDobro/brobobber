@@ -41,7 +41,7 @@
 
 <section class="section">
   <div class="wrap">
-    <div class="section-head"><h2 class="h2">Наши проекты</h2><a class="link-brass" href="{base}/proekty">Все проекты</a></div>
+    <div class="section-head"><h2 class="h2">Наши проекты</h2><a class="link-steel" href="{base}/proekty">Все проекты</a></div>
     <ul class="justified fill">{#each projects.slice(0, 4) as project}<li style={cardStyle(project)}><ProjectCard {project} /></li>{/each}</ul>
   </div>
 </section>
@@ -54,8 +54,8 @@
   .pic :global(img) { width: 100%; height: 100%; object-fit: cover; transition: transform .9s var(--ease); }
   .style:hover .pic :global(img) { transform: scale(1.04); }
   .row { display: flex; justify-content: space-between; align-items: baseline; }
-  .name { font-family: var(--display); font-stretch: 78%; font-weight: 650; font-size: clamp(32px, 3.4vw, 48px); line-height: 1; }
-  .style:hover .name { color: var(--brass); }
-  .count { font-family: var(--display); color: var(--brass); }
+  .name { font-family: var(--display); font-stretch: 96%; font-weight: 650; font-size: clamp(32px, 3.4vw, 48px); line-height: 1; }
+  .style:hover .name { color: var(--steel); }
+  .count { font-family: var(--display); color: var(--steel); }
   .lead-s { color: var(--concrete); max-width: 52ch; }
 </style>

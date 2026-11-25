@@ -20,6 +20,6 @@
 
 <style>
   .policy { padding: calc(var(--header) + 64px) 0 80px; }
-  .text { max-width: 72ch; margin-top: 36px; display: grid; gap: 14px; color: #ece8dfd9; }
-  h2 { font-family: var(--display); font-stretch: 90%; font-size: 21px; margin-top: 20px; color: var(--paper); }
+  .text { max-width: 72ch; margin-top: 36px; display: grid; gap: 14px; color: #ebebead9; }
+  h2 { font-family: var(--display); font-stretch: 100%; font-size: 21px; margin-top: 20px; color: var(--paper); }
 </style>

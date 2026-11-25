@@ -6,6 +6,7 @@
   import Faq from '$lib/site/Faq.svelte'
   import PhotoCredit from '$lib/site/PhotoCredit.svelte'
   import { styles, projects, cardStyle } from '$lib/site/data.js'
+  import { styleFaq } from '$lib/site/faq.js'
 
   let { data } = $props()
   let style = $derived(data.style)
@@ -40,7 +41,7 @@
     <div class="section-head">
       <h2 class="h2">{data.own.length ? `Наши проекты в этом стиле` : 'Наши проекты'}</h2>
       {#if !data.own.length}<p>Проектов именно в этом стиле на сайте пока нет — вот что мы строили недавно.</p>{/if}
-      <a class="link-brass" href="{base}/proekty">Все проекты</a>
+      <a class="link-steel" href="{base}/proekty">Все проекты</a>
     </div>
     <ul class="justified fill">{#each shown as project}<li style={cardStyle(project)}><ProjectCard {project} /></li>{/each}</ul>
   </div>
@@ -55,8 +56,8 @@
 
 <section class="section">
   <div class="wrap two">
-    <h2 class="h2">Вопросы</h2>
-    <Faq />
+    <h2 class="h2">Вопросы о стиле {style.name.toLowerCase()}</h2>
+    <Faq items={styleFaq[style.slug]} />
   </div>
 </section>
 
@@ -73,7 +74,7 @@
   .traits { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--rule); }
   .traits div { padding: 24px 24px 0 0; display: grid; gap: 10px; align-content: start; }
   .traits div + div { padding-left: 24px; border-left: 1px solid var(--rule); }
-  dt { font-family: var(--display); font-stretch: 88%; color: var(--brass); font-size: 15px; }
+  dt { font-family: var(--display); font-stretch: 96%; color: var(--steel); font-size: 15px; }
   dd { font-size: 19px; line-height: 1.4; }
   .two { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 40px; }
   .others-title { margin-bottom: 16px; }

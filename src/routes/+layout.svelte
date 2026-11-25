@@ -1,7 +1,6 @@
 <script>
   import '../app.css'
   import { onNavigate } from '$app/navigation'
-  import { base } from '$app/paths'
   import { page } from '$app/state'
   import Header from '$lib/site/Header.svelte'
   import Footer from '$lib/site/Footer.svelte'
@@ -14,8 +13,9 @@
   let shutter
 
   // The configurator is a full-screen tool with its own top bar.
-  let path = $derived(page.url.pathname.slice(base.length) || '/')
-  let bare = $derived(path.startsWith('/konfigurator'))
+  // The route id does not depend on the base path, which is relative while pages are prerendered.
+  let route = $derived(page.route.id ?? '')
+  let bare = $derived(route.startsWith('/konfigurator'))
 
   // Page width without the scrollbar (100vw includes it): full-width rows use it to stay on screen.
   $effect(() => {
@@ -72,6 +72,6 @@
 
 {#if !bare}
   <RequestForm topic={page.data?.topic ?? ''} title={page.data?.requestTitle} />
-  {#if !path.startsWith('/kontakty')}<MapBlock />{/if}
+  {#if !route.startsWith('/kontakty')}<MapBlock />{/if}
   <Footer />
 {/if}

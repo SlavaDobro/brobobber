@@ -41,7 +41,7 @@
 
 <style>
   .door { position: fixed; inset: 0; z-index: 80; visibility: hidden; transform: translateY(-100%); display: flex; flex-direction: column; background: #262723; pointer-events: none; }
-  .slat { flex: 1; border-bottom: 2px solid #191a18; background: linear-gradient(180deg, #2f302c 0%, #262723 45%, #20211e 100%); box-shadow: inset 0 1px 0 #ffffff0f; }
+  .slat { flex: 1; border-bottom: 2px solid #191a18; background: linear-gradient(180deg, #262626 0%, #262723 45%, #20211e 100%); box-shadow: inset 0 1px 0 #ffffff0f; }
   .badge { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); filter: drop-shadow(0 10px 30px #0009); }
-  .handle { position: absolute; left: 50%; bottom: 22px; width: 120px; height: 10px; margin-left: -60px; border-radius: 5px; background: var(--brass); box-shadow: 0 0 0 4px #191a18; }
+  .handle { position: absolute; left: 50%; bottom: 22px; width: 120px; height: 10px; margin-left: -60px; border-radius: 5px; background: var(--steel); box-shadow: 0 0 0 4px #191a18; }
 </style>

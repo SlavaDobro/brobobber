@@ -144,7 +144,7 @@
     }
     const width = 1560, height = width / ratio
     ctx.drawImage(canvas, (1920 - width) / 2, 1080 - height - 30, width, height)
-    ctx.font = '600 30px "Tektur Variable", sans-serif'
+    ctx.font = '600 30px "Saira Variable", sans-serif'
     ctx.fillStyle = scene.dark ? '#f2f3f0' : '#1d2023'
     ctx.fillText('Brobobber V-Rod', 60, 84)
     ctx.font = '400 24px "Golos Text Variable", sans-serif'

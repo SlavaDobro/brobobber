@@ -1,21 +1,21 @@
-@import '@fontsource-variable/tektur/wdth.css';
+@import '@fontsource-variable/saira/wdth.css';
 @import '@fontsource-variable/golos-text';
 @import 'tailwindcss';
 
-/* Night workshop: asphalt and concrete, paper-white text, brass of the fittings.
-   Signal red is the brand colour of the old site and is used for one thing only: the request button. */
+/* Brand palette from the client (V1.0): black, grey, steel; signal red only for accents and buttons.
+   No yellow or orange anywhere. Display face Saira: square, rounded corners, no diagonal cuts, like the logo. */
 :root {
-  --asphalt: #1c1d1b;
-  --asphalt-2: #252623;
-  --asphalt-3: #2f302c;
-  --rule: #3c3d38;
-  --concrete: #a3a49c;
-  --paper: #ece8df;
-  --brass: #c39a55;
-  --brass-soft: #c39a5533;
+  --asphalt: #131313;
+  --asphalt-2: #1c1c1c;
+  --asphalt-3: #262626;
+  --rule: #343434;
+  --concrete: #9b9da0;
+  --paper: #ebebea;
+  --steel: #b9bdc2;
+  --steel-soft: #b9bdc233;
   --signal: #d23f2a;
   --signal-deep: #b0321f;
-  --display: 'Tektur Variable', 'Golos Text Variable', sans-serif;
+  --display: 'Saira Variable', 'Golos Text Variable', sans-serif;
   --text: 'Golos Text Variable', system-ui, sans-serif;
   --gutter: clamp(16px, 4vw, 56px);
   --max: 1440px;
@@ -40,8 +40,8 @@ a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 img, video, canvas, svg { display: block; max-width: 100%; }
 input, textarea, select { font: inherit; color: inherit; }
-:focus-visible { outline: 2px solid var(--brass); outline-offset: 3px; }
-::selection { background: var(--brass); color: var(--asphalt); }
+:focus-visible { outline: 2px solid var(--steel); outline-offset: 3px; }
+::selection { background: var(--steel); color: var(--asphalt); }
 
 .wrap { width: 100%; max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
 /* A horizontal row inside .wrap that runs to both screen edges while its first card stays on the
@@ -58,10 +58,10 @@ input, textarea, select { font: inherit; color: inherit; }
 .skip-link:focus { top: 16px; }
 
 /* Type scale (perfect fourth). Display face is narrowed for headlines, wide for small labels. */
-.h-display { font-family: var(--display); font-weight: 650; font-stretch: 75%; font-size: clamp(44px, 8.4vw, 132px); line-height: .92; letter-spacing: -.01em; }
-.h1 { font-family: var(--display); font-weight: 650; font-stretch: 78%; font-size: clamp(40px, 6vw, 84px); line-height: .98; }
-.h2 { font-family: var(--display); font-weight: 600; font-stretch: 80%; font-size: clamp(32px, 4.2vw, 60px); line-height: 1.02; }
-.h3 { font-family: var(--display); font-weight: 600; font-stretch: 88%; font-size: clamp(21px, 2vw, 28px); line-height: 1.15; }
+.h-display { font-family: var(--display); font-weight: 750; font-stretch: 86%; font-size: clamp(44px, 8.4vw, 132px); line-height: .92; letter-spacing: -.01em; }
+.h1 { font-family: var(--display); font-weight: 720; font-stretch: 88%; font-size: clamp(40px, 6vw, 84px); line-height: .98; }
+.h2 { font-family: var(--display); font-weight: 700; font-stretch: 90%; font-size: clamp(32px, 4.2vw, 60px); line-height: 1.02; }
+.h3 { font-family: var(--display); font-weight: 650; font-stretch: 100%; font-size: clamp(21px, 2vw, 28px); line-height: 1.15; }
 h1, h2, h3 { text-wrap: balance; overflow-wrap: break-word; }
 p, li, dd, figcaption { text-wrap: pretty; }
 .lead { font-size: clamp(17px, 1.5vw, 21px); line-height: 1.5; color: var(--paper); max-width: 46ch; }
@@ -83,16 +83,21 @@ p, li, dd, figcaption { text-wrap: pretty; }
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; height: 52px; padding: 0 24px; border-radius: 4px; font-weight: 600; font-size: 15px; transition: background-color .2s, color .2s, border-color .2s; white-space: nowrap; }
 .btn-signal { background: var(--signal); color: #fff; }
 .btn-signal:hover { background: var(--signal-deep); }
-.btn-line { border: 1px solid #ece8df55; color: var(--paper); }
-.btn-line:hover { border-color: var(--paper); background: #ece8df10; }
-.link-brass { color: var(--brass); border-bottom: 1px solid var(--brass-soft); padding-bottom: 2px; transition: border-color .2s; }
-.link-brass:hover { border-color: var(--brass); }
+.btn-line { border: 1px solid #ebebea55; color: var(--paper); }
+.btn-line:hover { border-color: var(--paper); background: #ebebea10; }
+.link-steel { color: var(--steel); border-bottom: 1px solid var(--steel-soft); padding-bottom: 2px; transition: border-color .2s; }
+.link-steel:hover { border-color: var(--steel); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
 
 /* Phones and tablets: room for the dashboard bar at the bottom. */
-@media (max-width: 1320px) {
+@media (max-width: 1360px) {
   body:has(.dash) { padding-bottom: calc(64px + env(safe-area-inset-bottom)); }
 }
+
+/* One industrial look for every photo (client edits V1.0): monochrome and contrast, so shots taken in
+   different places read as one series. Colour comes back on hover and in the full-size viewer. */
+img.photo { filter: grayscale(1) contrast(1.14) brightness(.95); transition: filter .5s var(--ease); }
+img.photo:hover, :is(a, button):is(:hover, :focus-visible) img.photo { filter: none; }

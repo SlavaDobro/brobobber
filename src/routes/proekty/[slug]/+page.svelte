@@ -80,7 +80,7 @@
       <h2 class="h2">История проекта</h2>
       <div class="story">
         {#each project.story as paragraph, i}<p class:first={i === 0}>{paragraph}</p>{/each}
-        {#if project.post}<a class="link-brass" href={project.post} target="_blank" rel="noopener">Пост о проекте в Telegram-канале</a>{/if}
+        {#if project.post}<a class="link-steel" href={project.post} target="_blank" rel="noopener">Пост о проекте в Telegram-канале</a>{/if}
         {#if clip}
           <!-- svelte-ignore a11y_media_has_caption -->
           <video class="clip" src={`${base + clip.src}#t=0.6`} controls playsinline preload="metadata"></video>
@@ -162,24 +162,24 @@
   .two { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: clamp(28px, 5vw, 80px); align-items: start; }
   .sticky { position: sticky; top: calc(var(--header) + 32px); display: grid; gap: 18px; justify-items: start; }
   .story { display: grid; gap: 18px; max-width: 64ch; justify-items: start; }
-  .story p { font-size: 18px; line-height: 1.65; color: #ece8dfd9; }
+  .story p { font-size: 18px; line-height: 1.65; color: #ebebead9; }
   .story .clip { width: min(100%, 320px); aspect-ratio: 9 / 16; border-radius: 6px; background: var(--asphalt-2); object-fit: cover; margin-top: 8px; }
   .story p.first { font-size: clamp(20px, 1.8vw, 24px); color: var(--paper); }
   .works li { display: grid; grid-template-columns: 34px 1fr 18px; gap: 12px; padding: 15px 0; border-bottom: 1px solid var(--rule); font-size: 17px; align-items: start; }
-  .works .n { font-family: var(--display); font-size: 13px; color: var(--brass); padding-top: 4px; }
-  .works :global(svg) { color: var(--brass); margin-top: 4px; }
+  .works .n { font-family: var(--display); font-size: 13px; color: var(--steel); padding-top: 4px; }
+  .works :global(svg) { color: var(--steel); margin-top: 4px; }
   .head { margin-bottom: 32px; }
   .gallery { columns: 3 260px; column-gap: 16px; }
   .gallery li { break-inside: avoid; margin-bottom: 16px; }
   .gallery button { display: block; width: 100%; overflow: hidden; border-radius: 4px; cursor: zoom-in; }
   .gallery :global(img) { width: 100%; height: auto; transition: transform .6s var(--ease); }
   .gallery button:hover :global(img) { transform: scale(1.04); }
-  .next { display: inline-flex; align-items: center; gap: 8px; color: var(--brass); }
+  .next { display: inline-flex; align-items: center; gap: 8px; color: var(--steel); }
   .viewer { width: 100vw; height: 100vh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: #0f100ef2; color: var(--paper); }
   .viewer::backdrop { background: transparent; }
   .viewer[open] { display: grid; place-items: center; }
   .viewer img { max-width: 92vw; max-height: 86vh; object-fit: contain; }
-  .viewer button { position: absolute; width: 52px; height: 52px; display: grid; place-items: center; border-radius: 50%; background: #1c1d1bcc; border: 1px solid var(--rule); }
+  .viewer button { position: absolute; width: 52px; height: 52px; display: grid; place-items: center; border-radius: 50%; background: #131313cc; border: 1px solid var(--rule); }
   .close { top: 20px; right: 20px; }
   .prev { left: 20px; top: 50%; margin-top: -26px; }
   .nextb { right: 20px; top: 50%; margin-top: -26px; }
