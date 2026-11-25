@@ -211,4 +211,8 @@
     .actions { min-width: 0; }
     .reach .hours { max-width: 128px; font-size: 11px; white-space: normal; text-align: right; }
   }
+  /* The smallest phones: the logo needs the whole row. */
+  @media (max-width: 350px) {
+    .reach .hours { display: none; }
+  }
 </style>

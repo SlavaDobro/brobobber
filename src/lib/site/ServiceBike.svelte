@@ -1,8 +1,8 @@
 <script>
   import { base } from '$app/paths'
-  // Services on a real Sportster, drawn like a parts poster: small dots on the parts, thin leader
-  // lines out to labels on the wall and the floor. Hovering a dot or a label opens the label into
-  // a short description; every label is a link to the service page. Phones get numbered dots
+  // Services on a real Sportster, drawn like a parts poster: small dots on the parts, short thin
+  // leaders to labels on the wall and the floor. Hovering a dot or a label opens a short
+  // description beside the label; every label is a link to the service page. Phones get numbered dots
   // and a card under the photo instead of labels.
   import { ArrowRight, GraduationCap, PackagePlus, Truck } from '@lucide/svelte'
   import { services } from './data.js'
@@ -19,7 +19,7 @@
   let picked = $state(0)
   let current = $derived(spotted[picked])
   const pick = (/** @type {number} */ i) => { active = i; picked = i }
-  // Label y-coordinates are percent of height; the SVG uses a 100 × 75 box (4:3 photo).
+  // Coordinates are percent of the frame; the SVG uses a 100 × 75 box (4:3 photo).
   const k = .75
 </script>
 
@@ -35,16 +35,22 @@
       {/each}
     </svg>
     {#each spotted as service, i}
-      {@const [x, y, lx, ly, align] = service.spot ?? [0, 0, 0, 0, 'c']}
+      {@const [x, y, lx, ly, side] = service.spot ?? [0, 0, 0, 0, 't']}
       <button class="dot" class:on={active === i} style={`left:${x}%;top:${y}%`} aria-label={service.name}
         onmouseenter={() => active = i} onfocus={() => active = i} onclick={() => pick(i)}>
         <span>{i + 1}</span>
       </button>
-      <a class={`tag ${align}`} class:low={ly > 60} class:on={active === i} style={`left:${lx}%;top:${ly}%`}
-        href={`${base}/uslugi/${service.slug}`} onmouseenter={() => active = i} onfocus={() => active = i}>
-        <span class="tag-name"><b>{String(i + 1).padStart(2, '0')}</b>{service.name}</span>
-        <span class="tag-more"><span><small>{service.short}</small><em>Подробнее <ArrowRight size={14} /></em></span></span>
-      </a>
+      <div class={`pin ${side}`} class:on={active === i} style={`left:${lx}%;top:${ly}%`}>
+        <a class="tag" class:up={ly > 50} class:flip={lx > 62} href={`${base}/uslugi/${service.slug}`}
+          onmouseenter={() => active = i} onfocus={() => active = i}>
+          <span class="tag-name"><b>{String(i + 1).padStart(2, '0')}</b><span>{service.pin ?? service.name}</span></span>
+          <span class="card" aria-hidden={active !== i}>
+            <strong>{service.name}</strong>
+            <small>{service.short}</small>
+            <em>Подробнее <ArrowRight size={14} /></em>
+          </span>
+        </a>
+      </div>
     {/each}
   </div>
 
@@ -94,27 +100,29 @@
   .dot span { width: 10px; height: 10px; border-radius: 50%; background: var(--paper); box-shadow: 0 0 0 3px #13131399, 0 0 0 4px #ebebea55; font-size: 0; transition: transform .2s var(--ease), background-color .2s; }
   .dot.on span, .dot:hover span { background: var(--signal); transform: scale(1.35); }
 
-  .tag { position: absolute; z-index: 3; display: grid; max-width: 26cqw; padding: 6px 10px; background: #131313e0; border: 1px solid var(--rule); border-radius: 3px; color: var(--paper);
-    transform: translate(-50%, -100%); transition: border-color .2s, background-color .2s; }
-  .tag.l { transform: translate(0, -100%); }
-  .tag.r { transform: translate(-100%, -100%); }
-  .tag.low { transform: translate(-50%, 0); }
-  .tag.low.l { transform: translate(0, 0); }
-  .tag.low.r { transform: translate(-100%, 0); }
-  .tag-name { display: flex; gap: 8px; align-items: baseline; white-space: nowrap; font-family: var(--display); font-weight: 650; font-stretch: 104%; font-size: clamp(11px, 1.15cqw, 14px); letter-spacing: .04em; text-transform: uppercase; }
-  .tag-name b { color: var(--concrete); font-weight: 600; font-variant-numeric: tabular-nums; }
-  /* The description unfolds under the name (above it for floor labels). */
-  .tag-more { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .3s var(--ease); }
-  .tag-more > span { overflow: hidden; display: grid; gap: 6px; min-width: 0; }
-  .tag-more small { padding-top: 6px; width: 0; max-width: min(240px, 26cqw); font-size: 13px; line-height: 1.35; color: var(--concrete); white-space: normal; }
-  .tag-more em { display: inline-flex; gap: 6px; align-items: center; font-style: normal; font-size: 13px; color: var(--paper); }
-  .tag.low .tag-more { order: -1; }
-  .tag.low .tag-more small { padding: 0; }
-  .tag.low .tag-more em { padding-bottom: 6px; }
-  .tag.on { z-index: 4; border-color: var(--signal); background: #131313f5; }
-  .tag.on .tag-name b { color: var(--signal); }
-  .tag.on .tag-more { grid-template-rows: 1fr; }
-  .tag.on .tag-more small { width: max-content; }
+  /* Labels like a parts poster: black plate, thin light frame, short leader into the middle of an edge. */
+  .pin { position: absolute; z-index: 3; width: 0; height: 0; }
+  .pin.on { z-index: 5; }
+  .tag { position: absolute; display: block; width: max-content; max-width: 15em; padding: 6px 10px 7px; background: #0b0b0bf0; border: 1px solid #ebebeacc; border-radius: 2px; color: var(--paper);
+    font-family: var(--display); font-weight: 650; font-stretch: 104%; font-size: clamp(10.5px, 1.12cqw, 13.5px); line-height: 1.2; letter-spacing: .05em; text-transform: uppercase; transition: border-color .2s; }
+  .t .tag { left: 0; bottom: 0; transform: translateX(-50%); }
+  .b .tag { left: 0; top: 0; transform: translateX(-50%); }
+  .l .tag { right: 0; top: 0; transform: translateY(-50%); }
+  .r .tag { left: 0; top: 0; transform: translateY(-50%); }
+  .tag-name { display: flex; gap: 7px; align-items: baseline; }
+  .tag-name b { flex: none; color: var(--concrete); font-weight: 600; font-size: .85em; font-variant-numeric: tabular-nums; }
+  .pin.on .tag { border-color: var(--signal); }
+  .pin.on .tag-name b { color: var(--signal); }
+  /* The description opens beside the label, towards the middle of the photo. */
+  .card { position: absolute; top: calc(100% + 6px); left: -1px; width: min(250px, 30cqw); display: grid; gap: 6px; padding: 12px 14px; background: #0b0b0bf5; border: 1px solid var(--rule); border-left: 2px solid var(--signal); border-radius: 2px;
+    font-family: var(--text); font-weight: 400; font-stretch: 100%; letter-spacing: 0; text-transform: none; line-height: 1.35;
+    opacity: 0; visibility: hidden; transform: translateY(-4px); transition: opacity .2s, transform .2s var(--ease), visibility 0s .2s; }
+  .tag.up .card { top: auto; bottom: calc(100% + 6px); transform: translateY(4px); }
+  .tag.flip .card { left: auto; right: -1px; }
+  .card strong { font-family: var(--display); font-weight: 650; font-size: 15px; }
+  .card small { font-size: 13px; color: var(--concrete); }
+  .card em { display: inline-flex; gap: 6px; align-items: center; font-style: normal; font-size: 13px; color: var(--paper); }
+  .pin.on .card { opacity: 1; visibility: visible; transform: none; transition: opacity .2s, transform .2s var(--ease); }
 
   .list { display: none; }
   .num { font-family: var(--display); font-stretch: 104%; font-size: 13px; color: var(--concrete); font-variant-numeric: tabular-nums; }
@@ -132,7 +140,7 @@
   .extra a:hover :global(.extra-arrow) { color: var(--signal); transform: translateX(3px); }
 
   @media (max-width: 960px) {
-    .leaders, .tag { display: none; }
+    .leaders, .pin { display: none; }
     .dot { width: 40px; height: 40px; margin: -20px 0 0 -20px; }
     .dot span { width: 22px; height: 22px; display: grid; place-items: center; font-size: 11px; font-weight: 700; color: var(--asphalt); }
     .dot.on span, .dot:hover span { color: #fff; transform: scale(1.1); }

@@ -32,7 +32,10 @@
   .page-hero { padding: calc(var(--header) + clamp(40px, 7vw, 96px)) 0 clamp(48px, 7vw, 96px); }
   .grid { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); gap: clamp(28px, 5vw, 80px); align-items: end; }
   .grid.no-photo { grid-template-columns: minmax(0, 1fr); }
-  .copy { display: grid; gap: 24px; align-content: end; }
+  /* The title is sized by its column, so the longest word ("Дополнительные", "Мотоэвакуатор")
+     always fits the wide display face instead of running into the photo. */
+  .copy { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; align-content: end; container-type: inline-size; }
+  .copy :global(.h1) { font-size: clamp(30px, min(6vw, 10.5cqi), 84px); }
   .crumbs { display: flex; flex-wrap: wrap; gap: 8px; font-size: 14px; color: var(--concrete); }
   .crumbs a:hover { color: var(--paper); }
   .picture { aspect-ratio: var(--a); width: min(100%, calc(74svh * var(--a))); justify-self: end; overflow: hidden; border-radius: 4px; animation: rollup 1.1s .15s var(--ease) both; }

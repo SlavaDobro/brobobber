@@ -28,7 +28,7 @@
 <PageHero title="Мотоциклы в наличии" lead="Готовые проекты, на которых можно сразу ехать, и мотоциклы-доноры под ваш будущий кастом. Если берёте донора под постройку у нас, предложим хорошую цену на работы." crumbs={[{ href: '/', label: 'Главная' }]}>
   <div class="actions">
     <a class="btn btn-signal" href="#zayavka">Спросить о мотоцикле</a>
-    <a class="btn btn-line" href={contacts.channel.href} target="_blank" rel="noopener">Новые — в канале {contacts.channel.handle}</a>
+    <a class="btn btn-line" href={contacts.channel.href} target="_blank" rel="noopener">Telegram-канал</a>
   </div>
 </PageHero>
 
@@ -105,11 +105,12 @@
   .filters button.on { background: var(--paper); color: var(--asphalt); border-color: var(--paper); }
   .bikes { display: grid; gap: clamp(48px, 6vw, 88px); }
   .bike { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 6fr); gap: clamp(24px, 4vw, 64px); align-items: start; }
+  .shots, .info { min-width: 0; }
   .shots { display: grid; gap: 10px; }
   .shot { aspect-ratio: 4 / 5; border-radius: 4px; overflow: hidden; background: var(--asphalt-2); }
   .shot :global(img) { width: 100%; height: 100%; }
-  .thumbs { display: flex; gap: 8px; }
-  .thumbs button { width: 72px; height: 54px; border-radius: 3px; overflow: hidden; border: 1px solid var(--rule); opacity: .6; transition: opacity .2s, border-color .2s; }
+  .thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(52px, 72px)); gap: 8px; }
+  .thumbs button { width: 100%; aspect-ratio: 4 / 3; border-radius: 3px; overflow: hidden; border: 1px solid var(--rule); opacity: .6; transition: opacity .2s, border-color .2s; }
   .thumbs button.on { opacity: 1; border-color: var(--paper); }
   .thumbs :global(img) { width: 100%; height: 100%; object-fit: cover; }
   .info { display: grid; gap: 16px; justify-items: start; }
