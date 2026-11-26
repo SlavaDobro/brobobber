@@ -10,12 +10,9 @@
   import VideoReel from '$lib/site/VideoReel.svelte'
   import PhotoSlides from '$lib/site/PhotoSlides.svelte'
   import StockTeaser from '$lib/site/StockTeaser.svelte'
-  import { projects, advantages, contacts, photoAspect } from '$lib/site/data.js'
-  import { Cog, Motorbike, PencilRuler, Drill, Shapes, ShieldCheck } from '@lucide/svelte'
+  import WhyPlates from '$lib/site/WhyPlates.svelte'
+  import { projects, contacts, photoAspect } from '$lib/site/data.js'
 
-  // "Почему Brobobber": each reason is a stamped steel plate from the workshop wall, its icon in the
-  // logo's hex nut. Icons follow the order of `advantages` in data.js.
-  const whyIcons = [Cog, Motorbike, PencilRuler, Drill, Shapes, ShieldCheck]
 
   // Wide shots where the whole motorcycle is in frame.
   const showcase = [
@@ -51,22 +48,7 @@
     </div>
     <div class="why">
       <h2 class="h2">Почему Brobobber</h2>
-      <ul class="plates">
-        {#each advantages as item, i}
-          {@const Icon = whyIcons[i] ?? Cog}
-          <li class="plate">
-            <span class="rivets" aria-hidden="true"></span>
-            <span class="serial" aria-hidden="true">BB<i></i>{String(i + 1).padStart(2, '0')}</span>
-            <span class="ruler" aria-hidden="true"></span>
-            <span class="nut" aria-hidden="true">
-              <svg viewBox="-12 -12 24 24"><polygon points="5.75,-9.96 11.5,0 5.75,9.96 -5.75,9.96 -11.5,0 -5.75,-9.96" /></svg>
-              <Icon size={22} strokeWidth={1.9} />
-            </span>
-            <h3 class="h3">{item.title}</h3>
-            <p class="muted">{item.text}</p>
-          </li>
-        {/each}
-      </ul>
+      <WhyPlates />
     </div>
   </div>
 </section>
@@ -157,42 +139,6 @@
   .statement { font-family: var(--display); font-weight: 600; font-stretch: 96%; font-size: clamp(32px, 4.5vw, 68px); line-height: 1.03; max-width: 18ch; }
   .accent { color: var(--signal); }
   .why { display: grid; gap: clamp(24px, 3vw, 40px); margin-top: clamp(40px, 6vw, 80px); padding-top: clamp(28px, 4vw, 48px); border-top: 1px solid var(--rule); }
-  /* Reasons as steel plates: rivets in the corners, a punched number tag and a measuring scale,
-     the icon in a hex nut that takes a sixth of a turn when the plate is under the cursor. */
-  .plates { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
-  .plate { position: relative; overflow: hidden; display: grid; align-content: start; gap: 12px; min-height: 250px; padding: 30px 28px 28px;
-    background: linear-gradient(155deg, #1f1f1f, #161616 55%, #121212); border: 1px solid var(--rule); border-radius: 3px;
-    box-shadow: inset 0 1px 0 #ffffff0d, 0 18px 30px -24px #000; transition: border-color .3s, transform .35s var(--ease), box-shadow .35s; }
-  .plate::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--signal); transform: scaleY(0); transform-origin: bottom; transition: transform .35s var(--ease); }
-  .rivets { position: absolute; inset: 10px; pointer-events: none;
-    background: radial-gradient(circle at 3px 3px, #5c5c5c 0 1.6px, #0a0a0a 2.4px, transparent 3.2px) 0 0 / 100% 100% no-repeat,
-      radial-gradient(circle at calc(100% - 3px) 3px, #5c5c5c 0 1.6px, #0a0a0a 2.4px, transparent 3.2px) 0 0 / 100% 100% no-repeat,
-      radial-gradient(circle at 3px calc(100% - 3px), #5c5c5c 0 1.6px, #0a0a0a 2.4px, transparent 3.2px) 0 0 / 100% 100% no-repeat,
-      radial-gradient(circle at calc(100% - 3px) calc(100% - 3px), #5c5c5c 0 1.6px, #0a0a0a 2.4px, transparent 3.2px) 0 0 / 100% 100% no-repeat; }
-  /* Engine-number plate: a small recessed tag with the number punched into it. */
-  .serial { position: absolute; right: 22px; top: 22px; display: inline-flex; align-items: center; gap: 6px; padding: 5px 9px 4px;
-    background: #0c0c0c; border: 1px solid #2b2b2b; border-radius: 2px; box-shadow: inset 0 1px 3px #000, 0 1px 0 #ffffff0a;
-    font-family: var(--display); font-weight: 700; font-stretch: 112%; font-size: 11px; letter-spacing: .22em; color: #7d7f82;
-    text-shadow: 0 -1px 0 #000, 0 1px 0 #ffffff12; transition: color .3s; }
-  .serial i { width: 4px; height: 4px; border-radius: 50%; background: #3a3a3a; box-shadow: inset 0 1px 1px #000; }
-  /* A measuring scale along the bottom edge: fine ticks every 8 px, long ones every 40 px. */
-  .ruler { position: absolute; left: 28px; right: 28px; bottom: 12px; height: 9px; pointer-events: none; opacity: .55;
-    background: repeating-linear-gradient(90deg, #ebebea40 0 1px, transparent 1px 40px) bottom left / 100% 9px no-repeat,
-      repeating-linear-gradient(90deg, #ebebea26 0 1px, transparent 1px 8px) bottom left / 100% 5px no-repeat;
-    -webkit-mask: linear-gradient(90deg, #000 70%, transparent); mask: linear-gradient(90deg, #000 70%, transparent); transition: opacity .3s; }
-  .nut { position: relative; width: 54px; height: 54px; display: grid; place-items: center; color: var(--paper); margin-bottom: 14px; }
-  .nut svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; transition: transform .5s var(--ease); }
-  .nut polygon { fill: #0e0e0e; stroke: #ebebea4d; stroke-width: 1; stroke-linejoin: round; transition: fill .3s, stroke .3s; }
-  .nut :global(svg.lucide) { position: relative; }
-  .plate .h3 { position: relative; max-width: 15em; }
-  .plate p { position: relative; max-width: 34ch; }
-  .plate:hover { border-color: #ebebea33; transform: translateY(-3px); box-shadow: inset 0 1px 0 #ffffff12, 0 26px 40px -26px #000; }
-  .plate:hover::after { transform: none; }
-  .plate:hover .serial { color: var(--paper); }
-  .plate:hover .serial i { background: var(--signal); }
-  .plate:hover .ruler { opacity: 1; }
-  .plate:hover .nut svg { transform: rotate(60deg); }
-  .plate:hover .nut polygon { fill: var(--signal); stroke: var(--signal); }
   .about .grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(28px, 6vw, 96px); align-items: center; }
   .about-photo { aspect-ratio: var(--a); width: min(100%, calc(82svh * var(--a))); justify-self: center; overflow: hidden; border-radius: 4px; }
   .about-photo :global(img) { width: 100%; height: 100%; object-fit: cover; }
@@ -200,8 +146,6 @@
   .faq-grid { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 40px; align-items: start; }
   @media (max-width: 760px) { .manifesto-top { grid-template-columns: 1fr; } }
   @media (max-width: 960px) {
-    .plates { grid-template-columns: 1fr 1fr; }
     .about .grid, .faq-grid { grid-template-columns: 1fr; }
   }
-  @media (max-width: 560px) { .plates { grid-template-columns: 1fr; } .plate { min-height: 0; padding: 24px 20px 32px; } .ruler { left: 20px; right: 20px; } .serial { right: 18px; top: 18px; } .nut { width: 48px; height: 48px; margin-bottom: 8px; } }
 </style>
