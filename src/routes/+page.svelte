@@ -100,7 +100,6 @@
   <div class="wrap">
     <div class="section-head">
       <h2 class="h2">Отзывы</h2>
-      <p>Что пишут те, кто уже ездит на мотоциклах из мастерской.</p>
     </div>
     <Reviews />
   </div>
@@ -110,7 +109,6 @@
   <div class="wrap">
     <div class="section-head">
       <h2 class="h2">Жизнь мастерской</h2>
-      <p>Короткие ролики из нашего Telegram-канала: новые проекты, детали и поездки.</p>
       <a class="link-steel" href={contacts.channel.href} target="_blank" rel="noopener">Канал {contacts.channel.handle}</a>
     </div>
     <VideoReel />
