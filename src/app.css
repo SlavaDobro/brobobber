@@ -19,7 +19,9 @@
   --text: 'Golos Text Variable', system-ui, sans-serif;
   --gutter: clamp(16px, 4vw, 56px);
   --max: 1440px;
-  --header: 72px;
+  /* Header: a 34 px service strip over a 72 px bar on wide screens; phones get the bar only. */
+  --strip: 34px;
+  --header: 106px;
   --ease: cubic-bezier(.2, .7, .1, 1);
   color-scheme: dark;
   font-family: var(--text);
@@ -93,7 +95,8 @@ p, li, dd, figcaption { text-wrap: pretty; }
 }
 
 /* Phones and tablets: room for the dashboard bar at the bottom. */
-@media (max-width: 1360px) {
+@media (max-width: 1250px) {
+  :root { --strip: 0px; --header: 68px; }
   body:has(.dash) { padding-bottom: calc(64px + env(safe-area-inset-bottom)); }
 }
 

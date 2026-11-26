@@ -67,7 +67,7 @@
     .hint { display: none; }
   }
   /* Phones and tablets: the dashboard bar takes the bottom of the screen. */
-  @media (max-width: 1360px) and (min-height: 521px) {
+  @media (max-width: 1250px) and (min-height: 521px) {
     .hero { height: calc(100svh - 64px - env(safe-area-inset-bottom)); }
   }
   @media (max-width: 640px) {

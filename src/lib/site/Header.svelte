@@ -5,7 +5,7 @@
   // otherwise become their containing block and squash them.
   import { base } from '$app/paths'
   import { page } from '$app/state'
-  import { Menu, X, ChevronDown, Phone, LayoutGrid, Wrench, Send, Clock, House, Users, Motorbike, Tag, Route, MapPin, SlidersHorizontal } from '@lucide/svelte'
+  import { Menu, X, ChevronDown, Phone, LayoutGrid, Wrench, Send, Clock, MapPin as Pin, House, Users, Motorbike, Tag, Route, MapPin, SlidersHorizontal } from '@lucide/svelte'
   import Logo from './Logo.svelte'
   import { nav, services, styles, contacts } from './data.js'
 
@@ -58,18 +58,25 @@
 </script>
 
 <header class="header" class:scrolled class:tucked={tucked && !open}>
+  <!-- Wide screens: a thin service strip like the sign over a garage door; it folds away on scroll. -->
+  <div class="strip">
+    <div class="wrap strip-in">
+      <span><Pin size={13} />{contacts.addressShort}</span>
+      <span><Clock size={13} />{contacts.hoursShort}</span>
+      <a class="strip-push" href={contacts.channel.href} target="_blank" rel="noopener"><Send size={13} />{contacts.channel.handle}</a>
+      <a class="strip-phone" href={contacts.phones[0].href}><Phone size={13} />{contacts.phones[0].phone}</a>
+    </div>
+  </div>
+
   <div class="bar wrap">
-    <a class="logo" href="{base}/" aria-label="Brobobber, на главную">
-      <Logo size={38} rev={path} />
-      <span class="logo-place">{contacts.addressShort}</span>
-    </a>
+    <a class="logo" href="{base}/" aria-label="Brobobber, на главную"><Logo size={40} rev={path} /></a>
 
     <nav class="nav" aria-label="Разделы сайта">
       {#each nav as item}
         {#if item.menu}
           <div class="has-menu" role="presentation" onmouseleave={() => submenu = ''}>
             <a href={base + item.href} class:active={active(item.href)} onmouseenter={() => submenu = item.menu ?? ''} onfocus={() => submenu = item.menu ?? ''}>
-              {item.label}<ChevronDown size={14} />
+              {item.label}<ChevronDown size={13} />
             </a>
             {#if submenu === item.menu}
               <div class="dropdown" class:wide={item.menu === 'services'}>
@@ -86,10 +93,10 @@
     </nav>
 
     <div class="actions">
-      <div class="reach">
-        <a class="phone" href={contacts.phones[0].href}><Phone size={15} />{contacts.phones[0].phone}</a>
-        <span class="hours"><Clock size={12} />{contacts.hoursShort}</span>
-      </div>
+      <a class="quick" href={`https://t.me/${contacts.phones[0].telegram}`} target="_blank" rel="noopener" aria-label="Написать мастеру в Telegram">
+        <svg viewBox="-12 -12 24 24" aria-hidden="true"><polygon points="5.75,-9.96 11.5,0 5.75,9.96 -5.75,9.96 -11.5,0 -5.75,-9.96" /></svg>
+        <Send size={16} strokeWidth={2.2} />
+      </a>
       <a class="btn btn-signal cta" href="#zayavka">Обсудить проект</a>
     </div>
   </div>
@@ -149,38 +156,61 @@
 <style>
   .header { position: fixed; inset: 0 0 auto; z-index: 50; transition: background-color .3s, border-color .3s, transform .35s var(--ease); border-bottom: 1px solid transparent; }
   .header.scrolled { background: #131313f2; backdrop-filter: blur(10px); border-color: var(--rule); }
-  .bar { height: var(--header); display: flex; align-items: center; gap: 20px; }
-  .logo { display: grid; grid-template-columns: auto; line-height: 1; gap: 4px; flex: none; }
-  .logo-place { font-family: var(--display); font-weight: 600; font-stretch: 96%; font-size: 12px; letter-spacing: .02em; color: var(--concrete); padding-left: 48px; margin-top: -10px; }
-  .nav { display: flex; gap: 0; margin: 0 auto; }
-  .nav a { display: inline-flex; align-items: center; gap: 4px; padding: 10px 10px; white-space: nowrap; font-size: 14.5px; color: #ebebeacc; border-radius: 4px; transition: color .2s; }
-  .nav a:hover, .nav a.active { color: var(--paper); }
-  .nav a.active { box-shadow: inset 0 -2px 0 var(--steel); border-radius: 0; }
-  .has-menu { position: relative; }
-  .dropdown { position: absolute; top: 100%; left: -8px; min-width: 240px; padding: 8px; background: var(--asphalt-2); border: 1px solid var(--rule); border-radius: 6px; display: grid; box-shadow: 0 20px 40px -20px #000c; }
-  .dropdown.wide { grid-template-columns: 1fr 1fr; min-width: 520px; }
-  .dropdown a { padding: 9px 12px; font-size: 14px; border-radius: 4px; }
-  .dropdown a:hover { background: var(--asphalt-3); }
-  .actions { display: flex; align-items: center; gap: 18px; flex: none; }
-  .reach { display: grid; justify-items: end; gap: 2px; }
-  .hours { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; line-height: 1.2; color: var(--concrete); white-space: nowrap; }
-  .hours :global(svg) { color: var(--steel); flex: none; }
-  .phone { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-variant-numeric: tabular-nums; color: var(--paper); }
-  .phone :global(svg) { color: var(--steel); }
-  .cta { height: 44px; padding: 0 18px; }
 
-  /* Narrow desktops: seven sections need the room, so the hours line steps aside. */
-  @media (max-width: 1500px) and (min-width: 1361px) {
-    .reach .hours { display: none; }
-    .nav a { padding: 10px 8px; }
+  /* Service strip: address, hours, channel and phone in small caps of the display face. */
+  .strip { height: var(--strip); overflow: hidden; border-bottom: 1px solid #ebebea14; background: #0d0d0d; transition: height .3s var(--ease), opacity .3s, border-color .3s; }
+  .header.scrolled .strip { height: 0; opacity: 0; border-bottom-width: 0; }
+  .strip-in { height: 100%; display: flex; align-items: center; gap: 26px; font-family: var(--display); font-weight: 600; font-stretch: 104%; font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--concrete); white-space: nowrap; }
+  .strip-in > * { display: inline-flex; align-items: center; gap: 7px; }
+  .strip-in :global(svg) { color: var(--signal); flex: none; }
+  .strip-in a { transition: color .2s; }
+  .strip-in a:hover { color: var(--paper); }
+  .strip-push { margin-left: auto; }
+  .strip-phone { color: var(--paper); font-variant-numeric: tabular-nums; letter-spacing: .06em; }
+
+  .bar { height: calc(var(--header) - var(--strip)); display: flex; align-items: center; gap: 28px; }
+  .logo { flex: none; display: flex; }
+  .nav { display: flex; gap: 2px; margin: 0 auto; }
+  /* Section links: the display face, and a small red hex nut under the current one. */
+  .nav a { position: relative; display: inline-flex; align-items: center; gap: 4px; padding: 10px 11px; white-space: nowrap; font-family: var(--display); font-weight: 600; font-stretch: 98%; font-size: 15px; color: #ebebeab3; transition: color .2s; }
+  .nav a::after { content: ''; position: absolute; left: 50%; bottom: -2px; width: 9px; height: 8px; margin-left: -4.5px; background: var(--signal);
+    clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%); transform: scale(0) rotate(-60deg); transition: transform .3s var(--ease); }
+  .nav a:hover, .nav a.active { color: var(--paper); }
+  .nav a.active::after { transform: none; }
+  .nav a:hover::after { transform: scale(.7); background: var(--concrete); }
+  .nav a.active:hover::after { transform: none; background: var(--signal); }
+  .has-menu { position: relative; }
+  .dropdown { position: absolute; top: calc(100% + 6px); left: -8px; min-width: 240px; padding: 8px; background: var(--asphalt-2); border: 1px solid var(--rule); border-top: 2px solid var(--signal); border-radius: 0 0 6px 6px; display: grid; box-shadow: 0 20px 40px -20px #000c; }
+  .dropdown::before { content: ''; position: absolute; left: 0; right: 0; top: -10px; height: 10px; }
+  .dropdown.wide { grid-template-columns: 1fr 1fr; min-width: 520px; }
+  .dropdown a { padding: 9px 12px; font-family: var(--text); font-weight: 400; font-size: 14px; color: var(--paper); border-radius: 4px; }
+  .dropdown a::after { display: none; }
+  .dropdown a:hover { background: var(--asphalt-3); }
+  .actions { display: flex; align-items: center; gap: 12px; flex: none; }
+  .cta { height: 44px; padding: 0 20px; }
+  /* Telegram in the logo's hex nut: phones and tablets, where the strip is not shown. */
+  .quick { position: relative; width: 42px; height: 42px; display: none; place-items: center; color: var(--paper); }
+  .quick svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; transition: transform .45s var(--ease); }
+  .quick polygon { fill: var(--asphalt-2); stroke: #ebebea59; stroke-width: 1.2; stroke-linejoin: round; transition: fill .25s, stroke .25s; }
+  .quick :global(svg.lucide) { position: relative; margin-left: -2px; }
+  .quick:is(:hover, :active) svg { transform: rotate(60deg); }
+  .quick:is(:hover, :active) polygon { stroke: var(--signal); }
+  .hours { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; line-height: 1.2; color: var(--concrete); }
+  .hours :global(svg) { color: var(--steel); flex: none; }
+
+  /* Small laptops: a little less air between the sections. */
+  @media (max-width: 1400px) {
+    .bar { gap: 20px; }
+    .nav a { padding: 10px 9px; }
   }
 
   /* Dashboard bar, call sheet and menu: phones and tablets only */
   .dash, .call-sheet, .scrim, .sheet { display: none; }
 
-  @media (max-width: 1360px) {
-    .nav { display: none; }
+  @media (max-width: 1250px) {
+    .nav, .strip { display: none; }
     .actions { margin-left: auto; }
+    .quick { display: grid; }
     .header.tucked { transform: translateY(-100%); }
 
     .dash { display: grid; grid-template-columns: repeat(5, 1fr); align-items: end; position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
@@ -225,13 +255,6 @@
     @keyframes rise { from { opacity: 0; transform: translateY(12px); } }
   }
   @media (max-width: 640px) {
-    .phone, .cta { display: none; }
-    .logo-place { display: none; }
-    .actions { min-width: 0; }
-    .reach .hours { max-width: 128px; font-size: 11px; white-space: normal; text-align: right; }
-  }
-  /* The smallest phones: the logo needs the whole row. */
-  @media (max-width: 350px) {
-    .reach .hours { display: none; }
+    .cta { display: none; }
   }
 </style>
