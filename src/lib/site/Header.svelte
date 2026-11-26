@@ -5,9 +5,15 @@
   // otherwise become their containing block and squash them.
   import { base } from '$app/paths'
   import { page } from '$app/state'
-  import { Menu, X, ChevronDown, Phone, LayoutGrid, Wrench, Send, Clock } from '@lucide/svelte'
+  import { Menu, X, ChevronDown, Phone, LayoutGrid, Wrench, Send, Clock, House, Users, Motorbike, Tag, Route, MapPin, SlidersHorizontal } from '@lucide/svelte'
   import Logo from './Logo.svelte'
   import { nav, services, styles, contacts } from './data.js'
+
+  /** Phone menu: each section gets its own icon inside the hex nut from the logo. */
+  /** @type {Record<string, typeof House>} */
+  const sheetIcons = { '/': House, '/o-nas': Users, '/uslugi': Wrench, '/motocikly': Motorbike, '/proekty': LayoutGrid, '/v-nalichii': Tag, '/process': Route, '/kontakty': MapPin, '/konfigurator': SlidersHorizontal }
+  const sheetLinks = [{ href: '/', label: 'Главная' }, ...nav, { href: '/konfigurator', label: 'Конфигуратор V-Rod' }]
+    .map(item => ({ ...item, icon: sheetIcons[item.href] ?? Wrench }))
 
   let open = $state(false)
   let submenu = $state('')
@@ -122,11 +128,15 @@
       <p class="muted">{contacts.address}<br />{contacts.hours}</p>
     </div>
     <nav class="sheet-nav wrap" aria-label="Меню">
-      <a href="{base}/" class:active={path === '/'} style="--i:0"><span>01</span>Главная</a>
-      {#each nav as item, i}
-        <a href={base + item.href} class:active={active(item.href)} style={`--i:${i + 1}`}><span>{String(i + 2).padStart(2, '0')}</span>{item.label}</a>
+      {#each sheetLinks as item, i}
+        {@const Icon = item.icon}
+        <a href={base + item.href} class:active={item.href === '/' ? path === '/' : active(item.href)} style={`--i:${i}`}>
+          <span class="nut" aria-hidden="true">
+            <svg viewBox="-12 -12 24 24"><polygon points="5.75,-9.96 11.5,0 5.75,9.96 -5.75,9.96 -11.5,0 -5.75,-9.96" /></svg>
+            <Icon size={16} strokeWidth={2.2} />
+          </span>{item.label}
+        </a>
       {/each}
-      <a href="{base}/konfigurator" style={`--i:${nav.length + 1}`}><span>{String(nav.length + 2).padStart(2, '0')}</span>Конфигуратор V-Rod</a>
     </nav>
     <div class="sheet-foot wrap">
       <a class="btn btn-signal" href="#zayavka" onclick={() => open = false}>Обсудить проект</a>
@@ -197,8 +207,16 @@
     .sheet-nav { display: grid; margin-top: 8px; }
     .sheet-nav a { display: flex; align-items: baseline; gap: 14px; padding: 10px 0; font-family: var(--display); font-stretch: 96%; font-weight: 650;
       font-size: clamp(32px, 9vw, 46px); line-height: 1.05; border-bottom: 1px solid var(--rule); animation: slat .45s calc(.08s + var(--i) * .04s) var(--ease) both; }
-    .sheet-nav a span { font-size: 13px; color: var(--steel); font-stretch: 100%; font-weight: 500; }
-    .sheet-nav a.active { color: var(--steel); }
+    .sheet-nav a { align-items: center; }
+    /* The logo's hex nut: outline at rest, red and a sixth of a turn on the current page or a tap. */
+    .nut { position: relative; flex: none; width: 40px; height: 40px; display: grid; place-items: center; color: var(--paper); }
+    .nut svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; transition: transform .45s var(--ease); }
+    .nut polygon { fill: var(--asphalt-2); stroke: #ebebea59; stroke-width: 1.2; stroke-linejoin: round; transition: fill .25s, stroke .25s; }
+    .nut :global(svg.lucide) { position: relative; }
+    .sheet-nav a:is(:hover, :active, .active) .nut svg { transform: rotate(60deg); }
+    .sheet-nav a.active .nut polygon { fill: var(--signal); stroke: var(--signal); }
+    .sheet-nav a:not(.active):is(:hover, :active) .nut polygon { stroke: var(--signal); }
+    .sheet-nav a.active { color: var(--paper); }
     .sheet-foot { display: flex; gap: 10px; margin-top: auto; padding-top: 24px; }
     .sheet-foot .btn { flex: 1; }
     @keyframes door { from { clip-path: inset(100% 0 0 0); } to { clip-path: inset(0 0 0 0); } }
