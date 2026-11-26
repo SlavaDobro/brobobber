@@ -8,9 +8,14 @@
   import ProjectTiles from '$lib/site/ProjectTiles.svelte'
   import ProcessRoad from '$lib/site/ProcessRoad.svelte'
   import Faq from '$lib/site/Faq.svelte'
-  import { ArrowRight } from '@lucide/svelte'
+  import { ArrowRight, PencilRuler, Gauge, Wrench, Cpu, Armchair, Fuel, Lightbulb, Type, Sparkles, MessagesSquare, GraduationCap, PackagePlus, Truck, Search } from '@lucide/svelte'
   import { services, contacts } from '$lib/site/data.js'
 
+  // A tool for every drawer label instead of a number.
+  /** @type {Record<string, typeof Wrench>} */
+  const tools = { kastomizaciya: PencilRuler, tyuning: Gauge, obsluzhivanie: Wrench, 'proshivka-ebu': Cpu, sideniya: Armchair, 'nakladki-na-bak': Fuel,
+    elektronika: Lightbulb, 'nadpisi-na-shinah': Type, deteyling: Sparkles, konsultacii: MessagesSquare, kursy: GraduationCap, dopolnitelnye: PackagePlus, motoevakuator: Truck }
+  const hex = '5.75,-9.96 11.5,0 5.75,9.96 -5.75,9.96 -11.5,0 -5.75,-9.96'
   const works = ['harley-davidson-v-rod', 'harley-davidson-scrambler', 'yamaha-v-max-1700', 'harley-davidson-heritage-114', 'bmw-k100', 'harley-davidson-sportster-883', 'triumph-rocket-3r', 'harley-davidson-48-nardo-gray']
 
   // Plastic letters are never pressed in perfectly straight: a small, repeatable tilt per letter.
@@ -55,10 +60,11 @@
     <div class="chest">
       <div class="lid"><span class="plate">BROBOBBER · CUSTOM WORKSHOP</span></div>
       <ol class="drawers">
-        {#each services as service, i}
+        {#each services as service}
+          {@const Tool = tools[service.slug] ?? Wrench}
           <li>
             <a class="drawer" href={`${base}/uslugi/${service.slug}`}>
-              <span class="label"><b>{String(i + 1).padStart(2, '0')}</b>{service.name}</span>
+              <span class="label"><span class="tool" aria-hidden="true"><svg class="hex" viewBox="-12 -12 24 24"><polygon points={hex} /></svg><Tool size={13} strokeWidth={2.2} /></span>{service.name}</span>
               <span class="inside">{service.short}</span>
               <span class="go" aria-hidden="true"><ArrowRight size={18} /></span>
               <span class="handle" aria-hidden="true"></span>
@@ -67,7 +73,7 @@
         {/each}
         <li>
           <a class="drawer ask" href="#zayavka">
-            <span class="label"><b>??</b>Не нашли нужное?</span>
+            <span class="label"><span class="tool" aria-hidden="true"><svg class="hex" viewBox="-12 -12 24 24"><polygon points={hex} /></svg><Search size={13} strokeWidth={2.2} /></span>Не нашли нужное?</span>
             <span class="inside">Опишите задачу — скажем, беремся ли и сколько это стоит.</span>
             <span class="go" aria-hidden="true"><ArrowRight size={18} /></span>
             <span class="handle" aria-hidden="true"></span>
@@ -139,7 +145,15 @@
   /* Label holder with a paper card. */
   .label { grid-area: label; justify-self: start; display: flex; align-items: baseline; gap: 10px; padding: 6px 12px 5px; background: #ebe8e1; color: #141414; border-radius: 2px;
     box-shadow: 0 0 0 3px #8e9398, inset 0 1px 2px #0003; font-family: var(--display); font-weight: 700; font-stretch: 100%; font-size: 15px; line-height: 1.2; }
-  .label b { font-size: 11px; color: var(--signal-deep); letter-spacing: .1em; font-stretch: 112%; }
+  .label { align-items: center; }
+  /* The tool stamped in a small hex nut on the label. */
+  .tool { position: relative; flex: none; width: 24px; height: 24px; display: grid; place-items: center; color: #ebe8e1; transition: transform .45s var(--ease); }
+  .tool .hex { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .tool polygon { fill: #141414; transition: fill .3s; }
+  .tool :global(svg.lucide) { position: relative; }
+  .drawer:hover .tool { transform: rotate(60deg); }
+  .drawer:hover .tool :global(svg.lucide) { transform: rotate(-60deg); }
+  .drawer:hover .tool polygon { fill: var(--signal); }
   .inside { grid-area: inside; font-size: 13.5px; line-height: 1.4; color: var(--concrete); }
   .go { grid-area: go; color: var(--concrete); transition: color .2s, transform .3s var(--ease); }
   .handle { position: absolute; left: 18%; right: 18%; bottom: 10px; height: 7px; border-radius: 4px; background: linear-gradient(180deg, #e3e5e8, #8a8f94 60%, #5f6368); box-shadow: 0 2px 3px #000a; transition: background .3s; }
@@ -148,7 +162,7 @@
   .drawer:hover .handle { background: linear-gradient(180deg, #ef6a55, var(--signal) 60%, var(--signal-deep)); }
   .drawer.ask { background: linear-gradient(180deg, #2c1a17, #1f1412); border-color: #5a2a22; }
   .drawer.ask .label { background: var(--signal); color: #fff; box-shadow: 0 0 0 3px #8e9398; }
-  .drawer.ask .label b { color: #fff; }
+  .drawer.ask .tool polygon { fill: #141414; }
   .drawer.ask .handle { background: linear-gradient(180deg, #ef6a55, var(--signal) 60%, var(--signal-deep)); }
   .casters { position: absolute; left: 0; right: 0; bottom: -14px; display: flex; justify-content: space-between; padding: 0 40px; pointer-events: none; }
   .casters i { width: 28px; height: 28px; border-radius: 50%; background: radial-gradient(circle, #555 0 4px, #1a1a1a 5px 11px, #0a0a0a 12px); box-shadow: 0 4px 6px #000a; }
