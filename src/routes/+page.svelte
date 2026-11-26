@@ -10,6 +10,11 @@
   import VideoReel from '$lib/site/VideoReel.svelte'
   import PhotoSlides from '$lib/site/PhotoSlides.svelte'
   import { projects, advantages, contacts, photoAspect } from '$lib/site/data.js'
+  import { Cog, Motorbike, PencilRuler, Drill, Shapes, ShieldCheck } from '@lucide/svelte'
+
+  // "Почему Brobobber": each reason is a stamped steel plate from the workshop wall, its icon in the
+  // logo's hex nut. Icons follow the order of `advantages` in data.js.
+  const whyIcons = [Cog, Motorbike, PencilRuler, Drill, Shapes, ShieldCheck]
 
   // Wide shots where the whole motorcycle is in frame.
   const showcase = [
@@ -45,9 +50,19 @@
     </div>
     <div class="why">
       <h2 class="h2">Почему Brobobber</h2>
-      <ul class="advantages">
+      <ul class="plates">
         {#each advantages as item, i}
-          <li><span class="num">{String(i + 1).padStart(2, '0')}</span><h3 class="h3">{item.title}</h3><p class="muted">{item.text}</p></li>
+          {@const Icon = whyIcons[i] ?? Cog}
+          <li class="plate">
+            <span class="rivets" aria-hidden="true"></span>
+            <span class="stamp" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <span class="nut" aria-hidden="true">
+              <svg viewBox="-12 -12 24 24"><polygon points="5.75,-9.96 11.5,0 5.75,9.96 -5.75,9.96 -11.5,0 -5.75,-9.96" /></svg>
+              <Icon size={22} strokeWidth={1.9} />
+            </span>
+            <h3 class="h3">{item.title}</h3>
+            <p class="muted">{item.text}</p>
+          </li>
         {/each}
       </ul>
     </div>
@@ -143,9 +158,31 @@
   .statement { font-family: var(--display); font-weight: 600; font-stretch: 96%; font-size: clamp(32px, 4.5vw, 68px); line-height: 1.03; max-width: 18ch; }
   .accent { color: var(--signal); }
   .why { display: grid; gap: clamp(24px, 3vw, 40px); margin-top: clamp(40px, 6vw, 80px); padding-top: clamp(28px, 4vw, 48px); border-top: 1px solid var(--rule); }
-  .advantages { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(28px, 3vw, 44px) 28px; }
-  .advantages li { display: grid; gap: 10px; align-content: start; padding-top: 16px; border-top: 2px solid var(--rule); }
-  .advantages .num { font-family: var(--display); font-weight: 700; font-stretch: 112%; font-size: 13px; letter-spacing: .1em; color: var(--signal); }
+  /* Reasons as steel plates: rivets in the corners, the number stamped large in outline,
+     the icon in a hex nut that takes a sixth of a turn when the plate is under the cursor. */
+  .plates { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  .plate { position: relative; overflow: hidden; display: grid; align-content: start; gap: 12px; min-height: 250px; padding: 30px 28px 28px;
+    background: linear-gradient(155deg, #1f1f1f, #161616 55%, #121212); border: 1px solid var(--rule); border-radius: 3px;
+    box-shadow: inset 0 1px 0 #ffffff0d, 0 18px 30px -24px #000; transition: border-color .3s, transform .35s var(--ease), box-shadow .35s; }
+  .plate::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--signal); transform: scaleY(0); transform-origin: bottom; transition: transform .35s var(--ease); }
+  .rivets { position: absolute; inset: 10px; pointer-events: none;
+    background: radial-gradient(circle at 3px 3px, #5c5c5c 0 1.6px, #0a0a0a 2.4px, transparent 3.2px) 0 0 / 100% 100% no-repeat,
+      radial-gradient(circle at calc(100% - 3px) 3px, #5c5c5c 0 1.6px, #0a0a0a 2.4px, transparent 3.2px) 0 0 / 100% 100% no-repeat,
+      radial-gradient(circle at 3px calc(100% - 3px), #5c5c5c 0 1.6px, #0a0a0a 2.4px, transparent 3.2px) 0 0 / 100% 100% no-repeat,
+      radial-gradient(circle at calc(100% - 3px) calc(100% - 3px), #5c5c5c 0 1.6px, #0a0a0a 2.4px, transparent 3.2px) 0 0 / 100% 100% no-repeat; }
+  .stamp { position: absolute; right: 18px; top: 6px; font-family: var(--display); font-weight: 800; font-stretch: 112%; font-size: clamp(76px, 7vw, 112px); line-height: 1;
+    color: transparent; -webkit-text-stroke: 1px #ebebea1f; letter-spacing: -.02em; transition: -webkit-text-stroke-color .35s; pointer-events: none; user-select: none; }
+  .nut { position: relative; width: 54px; height: 54px; display: grid; place-items: center; color: var(--paper); margin-bottom: 14px; }
+  .nut svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; transition: transform .5s var(--ease); }
+  .nut polygon { fill: #0e0e0e; stroke: #ebebea4d; stroke-width: 1; stroke-linejoin: round; transition: fill .3s, stroke .3s; }
+  .nut :global(svg.lucide) { position: relative; }
+  .plate .h3 { position: relative; max-width: 15em; }
+  .plate p { position: relative; max-width: 34ch; }
+  .plate:hover { border-color: #ebebea33; transform: translateY(-3px); box-shadow: inset 0 1px 0 #ffffff12, 0 26px 40px -26px #000; }
+  .plate:hover::after { transform: none; }
+  .plate:hover .stamp { -webkit-text-stroke-color: #d23f2a8c; }
+  .plate:hover .nut svg { transform: rotate(60deg); }
+  .plate:hover .nut polygon { fill: var(--signal); stroke: var(--signal); }
   .about .grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(28px, 6vw, 96px); align-items: center; }
   .about-photo { aspect-ratio: var(--a); width: min(100%, calc(82svh * var(--a))); justify-self: center; overflow: hidden; border-radius: 4px; }
   .about-photo :global(img) { width: 100%; height: 100%; object-fit: cover; }
@@ -155,8 +192,8 @@
   .faq-grid { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 40px; align-items: start; }
   @media (max-width: 760px) { .manifesto-top { grid-template-columns: 1fr; } }
   @media (max-width: 960px) {
-    .advantages { grid-template-columns: 1fr 1fr; }
+    .plates { grid-template-columns: 1fr 1fr; }
     .about .grid, .sale-grid, .faq-grid { grid-template-columns: 1fr; }
   }
-  @media (max-width: 560px) { .advantages { grid-template-columns: 1fr; } }
+  @media (max-width: 560px) { .plates { grid-template-columns: 1fr; } .plate { min-height: 0; padding: 24px 20px 22px; } .nut { width: 48px; height: 48px; margin-bottom: 8px; } }
 </style>
