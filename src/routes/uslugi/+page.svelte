@@ -8,14 +8,10 @@
   import ProjectTiles from '$lib/site/ProjectTiles.svelte'
   import ProcessRoad from '$lib/site/ProcessRoad.svelte'
   import Faq from '$lib/site/Faq.svelte'
-  import { ArrowRight, PencilRuler, Gauge, Wrench, Cpu, Armchair, Fuel, Lightbulb, Type, Sparkles, MessagesSquare, GraduationCap, PackagePlus, Truck, Search } from '@lucide/svelte'
+  import { ArrowRight, Search } from '@lucide/svelte'
+  import { serviceIcon, hexPoints as hex } from '$lib/site/service-icons.js'
   import { services, contacts } from '$lib/site/data.js'
 
-  // A tool for every drawer label instead of a number.
-  /** @type {Record<string, typeof Wrench>} */
-  const tools = { kastomizaciya: PencilRuler, tyuning: Gauge, obsluzhivanie: Wrench, 'proshivka-ebu': Cpu, sideniya: Armchair, 'nakladki-na-bak': Fuel,
-    elektronika: Lightbulb, 'nadpisi-na-shinah': Type, deteyling: Sparkles, konsultacii: MessagesSquare, kursy: GraduationCap, dopolnitelnye: PackagePlus, motoevakuator: Truck }
-  const hex = '5.75,-9.96 11.5,0 5.75,9.96 -5.75,9.96 -11.5,0 -5.75,-9.96'
   const works = ['harley-davidson-v-rod', 'harley-davidson-scrambler', 'yamaha-v-max-1700', 'harley-davidson-heritage-114', 'bmw-k100', 'harley-davidson-sportster-883', 'triumph-rocket-3r', 'harley-davidson-48-nardo-gray']
 
   // Plastic letters are never pressed in perfectly straight: a small, repeatable tilt per letter.
@@ -61,7 +57,7 @@
       <div class="lid"><span class="plate">BROBOBBER · CUSTOM WORKSHOP</span></div>
       <ol class="drawers">
         {#each services as service}
-          {@const Tool = tools[service.slug] ?? Wrench}
+          {@const Tool = serviceIcon(service.slug)}
           <li>
             <a class="drawer" href={`${base}/uslugi/${service.slug}`}>
               <span class="label"><span class="tool" aria-hidden="true"><svg class="hex" viewBox="-12 -12 24 24"><polygon points={hex} /></svg><Tool size={13} strokeWidth={2.2} /></span>{service.name}</span>

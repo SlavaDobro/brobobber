@@ -4,15 +4,15 @@
   // on a pegboard (the board by the door where the bike keys wait for their owners), then the map.
   import { base } from '$app/paths'
   import MapBlock from '$lib/site/MapBlock.svelte'
-  import { Phone, Mail, Send, MapPin, Clock, Radio, FileText } from '@lucide/svelte'
+  import { Phone, Mail, Send, MapPin, Clock, Radio, FileText, KeyRound } from '@lucide/svelte'
   import { contacts, mapLinks } from '$lib/site/data.js'
 
   const master = contacts.phones[0]
   const fobs = [
-    { tone: 'red', no: '01', icon: Send, title: 'Мастеру в Telegram', value: `@${master.telegram}`, note: 'Фото мотоцикла и идея — быстрее всего сюда.', href: `https://t.me/${master.telegram}`, ext: true },
-    { tone: 'paper', no: '02', icon: Mail, title: 'Почта', value: contacts.email, note: 'Для заявок, фото и вопросов по проекту.', href: `mailto:${contacts.email}` },
-    { tone: 'dark', no: '03', icon: Radio, title: 'Канал мастерской', value: contacts.channel.handle, note: 'Новые проекты, ролики и мотоциклы в наличии.', href: contacts.channel.href, ext: true },
-    { tone: 'steel', no: '04', icon: MapPin, title: 'Адрес', value: contacts.addressShort, note: `${contacts.hours}. Индекс ${contacts.postal}.`, href: mapLinks.yandex, ext: true },
+    { tone: 'red', icon: Send, title: 'Мастеру в Telegram', value: `@${master.telegram}`, note: 'Фото мотоцикла и идея — быстрее всего сюда.', href: `https://t.me/${master.telegram}`, ext: true },
+    { tone: 'paper', icon: Mail, title: 'Почта', value: contacts.email, note: 'Для заявок, фото и вопросов по проекту.', href: `mailto:${contacts.email}` },
+    { tone: 'dark', icon: Radio, title: 'Канал мастерской', value: contacts.channel.handle, note: 'Новые проекты, ролики и мотоциклы в наличии.', href: contacts.channel.href, ext: true },
+    { tone: 'steel', icon: MapPin, title: 'Адрес', value: contacts.addressShort, note: `${contacts.hours}. Индекс ${contacts.postal}.`, href: mapLinks.yandex, ext: true },
   ]
 </script>
 
@@ -44,7 +44,7 @@
           <span class="hook" aria-hidden="true"></span>
           <a class={`fob ${fob.tone}`} href={fob.href} target={fob.ext ? '_blank' : undefined} rel={fob.ext ? 'noopener' : undefined}>
             <span class="ring" aria-hidden="true"></span>
-            <span class="fob-no" aria-hidden="true">№ {fob.no}</span>
+            <span class="fob-no" aria-hidden="true"><KeyRound size={16} /></span>
             <span class="fob-icon"><Icon size={22} /></span>
             <span class="fob-title">{fob.title}</span>
             <strong class="fob-value">{fob.value}</strong>

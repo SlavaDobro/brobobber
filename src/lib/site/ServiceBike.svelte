@@ -6,6 +6,7 @@
   // and a card under the photo instead of labels.
   import { ArrowRight, GraduationCap, PackagePlus, Truck } from '@lucide/svelte'
   import { services } from './data.js'
+  import { serviceIcon } from './service-icons.js'
 
   /** @type {Record<string, typeof Truck>} */
   const icons = { kursy: GraduationCap, dopolnitelnye: PackagePlus, motoevakuator: Truck }
@@ -18,6 +19,7 @@
   /** Phones: the service picked by tap, shown in the card under the photo. */
   let picked = $state(0)
   let current = $derived(spotted[picked])
+  let PickedTool = $derived(serviceIcon(current.slug))
   const pick = (/** @type {number} */ i) => { active = i; picked = i }
   // Coordinates are percent of the frame; the SVG uses a 100 × 75 box (4:3 photo).
   const k = .75
@@ -37,14 +39,15 @@
     </svg>
     {#each spotted as service, i}
       {@const [x, y, lx, ly, side] = service.spot ?? [0, 0, 0, 0, 't']}
+      {@const Tool = serviceIcon(service.slug)}
       <button class="dot" class:on={active === i} style={`left:${x}%;top:${y}%`} aria-label={service.name}
         onmouseenter={() => active = i} onfocus={() => active = i} onclick={() => pick(i)}>
-        <span>{i + 1}</span>
+        <span><Tool size={12} strokeWidth={2.4} /></span>
       </button>
       <div class={`pin ${side}`} class:on={active === i} style={`left:${lx}%;top:${ly}%`}>
         <a class="tag" class:up={ly > 50} class:flip={lx > 62} href={`${base}/uslugi/${service.slug}`}
           onmouseenter={() => active = i} onfocus={() => active = i}>
-          <span class="tag-name"><b>{String(i + 1).padStart(2, '0')}</b><span>{service.pin ?? service.name}</span></span>
+          <span class="tag-name"><b><Tool size={13} strokeWidth={2.2} /></b><span>{service.pin ?? service.name}</span></span>
           <span class="card" aria-hidden={active !== i}>
             <strong>{service.name}</strong>
             <small>{service.short}</small>
@@ -58,14 +61,15 @@
   <!-- Phones: no hover and no room for labels, so the tapped service shows as a card. -->
   {#key picked}
     <div class="tap-card" aria-live="polite">
-      <span class="tap-num">{String(picked + 1).padStart(2, '0')}</span>
+      <span class="tap-num"><PickedTool size={22} /></span>
       <div><strong>{current.name}</strong><p>{current.short}</p></div>
       <a class="btn btn-line" href={`${base}/uslugi/${current.slug}`}>Подробнее</a>
     </div>
   {/key}
   <ol class="list" aria-label="Услуги">
-    {#each spotted as service, i}
-      <li><a href={`${base}/uslugi/${service.slug}`}><span class="num">{String(i + 1).padStart(2, '0')}</span>{service.name}</a></li>
+    {#each spotted as service}
+      {@const Tool = serviceIcon(service.slug)}
+      <li><a href={`${base}/uslugi/${service.slug}`}><span class="num"><Tool size={16} /></span>{service.name}</a></li>
     {/each}
   </ol>
 
@@ -99,6 +103,7 @@
 
   .dot { position: absolute; z-index: 2; width: 28px; height: 28px; margin: -14px 0 0 -14px; display: grid; place-items: center; border-radius: 50%; }
   .dot span { width: 10px; height: 10px; border-radius: 50%; background: var(--paper); box-shadow: 0 0 0 3px #13131399, 0 0 0 4px #ebebea55; font-size: 0; transition: transform .2s var(--ease), background-color .2s; }
+  .dot span :global(svg) { display: none; }
   .dot.on span, .dot:hover span { background: var(--signal); transform: scale(1.35); }
 
   /* Labels like a parts poster: black plate, thin light frame, short leader into the middle of an edge. */
@@ -110,8 +115,8 @@
   .b .tag { left: 0; top: 0; transform: translateX(-50%); }
   .l .tag { right: 0; top: 0; transform: translateY(-50%); }
   .r .tag { left: 0; top: 0; transform: translateY(-50%); }
-  .tag-name { display: flex; gap: 7px; align-items: baseline; }
-  .tag-name b { flex: none; color: var(--concrete); font-weight: 600; font-size: .85em; font-variant-numeric: tabular-nums; }
+  .tag-name { display: flex; gap: 8px; align-items: flex-start; }
+  .tag-name b { flex: none; display: grid; place-items: center; color: var(--concrete); transform: translateY(2px); }
   .pin.on .tag { border-color: var(--signal); }
   .pin.on .tag-name b { color: var(--signal); }
   /* The description opens beside the label, towards the middle of the photo. */
@@ -126,7 +131,7 @@
   .pin.on .card { opacity: 1; visibility: visible; transform: none; transition: opacity .2s, transform .2s var(--ease); }
 
   .list { display: none; }
-  .num { font-family: var(--display); font-stretch: 104%; font-size: 13px; color: var(--concrete); font-variant-numeric: tabular-nums; }
+  .num { display: inline-grid; place-items: center; color: var(--signal); transform: translateY(2px); }
   .tap-card { display: none; }
 
   .extra { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; margin-top: 22px; }
@@ -143,12 +148,13 @@
   @media (max-width: 960px) {
     .leaders, .pin { display: none; }
     .dot { width: 40px; height: 40px; margin: -20px 0 0 -20px; }
-    .dot span { width: 22px; height: 22px; display: grid; place-items: center; font-size: 11px; font-weight: 700; color: var(--asphalt); }
+    .dot span { width: 24px; height: 24px; display: grid; place-items: center; color: var(--asphalt); }
+    .dot span :global(svg) { display: block; }
     .dot.on span, .dot:hover span { color: #fff; transform: scale(1.1); }
     .tap-card { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; align-items: start; padding: 16px; background: var(--asphalt-2); border: 1px solid var(--rule); border-left: 2px solid var(--signal); border-radius: 6px; animation: show .3s var(--ease) both; }
     .tap-card strong { font-family: var(--display); font-stretch: 100%; font-size: 19px; }
     .tap-card p { font-size: 14px; color: var(--concrete); margin-top: 2px; }
-    .tap-num { font-family: var(--display); color: var(--signal); font-size: 22px; line-height: 1.1; }
+    .tap-num { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: #d23f2a1f; color: var(--signal); }
     .tap-card .btn { grid-column: 1 / -1; height: 44px; }
     .list { display: grid; gap: 2px; }
     .list a { display: flex; gap: 12px; align-items: baseline; padding: 9px 0; border-bottom: 1px solid var(--rule); color: var(--concrete); }

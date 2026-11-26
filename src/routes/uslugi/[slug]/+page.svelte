@@ -5,7 +5,8 @@
   import Faq from '$lib/site/Faq.svelte'
   import { services, advantages, cardStyle } from '$lib/site/data.js'
   import { serviceFaq, processFaq } from '$lib/site/faq.js'
-  import { Check } from '@lucide/svelte'
+  import { Check, Send, Search, Wrench, KeyRound } from '@lucide/svelte'
+  import { hexPoints } from '$lib/site/service-icons.js'
   import videos from '$lib/site/videos.json'
   import PhotoWall from '$lib/site/PhotoWall.svelte'
 
@@ -79,7 +80,7 @@
       {#if service.slug === 'kastomizaciya'}<a class="link-steel" href="{base}/process">Все девять этапов кастома</a>{/if}
     </div>
     <ol class="steps">
-      {#each steps as step, i}<li><span class="num">{String(i + 1).padStart(2, '0')}</span><h3 class="h3">{step.title}</h3><p class="muted">{step.text}</p></li>{/each}
+      {#each steps as step, i}{@const Icon = [Send, Search, Wrench, KeyRound][i]}<li><span class="num" aria-hidden="true"><svg class="hex" viewBox="-12 -12 24 24"><polygon points={hexPoints} /></svg><Icon size={18} /></span><h3 class="h3">{step.title}</h3><p class="muted">{step.text}</p></li>{/each}
     </ol>
   </div>
 </section>
@@ -146,7 +147,10 @@
   .estimate .cta { background: none; border: 0; padding: 8px 0 0; }
   .steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; }
   .steps li, .strengths li { display: grid; gap: 10px; align-content: start; padding-top: 16px; border-top: 2px solid var(--rule); }
-  .steps .num { font-family: var(--display); font-weight: 700; font-stretch: 112%; font-size: 13px; letter-spacing: .1em; color: var(--signal); }
+  .steps .num { position: relative; width: 44px; height: 44px; display: grid; place-items: center; color: var(--paper); }
+  .steps .num .hex { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .steps .num polygon { fill: #1c1c1c; stroke: var(--signal); stroke-width: 1.2; stroke-linejoin: round; }
+  .steps .num :global(svg.lucide) { position: relative; }
   .strengths { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 28px; }
   @media (max-width: 1000px) { .steps { grid-template-columns: 1fr 1fr; } }
   @media (max-width: 560px) { .steps, .strengths { grid-template-columns: 1fr; } }

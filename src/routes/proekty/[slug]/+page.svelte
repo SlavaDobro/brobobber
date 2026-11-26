@@ -99,7 +99,7 @@
       <a class="btn btn-signal" href="#zayavka">Обсудить похожий проект</a>
     </div>
     <ol class="works">
-      {#each project.works as work, i}<li><span class="n">{String(i + 1).padStart(2, '0')}</span><span>{work}</span><Check size={16} /></li>{/each}
+      {#each project.works as work}<li><span class="n" aria-hidden="true"></span><span>{work}</span><Check size={16} /></li>{/each}
     </ol>
   </div>
 </section>
@@ -165,8 +165,8 @@
   .story p { font-size: 18px; line-height: 1.65; color: #ebebead9; }
   .story .clip { width: min(100%, 320px); aspect-ratio: 9 / 16; border-radius: 6px; background: var(--asphalt-2); object-fit: cover; margin-top: 8px; }
   .story p.first { font-size: clamp(20px, 1.8vw, 24px); color: var(--paper); }
-  .works li { display: grid; grid-template-columns: 34px 1fr 18px; gap: 12px; padding: 15px 0; border-bottom: 1px solid var(--rule); font-size: 17px; align-items: start; }
-  .works .n { font-family: var(--display); font-size: 13px; color: var(--steel); padding-top: 4px; }
+  .works li { display: grid; grid-template-columns: 18px 1fr 18px; gap: 12px; padding: 15px 0; border-bottom: 1px solid var(--rule); font-size: 17px; align-items: start; }
+  .works .n { width: 11px; height: 10px; margin-top: 8px; background: var(--signal); clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%); }
   .works :global(svg) { color: var(--steel); margin-top: 4px; }
   .head { margin-bottom: 32px; }
   .gallery { columns: 3 260px; column-gap: 16px; }

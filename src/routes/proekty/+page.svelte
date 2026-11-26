@@ -28,7 +28,6 @@
   let brand = $state('')
   let style = $state('')
   let shown = $derived(projects.filter(p => (!brand || p.brand === brand) && (!style || p.style === style)))
-  const no = (/** @type {typeof projects[number]} */ p) => String(projects.indexOf(p) + 1).padStart(3, '0')
   const styleName = (/** @type {string} */ slug) => styles.find(s => s.slug === slug)?.name ?? ''
   const works = (/** @type {number} */ n) => `${n} ${plural(n, ['работа', 'работы', 'работ'])}`
 </script>
@@ -60,7 +59,7 @@
       <span class="cover-sheet">
         <span class="cover-tag">Самый большой список работ</span>
         <span class="cover-name">{cover.name}</span>
-        <span class="cover-meta">№ {no(cover)} · {coverStyle?.name ?? ''} · {works(cover.works.length)}</span>
+        <span class="cover-meta">{cover.brand} · {coverStyle?.name ?? ''} · {works(cover.works.length)}</span>
         {#if cover.specs?.length}
           <span class="cover-specs">{#each cover.specs as [v, u, l]}<span><b>{v}<small>{u}</small></b>{l}</span>{/each}</span>
         {/if}
@@ -92,7 +91,7 @@
             <a class="build" href={`${base}/proekty/${project.slug}`}>
               <span class="frame">
                 {#if project.gallery[0]}<Photo base={project.gallery[0].src} alt={project.name} sizes="(max-width: 700px) 85vw, 30vw" w={project.gallery[0].w} h={project.gallery[0].h} />{/if}
-                <span class="plate" aria-hidden="true">№ {no(project)}</span>
+                <span class="plate" aria-hidden="true">{project.brand}</span>
               </span>
               <span class="strip">
                 <span class="b-name">{project.name}</span>

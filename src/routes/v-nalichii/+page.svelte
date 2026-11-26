@@ -47,7 +47,7 @@
     <aside class="board" aria-label="Сейчас в гараже">
       <span class="rivets" aria-hidden="true"></span>
       <span class="board-title">Гараж · учёт</span>
-      <Odometer value={String(live.length).padStart(2, '0')} label={plural(live.length, ['мотоцикл в наличии', 'мотоцикла в наличии', 'мотоциклов в наличии'])} />
+      <Odometer value={String(live.length)} label={plural(live.length, ['мотоцикл в наличии', 'мотоцикла в наличии', 'мотоциклов в наличии'])} />
       <ul class="tally">
         <li><span class="dot"></span>Готовые проекты<b>{count('project')}</b></li>
         <li><span class="dot donor"></span>Доноры под проект<b>{count('donor')}</b></li>
@@ -87,7 +87,6 @@
 
             <div class="sheet">
               <div class="sheet-top">
-                <span class="lotno">Лот <b>{String(live.indexOf(bike) + 1).padStart(2, '0')}</b></span>
                 <span class="kind" class:donor={bike.kind === 'donor'}>{kinds[bike.kind]}</span>
               </div>
               <h2 class="name">{bike.name}</h2>
@@ -185,8 +184,6 @@
 
   .sheet { display: grid; gap: 18px; justify-items: start; min-width: 0; }
   .sheet-top { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
-  .lotno { font-family: var(--display); font-weight: 600; font-stretch: 112%; font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: var(--concrete); }
-  .lotno b { color: var(--paper); margin-left: 4px; }
   .kind { padding: 4px 10px; border: 1.5px solid var(--signal); border-radius: 2px; font-family: var(--display); font-weight: 700; font-stretch: 112%; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--signal); transform: rotate(-3deg); }
   .kind.donor { border-color: var(--concrete); color: var(--concrete); }
   .name { font-family: var(--display); font-weight: 700; font-stretch: 96%; font-size: clamp(30px, 3.4vw, 50px); line-height: 1.02; }

@@ -6,6 +6,8 @@
   import { advantages } from './data.js'
 
   const whyIcons = [Cog, Motorbike, PencilRuler, Drill, Shapes, ShieldCheck]
+  // The word punched on each plate's tag, in the same order.
+  const stamps = ['Под ключ', 'Подбор', 'Смета', '3D · ЧПУ', 'Все марки', 'Гарантия']
 </script>
 
 <ul class="plates">
@@ -13,7 +15,7 @@
     {@const Icon = whyIcons[i] ?? Cog}
     <li class="plate">
       <span class="rivets" aria-hidden="true"></span>
-      <span class="serial" aria-hidden="true">BB<i></i>{String(i + 1).padStart(2, '0')}</span>
+      <span class="serial" aria-hidden="true"><i></i>{stamps[i]}</span>
       <span class="ruler" aria-hidden="true"></span>
       <span class="nut" aria-hidden="true">
         <svg viewBox="-12 -12 24 24"><polygon points="5.75,-9.96 11.5,0 5.75,9.96 -5.75,9.96 -11.5,0 -5.75,-9.96" /></svg>
@@ -41,7 +43,7 @@
   /* Engine-number plate: a small recessed tag with the number punched into it. */
   .serial { position: absolute; right: 22px; top: 22px; display: inline-flex; align-items: center; gap: 6px; padding: 5px 9px 4px;
     background: #0c0c0c; border: 1px solid #2b2b2b; border-radius: 2px; box-shadow: inset 0 1px 3px #000, 0 1px 0 #ffffff0a;
-    font-family: var(--display); font-weight: 700; font-stretch: 112%; font-size: 11px; letter-spacing: .22em; color: #7d7f82;
+    font-family: var(--display); font-weight: 700; font-stretch: 112%; font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: #7d7f82;
     text-shadow: 0 -1px 0 #000, 0 1px 0 #ffffff12; transition: color .3s; }
   .serial i { width: 4px; height: 4px; border-radius: 50%; background: #3a3a3a; box-shadow: inset 0 1px 1px #000; }
   /* A measuring scale along the bottom edge: fine ticks every 8 px, long ones every 40 px. */
