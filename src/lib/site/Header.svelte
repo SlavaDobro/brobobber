@@ -18,7 +18,8 @@
   let open = $state(false)
   let submenu = $state('')
   let scrolled = $state(false)
-  let hidden = $state(false)
+  // "tucked", not "hidden": Tailwind turns a .hidden class into display: none.
+  let tucked = $state(false)
   let callSheet = $state(false)
 
   // The site may live in a subfolder (GitHub Pages): compare paths without it.
@@ -39,7 +40,7 @@
       const y = window.scrollY
       scrolled = y > 24
       // Hide the top bar while reading down, bring it back on the first move up.
-      if (Math.abs(y - last) > 6) { hidden = y > last && y > 160; last = y }
+      if (Math.abs(y - last) > 6) { tucked = y > last && y > 160; last = y }
     }
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
@@ -56,7 +57,7 @@
   })
 </script>
 
-<header class="header" class:scrolled class:hidden={hidden && !open}>
+<header class="header" class:scrolled class:tucked={tucked && !open}>
   <div class="bar wrap">
     <a class="logo" href="{base}/" aria-label="Brobobber, на главную">
       <Logo size={38} rev={path} />
@@ -180,7 +181,7 @@
   @media (max-width: 1360px) {
     .nav { display: none; }
     .actions { margin-left: auto; }
-    .header.hidden { transform: translateY(-100%); }
+    .header.tucked { transform: translateY(-100%); }
 
     .dash { display: grid; grid-template-columns: repeat(5, 1fr); align-items: end; position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
       padding: 6px 8px calc(6px + env(safe-area-inset-bottom)); background: #131313f2; backdrop-filter: blur(12px); border-top: 1px solid var(--rule); }
