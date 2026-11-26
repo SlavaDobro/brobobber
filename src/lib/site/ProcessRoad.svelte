@@ -79,7 +79,7 @@
     <span class="asphalt" aria-hidden="true"><span class="laid"></span></span>
     <ol bind:this={list}>
       {#each process as step, i}
-        <li class:passed={i <= reached} class:current={i === reached}>
+        <li id={compact ? undefined : `step-${i + 1}`} class:passed={i <= reached} class:current={i === reached}>
           <span class="marker" aria-hidden="true">
             <svg viewBox="-15 -15 30 30"><polygon points={hex} /></svg>
             <b>{i + 1}</b>
