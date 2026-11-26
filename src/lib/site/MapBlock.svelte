@@ -10,7 +10,7 @@
   <div class="wrap grid">
     <div class="info">
       <h2 class="h3" id="map-title">Как доехать</h2>
-      <p class="address"><MapPin size={18} />{contacts.address}</p>
+      <a class="address" href={mapLinks.yandex} target="_blank" rel="noopener"><MapPin size={18} />{contacts.address}</a>
       <p class="address hours"><Clock size={18} />{contacts.hours}</p>
       <p class="muted">Мотоцикл можно привезти своим ходом или на нашем мотоэвакуаторе.</p>
       <div class="links">
@@ -40,6 +40,9 @@
   .info { display: grid; gap: 16px; }
   .address { display: flex; gap: 10px; font-size: 19px; line-height: 1.4; }
   .address :global(svg) { color: var(--steel); margin-top: 3px; }
+  a.address { text-decoration: underline; text-decoration-color: #ebebea40; text-underline-offset: 5px; transition: text-decoration-color .2s; }
+  a.address:hover { text-decoration-color: var(--signal); }
+  a.address:hover :global(svg) { color: var(--signal); }
   .hours { font-size: 17px; }
   .links { display: flex; gap: 10px; flex-wrap: wrap; }
   .channel { font-size: 15px; color: var(--concrete); }

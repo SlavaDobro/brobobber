@@ -2,7 +2,7 @@
   import PageHero from '$lib/site/PageHero.svelte'
   import MapBlock from '$lib/site/MapBlock.svelte'
   import { Phone, Mail, Send, MapPin, Clock } from '@lucide/svelte'
-  import { contacts } from '$lib/site/data.js'
+  import { contacts, mapLinks } from '$lib/site/data.js'
 </script>
 
 <svelte:head>
@@ -33,7 +33,7 @@
     </article>
     <article class="card">
       <h2 class="h3">Адрес</h2>
-      <p class="addr"><MapPin size={20} />{contacts.address}</p>
+      <a class="addr" href={mapLinks.yandex} target="_blank" rel="noopener"><MapPin size={20} />{contacts.address}</a>
       <p class="hours"><Clock size={18} />{contacts.hours}</p>
       <p class="muted">Индекс {contacts.postal}</p>
     </article>
@@ -54,7 +54,9 @@
   .big { display: flex; align-items: center; gap: 12px; font-family: var(--display); font-stretch: 96%; font-weight: 600; font-size: clamp(22px, 2.4vw, 32px); font-variant-numeric: tabular-nums; }
   .big :global(svg), .addr :global(svg) { color: var(--steel); flex: none; }
   .link-steel { display: inline-flex; align-items: center; gap: 6px; justify-self: start; }
-  .addr { display: flex; gap: 12px; font-size: 19px; }
+  .addr { display: flex; gap: 12px; font-size: 19px; text-decoration: underline; text-decoration-color: #ebebea40; text-underline-offset: 5px; transition: text-decoration-color .2s; }
+  .addr:hover { text-decoration-color: var(--signal); }
+  .addr:hover :global(svg) { color: var(--signal); }
   .hours { display: flex; align-items: center; gap: 12px; font-size: 16px; }
   .hours :global(svg) { color: var(--steel); flex: none; }
   .channel { border-color: var(--steel); }

@@ -7,7 +7,7 @@
   import { page } from '$app/state'
   import { Menu, X, ChevronDown, Phone, LayoutGrid, Wrench, Send, Clock, MapPin as Pin, House, Users, Motorbike, Tag, Route, MapPin, SlidersHorizontal } from '@lucide/svelte'
   import Logo from './Logo.svelte'
-  import { nav, services, styles, contacts } from './data.js'
+  import { nav, services, styles, contacts, mapLinks } from './data.js'
 
   /** Phone menu: each section gets its own icon inside the hex nut from the logo. */
   /** @type {Record<string, typeof House>} */
@@ -61,7 +61,7 @@
   <!-- Wide screens: a thin service strip like the sign over a garage door; it folds away on scroll. -->
   <div class="strip">
     <div class="wrap strip-in">
-      <span><Pin size={13} />{contacts.addressShort}</span>
+      <a href={mapLinks.yandex} target="_blank" rel="noopener" title="Открыть на Яндекс Картах"><Pin size={13} />{contacts.addressShort}</a>
       <span><Clock size={13} />{contacts.hoursShort}</span>
       <a class="strip-push" href={contacts.channel.href} target="_blank" rel="noopener"><Send size={13} />{contacts.channel.handle}</a>
       <a class="strip-phone" href={contacts.phones[0].href}><Phone size={13} />{contacts.phones[0].phone}</a>
@@ -133,7 +133,7 @@
   <div class="sheet" role="dialog" aria-modal="true" aria-label="Меню">
     <div class="sheet-top wrap">
       <Logo size={52} word={false} rev={1} />
-      <p class="muted">{contacts.address}<br />{contacts.hours}</p>
+      <p class="muted"><a class="sheet-addr" href={mapLinks.yandex} target="_blank" rel="noopener">{contacts.address}</a><br />{contacts.hours}</p>
     </div>
     <nav class="sheet-nav wrap" aria-label="Меню">
       {#each sheetLinks as item, i}
@@ -235,6 +235,7 @@
       padding: calc(24px + env(safe-area-inset-top)) 0 calc(96px + env(safe-area-inset-bottom)); overflow-y: auto; animation: door .5s var(--ease); }
     .sheet-top { display: flex; align-items: center; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid var(--rule); }
     .sheet-top p { font-size: 13px; max-width: 30ch; }
+    .sheet-addr { text-decoration: underline; text-decoration-color: #ebebea40; text-underline-offset: 3px; }
     .sheet-nav { display: grid; margin-top: 8px; }
     .sheet-nav a { display: flex; align-items: baseline; gap: 14px; padding: 10px 0; font-family: var(--display); font-stretch: 96%; font-weight: 650;
       font-size: clamp(32px, 9vw, 46px); line-height: 1.05; border-bottom: 1px solid var(--rule); animation: slat .45s calc(.08s + var(--i) * .04s) var(--ease) both; }

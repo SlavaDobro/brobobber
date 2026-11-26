@@ -20,7 +20,8 @@ export const contacts = {
   legal: '',
 }
 export const mapLinks = {
-  yandex: 'https://yandex.ru/maps/?text=' + encodeURIComponent(`${contacts.postal}, ${contacts.address}`),
+  // The workshop's own place on Yandex Maps; every address on the site links here.
+  yandex: 'https://yandex.com/maps/-/CXg5V81-',
   google: 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(contacts.address),
   dgis: 'https://2gis.ru/moscow/search/' + encodeURIComponent(contacts.address),
   widget: 'https://yandex.ru/map-widget/v1/?z=15&text=' + encodeURIComponent(`${contacts.postal}, ${contacts.address}`),

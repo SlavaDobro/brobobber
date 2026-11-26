@@ -1,6 +1,6 @@
 <script>
   import { base } from '$app/paths'
-  import { nav, contacts, services } from './data.js'
+  import { nav, contacts, services, mapLinks } from './data.js'
   import Logo from './Logo.svelte'
 </script>
 
@@ -31,7 +31,7 @@
         {#each contacts.phones as person}<li><a href={person.href}>{person.phone}</a> <span class="muted">{person.name}</span></li>{/each}
         <li><a href={`mailto:${contacts.email}`}>{contacts.email}</a></li>
         <li><a href={contacts.channel.href} target="_blank" rel="noopener">Telegram {contacts.channel.handle}</a></li>
-        <li class="muted">{contacts.address}</li>
+        <li><a class="muted" href={mapLinks.yandex} target="_blank" rel="noopener">{contacts.address}</a></li>
       </ul>
     </div>
   </div>
