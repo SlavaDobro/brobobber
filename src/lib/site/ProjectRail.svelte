@@ -17,11 +17,12 @@
   let hover = $state(false)
   let focusInside = $state(false)
   let dragging = $state(false)
+  let touching = $state(false) // a finger is down: the drift waits until we know where it goes
   let still = $state(false) // reduced motion: no drift, dragging still works
   let moved = 0
   let fling = 0 // px per second left over from a throw, decays in the tick
 
-  let drifting = $derived(!still && !hover && !focusInside && !dragging)
+  let drifting = $derived(!still && !hover && !focusInside && !dragging && !touching)
   // Whole device pixels: at fractional positions the moving photos are resampled and shimmer.
   let shift = $derived.by(() => {
     const ratio = typeof devicePixelRatio === 'number' ? devicePixelRatio : 1
@@ -63,25 +64,38 @@
   /** @param {PointerEvent} e */
   function down(e) {
     if (e.button !== 0) return
-    dragging = true
+    // A finger may be scrolling the page, not the row: wait for a clearly sideways move before
+    // taking it, and let a vertical swipe go untouched (the row must not twitch under it).
+    const touch = e.pointerType !== 'mouse'
+    let decided = !touch
+    touching = touch
+    dragging = !touch
     moved = 0
-    fling = 0
-    const startX = e.clientX, from = offset
+    if (!touch) fling = 0
+    const startX = e.clientX, startY = e.clientY
+    let from = offset, originX = startX
     // Recent positions give the release speed for the throw.
     /** @type {{ x: number, t: number }[]} */ let trail = [{ x: e.clientX, t: e.timeStamp }]
     const move = (/** @type {PointerEvent} */ ev) => {
+      if (!decided) {
+        const dx = Math.abs(ev.clientX - startX), dy = Math.abs(ev.clientY - startY)
+        if (dy > 8 && dy > dx) return up(ev)
+        if (dx < 10 || dx < dy * 1.2) return
+        decided = true; dragging = true; fling = 0; from = offset; originX = ev.clientX
+      }
       moved = Math.max(moved, Math.abs(ev.clientX - startX))
-      offset = wrap(from - (ev.clientX - startX))
+      offset = wrap(from - (ev.clientX - originX))
       trail.push({ x: ev.clientX, t: ev.timeStamp })
       trail = trail.filter(p => ev.timeStamp - p.t < 100)
     }
     const up = (/** @type {PointerEvent} */ ev) => {
       const first = trail[0], dt = (ev.timeStamp - first.t) / 1000
-      if (ev.type === 'pointerup' && dt > 0 && ev.timeStamp - trail[trail.length - 1].t < 60) {
+      if (decided && ev.type === 'pointerup' && dt > 0 && ev.timeStamp - trail[trail.length - 1].t < 60) {
         fling = Math.max(-2600, Math.min(2600, -(ev.clientX - first.x) / dt))
         if (Math.abs(fling) < 60) fling = 0
       }
       dragging = false
+      touching = false
       window.removeEventListener('pointermove', move)
       window.removeEventListener('pointerup', up)
       window.removeEventListener('pointercancel', up)

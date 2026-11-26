@@ -37,10 +37,17 @@
   $effect(() => {
     let last = window.scrollY
     const onScroll = () => {
-      const y = window.scrollY
+      // Phones bounce past both ends of the page; clamp so the bounce reads as no movement.
+      const max = document.documentElement.scrollHeight - window.innerHeight
+      const y = Math.min(Math.max(window.scrollY, 0), Math.max(max, 0))
       scrolled = y > 24
-      // Hide the top bar while reading down, bring it back on the first move up.
-      if (Math.abs(y - last) > 6) { tucked = y > last && y > 160; last = y }
+      // Hide the top bar while reading down, bring it back after a real move up. Small wobbles
+      // of a finger or of momentum scrolling (under 28 px against the direction) change nothing,
+      // otherwise the bar would flick in and out and the page looks like it shakes.
+      if (y < 160) { tucked = false; last = y; return }
+      const d = y - last
+      if (tucked ? d > 0 : d < 0) last = y
+      else if (Math.abs(d) > 28) { tucked = !tucked; last = y }
     }
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
