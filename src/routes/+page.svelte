@@ -9,6 +9,7 @@
   import Photo from '$lib/site/Photo.svelte'
   import VideoReel from '$lib/site/VideoReel.svelte'
   import PhotoSlides from '$lib/site/PhotoSlides.svelte'
+  import StockTeaser from '$lib/site/StockTeaser.svelte'
   import { projects, advantages, contacts, photoAspect } from '$lib/site/data.js'
   import { Cog, Motorbike, PencilRuler, Drill, Shapes, ShieldCheck } from '@lucide/svelte'
 
@@ -132,15 +133,12 @@
 </section>
 
 <section class="section sale">
-  <div class="wrap sale-grid">
-    <div>
+  <div class="wrap">
+    <div class="section-head">
       <h2 class="h2">Мотоциклы в наличии</h2>
-      <p class="lead">Готовые проекты, которые можно купить и сразу ехать, и мотоциклы-доноры под будущий кастом.</p>
+      <a class="link-steel" href="{base}/v-nalichii">Все мотоциклы в наличии</a>
     </div>
-    <div class="sale-actions">
-      <p class="muted">Актуальный список с фото, ценой и описанием. Новые мотоциклы первыми появляются в Telegram-канале {contacts.channel.handle}.</p>
-      <a class="btn btn-signal" href="{base}/v-nalichii">Смотреть мотоциклы в наличии</a>
-    </div>
+    <StockTeaser />
   </div>
 </section>
 
@@ -199,13 +197,11 @@
   .about-photo { aspect-ratio: var(--a); width: min(100%, calc(82svh * var(--a))); justify-self: center; overflow: hidden; border-radius: 4px; }
   .about-photo :global(img) { width: 100%; height: 100%; object-fit: cover; }
   .about-copy { display: grid; gap: 22px; justify-items: start; }
-  .sale-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: end; }
-  .sale-actions { display: grid; gap: 18px; justify-items: start; }
   .faq-grid { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 40px; align-items: start; }
   @media (max-width: 760px) { .manifesto-top { grid-template-columns: 1fr; } }
   @media (max-width: 960px) {
     .plates { grid-template-columns: 1fr 1fr; }
-    .about .grid, .sale-grid, .faq-grid { grid-template-columns: 1fr; }
+    .about .grid, .faq-grid { grid-template-columns: 1fr; }
   }
   @media (max-width: 560px) { .plates { grid-template-columns: 1fr; } .plate { min-height: 0; padding: 24px 20px 32px; } .ruler { left: 20px; right: 20px; } .serial { right: 18px; top: 18px; } .nut { width: 48px; height: 48px; margin-bottom: 8px; } }
 </style>
