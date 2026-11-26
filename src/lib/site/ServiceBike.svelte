@@ -9,7 +9,7 @@
 
   /** @type {Record<string, typeof Truck>} */
   const icons = { kursy: GraduationCap, dopolnitelnye: PackagePlus, motoevakuator: Truck }
-  const photo = '/images/photos/tg-453/03'
+  const photo = '/images/photos/poster/sportster'
 
   const spotted = services.filter(s => s.spot)
   const rest = services.filter(s => !s.spot)
@@ -26,7 +26,8 @@
 <div class="bike-map">
   <div class="poster" role="group" aria-label="Услуги на мотоцикле" onmouseleave={() => active = -1}>
     <picture>
-      <img src="{base}{photo}-800.webp" alt="Harley-Davidson Sportster 1200 из мастерской с отмеченными узлами" width="800" height="600" loading="lazy" decoding="async" />
+      <img src="{base}{photo}-1600.webp" srcset="{base}{photo}-800.webp 800w, {base}{photo}-1600.webp 1280w" sizes="(max-width: 1168px) 100vw, 1120px"
+        alt="Harley-Davidson Sportster в стиле боббер с надписями BROBOBBER на шинах и отмеченными узлами" width="1280" height="960" loading="lazy" decoding="async" />
     </picture>
     <svg class="leaders" viewBox="0 0 100 75" preserveAspectRatio="none" aria-hidden="true">
       {#each spotted as service, i}
@@ -87,8 +88,8 @@
   .poster { position: relative; width: min(100%, 1120px); justify-self: center; aspect-ratio: 4 / 3; container-type: inline-size; }
   .poster picture, .poster img { width: 100%; height: 100%; }
   /* Monochrome and contrast like the rest of the photos; the edges sink into the page. */
-  .poster img { object-fit: cover; filter: grayscale(1) contrast(1.12) brightness(.92);
-    --fade-x: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent); --fade-y: linear-gradient(180deg, transparent, #000 7%, #000 86%, transparent);
+  .poster img { object-fit: cover; filter: grayscale(1) contrast(1.04);
+    --fade-x: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent); --fade-y: linear-gradient(180deg, transparent, #000 6%, #000 88%, transparent);
     -webkit-mask: var(--fade-x), var(--fade-y); -webkit-mask-composite: source-in; mask: var(--fade-x), var(--fade-y); mask-composite: intersect; }
   .poster::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, transparent 72%, #131313b3 100%); }
 
