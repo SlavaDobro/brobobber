@@ -6,7 +6,7 @@ import photoWidths from './photo-widths.json'
 
 export const contacts = {
   phones: [
-    { name: 'Алексей', phone: '+7 925 485-26-61', href: 'tel:+79254852661', telegram: 'OguRechiks' },
+    { name: 'Алексей', phone: '+7 925 485-26-61', href: 'tel:+79254852661', telegram: 'BorisovAlexey_BROBOBBER' },
   ],
   email: 'brobobber@mail.ru',
   channel: { name: 'Telegram-канал', href: 'https://t.me/BROBOBBERru', handle: '@BROBOBBERru' },
